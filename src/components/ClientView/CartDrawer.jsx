@@ -413,30 +413,30 @@ export default function CartDrawer() {
                 <label className="font-extrabold text-xs text-slate-800 block">
                   Método de Entrega / Retiro *
                 </label>
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="flex justify-between gap-3 w-full">
                   <button
                     type="button"
                     onClick={() => setDeliveryMethod('recojo')}
-                    className={`p-2.5 rounded-xl border-2 flex items-center justify-center gap-1.5 transition-all cursor-pointer text-xs ${
+                    className={`w-1/2 py-3 px-2 rounded-xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer text-center ${
                       deliveryMethod === 'recojo'
-                        ? 'border-emerald-500 bg-emerald-100/70 text-emerald-900 font-black shadow-xs scale-[1.01]'
-                        : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 font-semibold'
+                        ? 'bg-[#dcfce7] border-[#22c55e] text-slate-900 font-black shadow-sm scale-[1.02]'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 font-semibold'
                     }`}
                   >
-                    <span className="text-base shrink-0">🏬</span>
-                    <span className="truncate">Recojo en Tienda</span>
+                    <span className="text-xl">🏬</span>
+                    <span className="text-xs leading-tight">Recojo en Tienda</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setDeliveryMethod('delivery')}
-                    className={`p-2.5 rounded-xl border-2 flex items-center justify-center gap-1.5 transition-all cursor-pointer text-xs ${
+                    className={`w-1/2 py-3 px-2 rounded-xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer text-center ${
                       deliveryMethod === 'delivery'
-                        ? 'border-emerald-500 bg-emerald-100/70 text-emerald-900 font-black shadow-xs scale-[1.01]'
-                        : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 font-semibold'
+                        ? 'bg-[#dcfce7] border-[#22c55e] text-slate-900 font-black shadow-sm scale-[1.02]'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 font-semibold'
                     }`}
                   >
-                    <span className="text-base shrink-0">🛵</span>
-                    <span className="truncate">Delivery a Domicilio</span>
+                    <span className="text-xl">🛵</span>
+                    <span className="text-xs leading-tight">Delivery a Domicilio</span>
                   </button>
                 </div>
               </div>
