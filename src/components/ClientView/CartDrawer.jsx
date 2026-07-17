@@ -285,10 +285,6 @@ export default function CartDrawer() {
 
             return (
               <form id="checkout-form" onSubmit={handleCheckout} className="space-y-4 animate-fade-in">
-                <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3.5 text-xs">
-                  ⚡ <strong>Demostración en Tiempo Real:</strong> Al confirmar esta compra, Firebase rebajará automáticamente las cantidades exactas del inventario del almacén.
-                </div>
-
                 {isProfileComplete && useSavedProfile ? (
                   <div className="bg-white border-2 border-primary/40 rounded-2xl p-5 shadow-md space-y-4">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-3">
