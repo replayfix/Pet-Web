@@ -116,7 +116,7 @@ export function AppContent() {
           <div className="flex flex-col items-center justify-center py-32 space-y-4">
             <Loader2 size={44} className="text-primary animate-spin" />
             <p className="text-sm font-bold text-slate-500">
-              Conectando con base de datos Firebase (`pet-web-5ccb1`)...
+              Cargando...
             </p>
           </div>
         ) : currentView === 'admin' ? (
