@@ -71,13 +71,13 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-fade-in print:p-0 print:bg-white print:static">
+    <div className="fixed inset-0 z-[1100] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-fade-in print:p-0 print:bg-white print:static">
       
       {/* Contenedor Compacto de la Boleta */}
-      <div className="bg-white max-w-sm w-full rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-auto print:shadow-none print:border-none print:max-w-full print:rounded-none">
+      <div className="bg-white max-w-sm w-full rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[88vh] my-auto print:shadow-none print:border-none print:max-w-full print:rounded-none">
         
         {/* Barra superior compacta (No visible al imprimir) */}
-        <div className="bg-slate-900 text-white px-4 py-2.5 flex items-center justify-between print:hidden">
+        <div className="bg-slate-900 text-white px-4 py-2.5 flex items-center justify-between shrink-0 print:hidden">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="font-black text-xs tracking-wider uppercase">Boleta Oficial</span>
@@ -109,7 +109,7 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
         </div>
 
         {/* CUERPO TICKET VETERINARIA COMPACTO (id="printable-receipt-area" PARA AISLAMIENTO DE IMPRESIÓN) */}
-        <div id="printable-receipt-area" className="p-4 md:p-5 text-slate-900 font-mono text-xs leading-tight print:p-3 print:text-black">
+        <div id="printable-receipt-area" className="p-4 md:p-5 text-slate-900 font-mono text-xs leading-tight overflow-y-auto flex-1 print:p-3 print:text-black print:overflow-visible print:max-h-none">
           
           {/* Encabezado Logo y Dirección ultra compacto */}
           <div className="text-center pb-2.5 border-b border-dashed border-slate-300 space-y-0.5">
@@ -233,7 +233,7 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
         </div>
 
         {/* Botón inferior al cerrar (Solo pantalla) */}
-        <div className="bg-slate-50 p-3 border-t border-slate-200 flex justify-end print:hidden">
+        <div className="bg-slate-50 p-3 border-t border-slate-200 flex justify-end shrink-0 print:hidden">
           <button 
             onClick={onClose}
             className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 rounded-xl transition-colors text-xs cursor-pointer"

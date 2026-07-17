@@ -19,11 +19,11 @@ export default function OrderDetailsModal({ isOpen, onClose, order }) {
   const orderNum = order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514';
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
-      <div className="bg-white max-w-lg w-full rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-auto">
+    <div className="fixed inset-0 z-[1100] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-fade-in">
+      <div className="bg-white max-w-lg w-full rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[88vh] my-auto animate-zoom-in">
         
-        {/* Cabecera */}
-        <div className="bg-slate-900 text-white px-6 py-5 flex items-center justify-between">
+        {/* Cabecera fija sin encoger */}
+        <div className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center font-black">
               <ShoppingBag size={20} />
@@ -49,8 +49,8 @@ export default function OrderDetailsModal({ isOpen, onClose, order }) {
           </button>
         </div>
 
-        {/* Contenido Principal */}
-        <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+        {/* Contenido Principal scrolleable */}
+        <div className="p-6 space-y-6 overflow-y-auto flex-1">
           
           {/* Tarjeta de Datos de Registro y Cliente */}
           <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 space-y-2.5">
@@ -141,8 +141,8 @@ export default function OrderDetailsModal({ isOpen, onClose, order }) {
 
         </div>
 
-        {/* Pie del Modal */}
-        <div className="bg-slate-50 px-6 py-4 border-t border-slate-100 flex justify-end">
+        {/* Pie del Modal fijo al fondo */}
+        <div className="bg-slate-50 px-6 py-4 border-t border-slate-100 flex justify-end shrink-0">
           <button 
             onClick={onClose}
             className="btn bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold px-6 py-2.5 rounded-xl cursor-pointer"
