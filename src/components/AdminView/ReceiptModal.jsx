@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Printer, PawPrint, MessageCircle } from 'lucide-react';
+import { X, Printer, PawPrint } from 'lucide-react';
 
 export const sendOrderReceiptViaWhatsApp = (order) => {
   const formatDateHelper = (timestamp) => {
@@ -82,10 +82,6 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
     window.print();
   };
 
-  const handleWhatsApp = () => {
-    sendOrderReceiptViaWhatsApp(order);
-  };
-
   return (
     <div className="fixed inset-0 z-[1100] bg-slate-900/80 backdrop-blur-sm overflow-y-auto animate-fade-in print:p-0 print:bg-white print:static">
       <div className="flex min-h-full items-center justify-center p-4 sm:p-6 sm:py-8 print:p-0 print:block">
@@ -100,14 +96,6 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
               <span className="font-black text-xs tracking-wider uppercase">Boleta Oficial</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <button 
-                onClick={handleWhatsApp}
-                className="bg-emerald-500 hover:bg-emerald-400 text-white px-2.5 py-1 rounded-md font-black text-[11px] flex items-center gap-1 transition-colors shadow-sm cursor-pointer"
-                title="Enviar boleta electrónica por WhatsApp al cliente"
-              >
-                <MessageCircle size={13} />
-                <span>WhatsApp</span>
-              </button>
               <button 
                 onClick={handlePrint}
                 className="bg-amber-400 hover:bg-amber-300 text-slate-900 px-2.5 py-1 rounded-md font-black text-[11px] flex items-center gap-1 transition-colors shadow-sm cursor-pointer"
