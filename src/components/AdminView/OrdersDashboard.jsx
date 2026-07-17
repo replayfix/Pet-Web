@@ -135,8 +135,8 @@ export default function OrdersDashboard({ searchQuery }) {
 
       {/* Barra de búsqueda interna y Filtro */}
       <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col sm:flex-row gap-4 justify-between items-center">
-        <div className="relative flex-1 w-full sm:max-w-md">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+        <div className="relative flex items-center flex-1 w-full sm:max-w-md">
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
           <input 
             type="text"
             placeholder="Buscar por cliente, DNI, teléfono, tipo de usuario o boleta..."

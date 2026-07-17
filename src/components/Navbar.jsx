@@ -79,19 +79,19 @@ export default function Navbar({
 
             {/* Buscador central (sólo visible en tienda) */}
             {currentView === 'store' && (
-              <div className="hidden md:flex flex-1 max-w-md mx-4 relative">
+              <div className="hidden md:flex flex-1 max-w-md mx-4 relative items-center">
+                <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                 <input 
                   type="text" 
-                  placeholder="Buscar por marca, producto (ej. Pro Plan, KONG)..."
+                  placeholder="Buscar por marca, producto"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 text-sm bg-slate-100 border border-slate-200 rounded-full focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                  className="w-full pl-10 pr-9 py-2 text-sm bg-slate-100 border border-slate-200 rounded-full focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                 />
-                <Search size={18} className="absolute left-3.5 top-2.5 text-slate-400" />
                 {searchQuery && (
                   <button 
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-2.5 text-xs bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full w-5 h-5 flex items-center justify-center"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full w-5 h-5 flex items-center justify-center cursor-pointer"
                   >
                     ×
                   </button>
@@ -243,19 +243,19 @@ export default function Navbar({
           {/* Buscador móvil (sólo visible en tienda) */}
           {currentView === 'store' && (
             <div className="mt-3 md:hidden">
-              <div className="relative">
+              <div className="relative flex items-center">
+                <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                 <input 
                   type="text" 
-                  placeholder="Buscar producto o marca..."
+                  placeholder="Buscar por marca, producto"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 text-sm bg-slate-100 border border-slate-200 rounded-full outline-none"
+                  className="w-full pl-10 pr-9 py-2 text-sm bg-slate-100 border border-slate-200 rounded-full outline-none"
                 />
-                <Search size={18} className="absolute left-3.5 top-2.5 text-slate-400" />
                 {searchQuery && (
                   <button 
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-2.5 text-xs bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full w-5 h-5 flex items-center justify-center"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full w-5 h-5 flex items-center justify-center cursor-pointer"
                   >
                     ×
                   </button>
