@@ -60,12 +60,12 @@ export default function OrderDetailsModal({ isOpen, onClose, order }) {
                 <span className="font-extrabold text-xs text-slate-500 uppercase tracking-wider">
                   Información del Cliente
                 </span>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                  order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado'
-                    ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                  order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado'
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                     : 'bg-amber-100 text-amber-800 border border-amber-200'
                 }`}>
-                  {order.customer?.userType || (order.customer?.isRegistered ? 'Usuario Registrado' : 'No Registrado')}
+                  {(order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado') ? 'Registrado' : 'No Registrado'}
                 </span>
               </div>
 

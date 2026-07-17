@@ -150,11 +150,11 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
               <div className="flex justify-between items-center">
                 <span className="text-slate-500">TIPO USER:</span>
                 <span className={`px-1.5 py-0.2 rounded text-[9px] font-black uppercase ${
-                  order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado'
-                    ? 'bg-blue-100 text-blue-700'
+                  order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado'
+                    ? 'bg-emerald-100 text-emerald-800'
                     : 'bg-amber-100 text-amber-800'
                 }`}>
-                  {order.customer?.userType || (order.customer?.isRegistered ? 'Usuario Registrado' : 'No Registrado')}
+                  {(order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado') ? 'Registrado' : 'No Registrado'}
                 </span>
               </div>
               <div className="flex justify-between">

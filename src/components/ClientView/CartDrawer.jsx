@@ -80,7 +80,7 @@ export default function CartDrawer() {
       const customerData = {
         ...customer,
         isRegistered: Boolean(currentUser),
-        userType: currentUser ? 'Usuario Registrado' : 'No Registrado',
+        userType: currentUser ? 'Registrado' : 'No Registrado',
         email: currentUser?.email || 'Sin correo registrado'
       };
       const orderId = await createOrder(customerData, cartItems, totalPrice);
