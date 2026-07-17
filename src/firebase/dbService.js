@@ -195,6 +195,7 @@ export const createOrder = async (customerInfo, cartItems, totalAmount) => {
       })),
       total: totalAmount,
       status: "completed",
+      paymentStatus: customerInfo.paymentStatus || "Pendiente de pago",
       createdAt: serverTimestamp()
     });
 
@@ -212,6 +213,21 @@ export const createOrder = async (customerInfo, cartItems, totalAmount) => {
     return orderRef.id;
   } catch (error) {
     console.error("Error al procesar orden y actualizar stock:", error);
+    throw error;
+  }
+};
+
+// Actualizar el estado de pago de una boleta/orden en Firestore
+export const updateOrderPaymentStatus = async (orderId, newStatus) => {
+  try {
+    const docRef = doc(db, ORDERS_COLLECTION, orderId);
+    await updateDoc(docRef, {
+      paymentStatus: newStatus,
+      updatedAt: serverTimestamp()
+    });
+    return true;
+  } catch (error) {
+    console.error("Error al actualizar estado de pago:", error);
     throw error;
   }
 };

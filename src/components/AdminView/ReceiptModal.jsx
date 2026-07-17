@@ -167,6 +167,20 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
                 <span className="text-slate-500">DNI/TEL:</span>
                 <span className="text-slate-900 font-bold">{order.customer?.phone || '00000000'}</span>
               </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">ENTREGA:</span>
+                <span className="text-slate-900 font-bold uppercase">
+                  {order.customer?.deliveryMethod === 'recojo' || order.customer?.deliveryType === 'Recojo en tienda'
+                    ? 'Recojo en tienda'
+                    : 'Delivery a domicilio'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">ESTADO PAGO:</span>
+                <span className="text-slate-900 font-black uppercase">
+                  {order.paymentStatus || 'Pendiente de pago'}
+                </span>
+              </div>
               {order.customer?.address && (
                 <div className="flex justify-between text-[10px]">
                   <span className="text-slate-500 shrink-0 mr-1">DIRECCIÓN:</span>

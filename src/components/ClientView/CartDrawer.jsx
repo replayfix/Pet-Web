@@ -42,6 +42,7 @@ export default function CartDrawer() {
   const [checkoutStep, setCheckoutStep] = useState('cart'); // 'cart' | 'form' | 'success'
   const [customer, setCustomer] = useState({ name: '', phone: '', address: '' });
   const [useSavedProfile, setUseSavedProfile] = useState(true);
+  const [deliveryMethod, setDeliveryMethod] = useState('recojo'); // 'recojo' | 'delivery'
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastOrderId, setLastOrderId] = useState(null);
 
@@ -59,8 +60,8 @@ export default function CartDrawer() {
         ? `${primaryAddrObj.direccionExacta || ''}, ${primaryAddrObj.distrito || ''}, ${primaryAddrObj.provincia || ''}`
             .replace(/^[,\s]+|[,\s]+$/g, '')
             .replace(/,\s*,/g, ', ')
-        : '';
-
+        : (userProfile?.direccion || '');
+      
       setCustomer(prev => ({
         name: prev.name || fullName,
         phone: prev.phone || phoneOrDni,
@@ -77,13 +78,20 @@ export default function CartDrawer() {
 
     setIsSubmitting(true);
     try {
+      const finalShipping = deliveryMethod === 'recojo' ? 0 : (missingForFreeShipping === 0 ? 0 : 10);
+      const finalTotal = totalPrice + finalShipping;
+
       const customerData = {
         ...customer,
         isRegistered: Boolean(currentUser),
         userType: currentUser ? 'Registrado' : 'No Registrado',
-        email: currentUser?.email || 'Sin correo registrado'
+        email: currentUser?.email || 'Sin correo registrado',
+        deliveryMethod: deliveryMethod,
+        deliveryType: deliveryMethod === 'recojo' ? 'Recojo en tienda' : 'Delivery a Domicilio',
+        shippingCost: finalShipping,
+        paymentStatus: 'Pendiente de pago'
       };
-      const orderId = await createOrder(customerData, cartItems, totalPrice);
+      const orderId = await createOrder(customerData, cartItems, finalTotal);
       setLastOrderId(orderId);
       clearCart();
       setCheckoutStep('success');
@@ -101,6 +109,7 @@ export default function CartDrawer() {
       setCheckoutStep('cart');
       setCustomer({ name: '', phone: '', address: '' });
       setUseSavedProfile(true);
+      setDeliveryMethod('recojo');
     }, 300);
   };
 
@@ -404,6 +413,38 @@ export default function CartDrawer() {
                   </>
                 )}
 
+              <div className="space-y-2 pt-2 border-t border-slate-100">
+                <label className="font-extrabold text-xs text-slate-800 block">
+                  Método de Entrega / Retiro *
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setDeliveryMethod('recojo')}
+                    className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      deliveryMethod === 'recojo'
+                        ? 'border-primary bg-primary/10 text-primary font-black shadow-xs scale-[1.02]'
+                        : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 font-semibold'
+                    }`}
+                  >
+                    <span className="text-lg">🏬</span>
+                    <span className="text-xs">Recojo en Tienda</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeliveryMethod('delivery')}
+                    className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      deliveryMethod === 'delivery'
+                        ? 'border-primary bg-primary/10 text-primary font-black shadow-xs scale-[1.02]'
+                        : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 font-semibold'
+                    }`}
+                  >
+                    <span className="text-lg">🛵</span>
+                    <span className="text-xs">Delivery a Domicilio</span>
+                  </button>
+                </div>
+              </div>
+
               <div className="border-t border-slate-100 pt-3 space-y-1 text-xs">
                 <div className="flex justify-between text-slate-500">
                   <span>Subtotal ({cartItems.length} ítems):</span>
@@ -412,13 +453,13 @@ export default function CartDrawer() {
                 <div className="flex justify-between text-slate-500">
                   <span>Envío:</span>
                   <span className="font-bold text-emerald-600">
-                    {missingForFreeShipping === 0 ? 'GRATIS' : 'S/ 10.00'}
+                    {deliveryMethod === 'recojo' ? 'GRATIS (Recojo)' : (missingForFreeShipping === 0 ? 'GRATIS' : 'S/ 10.00')}
                   </span>
                 </div>
                 <div className="flex justify-between font-extrabold text-base text-slate-900 pt-2 border-t border-slate-100">
                   <span>Total a Pagar:</span>
                   <span className="text-primary">
-                    S/ {(totalPrice + (missingForFreeShipping === 0 ? 0 : 10)).toFixed(2)}
+                    S/ {(totalPrice + (deliveryMethod === 'recojo' ? 0 : (missingForFreeShipping === 0 ? 0 : 10))).toFixed(2)}
                   </span>
                 </div>
               </div>

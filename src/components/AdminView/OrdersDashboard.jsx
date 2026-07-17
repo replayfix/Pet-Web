@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { subscribeOrders, deleteOrderAndRestoreStock } from '../../firebase/dbService';
+import { subscribeOrders, deleteOrderAndRestoreStock, updateOrderPaymentStatus } from '../../firebase/dbService';
 import ReceiptModal, { sendOrderReceiptViaWhatsApp } from './ReceiptModal';
 import OrderDetailsModal from './OrderDetailsModal';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
@@ -59,6 +59,14 @@ export default function OrdersDashboard({ searchQuery }) {
       alert('Hubo un error al eliminar y restaurar el stock.');
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleUpdatePaymentStatus = async (orderId, newStatus) => {
+    try {
+      await updateOrderPaymentStatus(orderId, newStatus);
+    } catch (error) {
+      alert('Error al actualizar el estado de pago en la base de datos.');
     }
   };
 
@@ -161,23 +169,24 @@ export default function OrdersDashboard({ searchQuery }) {
                 <th className="py-4 px-5">ID / Boleta</th>
                 <th className="py-4 px-5">Cliente / Registro</th>
                 <th className="py-4 px-5">DNI o Teléfono</th>
-                <th className="py-4 px-5">Dirección</th>
+                <th className="py-4 px-5">Entrega / Dirección</th>
                 <th className="py-4 px-5">Ítems</th>
                 <th className="py-4 px-5 text-right">Total Pago</th>
+                <th className="py-4 px-5 text-center">Estado de Pago</th>
                 <th className="py-4 px-5 text-center min-w-[340px]">Acciones Rápidas (4 Botones)</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs font-medium text-slate-700">
               {loading ? (
                 <tr>
-                  <td colSpan="7" className="text-center py-16">
+                  <td colSpan="8" className="text-center py-16">
                     <Clock size={32} className="mx-auto text-primary animate-spin mb-2" />
                     <p className="font-bold text-slate-500">Cargando tabla de órdenes...</p>
                   </td>
                 </tr>
               ) : filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="text-center py-16 space-y-2">
+                  <td colSpan="8" className="text-center py-16 space-y-2">
                     <ShoppingBag size={36} className="mx-auto text-slate-300" />
                     <p className="font-extrabold text-slate-700 text-sm">No hay órdenes registradas en este momento</p>
                     <p className="text-slate-400 text-xs">Las compras realizadas en el carrito aparecerán aquí listadas en orden real.</p>
@@ -226,10 +235,21 @@ export default function OrdersDashboard({ searchQuery }) {
                         {order.customer?.phone || '-'}
                       </td>
 
-                      {/* Columna 4: Dirección */}
-                      <td className="py-4 px-5 max-w-[220px]">
-                        <span className="truncate block font-semibold text-slate-600" title={order.customer?.address || 'Retiro en Tienda'}>
-                          {order.customer?.address || 'Retiro en Tienda'}
+                      {/* Columna 4: Entrega / Dirección */}
+                      <td className="py-4 px-5 max-w-[240px]">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          {order.customer?.deliveryMethod === 'recojo' || order.customer?.deliveryType === 'Recojo en tienda' ? (
+                            <span className="bg-purple-100 text-purple-800 border border-purple-300 text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1 uppercase tracking-wider">
+                              🏬 Recojo en tienda
+                            </span>
+                          ) : (
+                            <span className="bg-blue-100 text-blue-800 border border-blue-300 text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1 uppercase tracking-wider">
+                              🛵 Delivery
+                            </span>
+                          )}
+                        </div>
+                        <span className="truncate block font-semibold text-slate-600 text-xs" title={order.customer?.address || 'Retiro en Tienda'}>
+                          {order.customer?.address || 'Sin dirección registrada (Retiro)'}
                         </span>
                       </td>
 
@@ -247,7 +267,26 @@ export default function OrdersDashboard({ searchQuery }) {
                         </span>
                       </td>
 
-                      {/* Columna 7: LOS 4 BOTONES DE ACCIÓN RÁPIDA */}
+                      {/* Columna 7: Estado de Pago */}
+                      <td className="py-4 px-5 text-center whitespace-nowrap">
+                        <select
+                          value={order.paymentStatus || 'Pendiente de pago'}
+                          onChange={(e) => handleUpdatePaymentStatus(order.id, e.target.value)}
+                          className={`px-3 py-1.5 rounded-full text-xs font-black cursor-pointer border outline-none transition-all shadow-xs ${
+                            order.paymentStatus === 'Pago' || order.paymentStatus === 'Pagado'
+                              ? 'bg-emerald-100 text-emerald-800 border-emerald-300 hover:bg-emerald-200'
+                              : order.paymentStatus === 'No pago'
+                              ? 'bg-rose-100 text-rose-800 border-rose-300 hover:bg-rose-200'
+                              : 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200'
+                          }`}
+                        >
+                          <option value="Pendiente de pago" className="bg-white text-amber-800 font-bold">⏳ Pendiente de pago</option>
+                          <option value="Pago" className="bg-white text-emerald-800 font-bold">✅ Pago</option>
+                          <option value="No pago" className="bg-white text-rose-800 font-bold">❌ No pago</option>
+                        </select>
+                      </td>
+
+                      {/* Columna 8: LOS 4 BOTONES DE ACCIÓN RÁPIDA */}
                       <td className="py-4 px-5 text-center">
                         <div className="flex items-center justify-center gap-1.5 flex-wrap">
                           

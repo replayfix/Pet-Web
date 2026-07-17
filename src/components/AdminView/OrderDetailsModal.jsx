@@ -60,13 +60,24 @@ export default function OrderDetailsModal({ isOpen, onClose, order }) {
                 <span className="font-extrabold text-xs text-slate-500 uppercase tracking-wider">
                   Información del Cliente
                 </span>
-                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                  order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado'
-                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                    : 'bg-amber-100 text-amber-800 border border-amber-200'
-                }`}>
-                  {(order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado') ? 'Registrado' : 'No Registrado'}
-                </span>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                    order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado'
+                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                      : 'bg-amber-100 text-amber-800 border border-amber-200'
+                  }`}>
+                    {(order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado') ? 'Registrado' : 'No Registrado'}
+                  </span>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                    order.paymentStatus === 'Pago' || order.paymentStatus === 'Pagado'
+                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                      : order.paymentStatus === 'No pago'
+                      ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                      : 'bg-amber-100 text-amber-800 border border-amber-300'
+                  }`}>
+                    💰 {order.paymentStatus || 'Pendiente de pago'}
+                  </span>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
@@ -89,8 +100,19 @@ export default function OrderDetailsModal({ isOpen, onClose, order }) {
                 <div className="sm:col-span-2 flex items-start gap-2">
                   <MapPin size={15} className="text-primary shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-[10px] text-slate-400 block font-bold uppercase">Dirección de Entrega</span>
-                    <span className="font-bold text-slate-900">{order.customer?.address || 'Retiro en Tienda / Sin Especificar'}</span>
+                    <span className="text-[10px] text-slate-400 block font-bold uppercase">Dirección & Método de Entrega</span>
+                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                      {order.customer?.deliveryMethod === 'recojo' || order.customer?.deliveryType === 'Recojo en tienda' ? (
+                        <span className="bg-purple-100 text-purple-800 border border-purple-300 text-[10px] font-black px-2 py-0.5 rounded-md uppercase">
+                          🏬 Recojo en tienda
+                        </span>
+                      ) : (
+                        <span className="bg-blue-100 text-blue-800 border border-blue-300 text-[10px] font-black px-2 py-0.5 rounded-md uppercase">
+                          🛵 Delivery
+                        </span>
+                      )}
+                      <span className="font-bold text-slate-900">{order.customer?.address || 'Retiro en Tienda / Sin Especificar'}</span>
+                    </div>
                   </div>
                 </div>
               </div>
