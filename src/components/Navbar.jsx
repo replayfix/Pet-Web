@@ -29,6 +29,7 @@ export default function Navbar({
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const handleAdminToggle = () => {
+    setSearchQuery('');
     if (currentView === 'store') {
       if (isAdmin) {
         setCurrentView('admin');
@@ -76,25 +77,27 @@ export default function Navbar({
               </div>
             </div>
 
-            {/* Buscador central (sólo visible en tienda o almacén) */}
-            <div className="hidden md:flex flex-1 max-w-md mx-4 relative">
-              <input 
-                type="text" 
-                placeholder={currentView === 'store' ? "Buscar por marca, producto (ej. Pro Plan, KONG)..." : "Buscar en inventario (ID, Nombre, Categoría)..."}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 text-sm bg-slate-100 border border-slate-200 rounded-full focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-              />
-              <Search size={18} className="absolute left-3.5 top-2.5 text-slate-400" />
-              {searchQuery && (
-                <button 
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-2.5 text-xs bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full w-5 h-5 flex items-center justify-center"
-                >
-                  ×
-                </button>
-              )}
-            </div>
+            {/* Buscador central (sólo visible en tienda) */}
+            {currentView === 'store' && (
+              <div className="hidden md:flex flex-1 max-w-md mx-4 relative">
+                <input 
+                  type="text" 
+                  placeholder="Buscar por marca, producto (ej. Pro Plan, KONG)..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 text-sm bg-slate-100 border border-slate-200 rounded-full focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                />
+                <Search size={18} className="absolute left-3.5 top-2.5 text-slate-400" />
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-2.5 text-xs bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full w-5 h-5 flex items-center justify-center"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* Acciones del menú: Carrito, Login e Inventario (si es Admin) */}
             <div className="flex items-center gap-2 sm:gap-3">
@@ -237,19 +240,29 @@ export default function Navbar({
             </div>
           </div>
 
-          {/* Buscador móvil */}
-          <div className="mt-3 md:hidden">
-            <div className="relative">
-              <input 
-                type="text" 
-                placeholder={currentView === 'store' ? "Buscar producto o marca..." : "Buscar en inventario..."}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 text-sm bg-slate-100 border border-slate-200 rounded-full outline-none"
-              />
-              <Search size={18} className="absolute left-3.5 top-2.5 text-slate-400" />
+          {/* Buscador móvil (sólo visible en tienda) */}
+          {currentView === 'store' && (
+            <div className="mt-3 md:hidden">
+              <div className="relative">
+                <input 
+                  type="text" 
+                  placeholder="Buscar producto o marca..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 text-sm bg-slate-100 border border-slate-200 rounded-full outline-none"
+                />
+                <Search size={18} className="absolute left-3.5 top-2.5 text-slate-400" />
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-2.5 text-xs bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full w-5 h-5 flex items-center justify-center"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Navegación por categorías y filtros (Solo visible en tienda) */}
           {currentView === 'store' && (

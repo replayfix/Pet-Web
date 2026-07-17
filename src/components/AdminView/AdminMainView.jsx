@@ -4,7 +4,7 @@ import OrdersDashboard from './OrdersDashboard';
 import { subscribeOrders } from '../../firebase/dbService';
 import { Boxes, FileText, ShoppingBag, ShieldCheck } from 'lucide-react';
 
-export default function AdminMainView({ products, searchQuery }) {
+export default function AdminMainView({ products, searchQuery, setSearchQuery }) {
   const [activeTab, setActiveTab] = useState('inventory'); // 'inventory' | 'orders'
   const [ordersCount, setOrdersCount] = useState(0);
 
@@ -66,7 +66,7 @@ export default function AdminMainView({ products, searchQuery }) {
 
       {/* CONTENIDO DE LA PESTAÑA SELECCIONADA */}
       {activeTab === 'inventory' ? (
-        <InventoryDashboard products={products} searchQuery={searchQuery} />
+        <InventoryDashboard products={products} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       ) : (
         <OrdersDashboard searchQuery={searchQuery} />
       )}

@@ -16,10 +16,11 @@ import {
   PackageCheck,
   PackageX,
   Sparkles,
-  Check
+  Check,
+  Search
 } from 'lucide-react';
 
-export default function InventoryDashboard({ products, searchQuery }) {
+export default function InventoryDashboard({ products, searchQuery, setSearchQuery }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
   const [productToDelete, setProductToDelete] = useState(null);
@@ -194,17 +195,39 @@ export default function InventoryDashboard({ products, searchQuery }) {
 
       </div>
 
-      {/* Controles de Filtros en Tabla */}
-      <div className="card p-4 bg-white border border-slate-100 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-bold text-slate-400 uppercase flex items-center gap-1">
+      {/* Controles de Filtros y Búsqueda en Tabla */}
+      <div className="card p-4 sm:p-5 bg-white border border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 flex-1">
+          <span className="text-xs font-bold text-slate-400 uppercase flex items-center gap-1 shrink-0">
             <Filter size={14} /> Filtros:
           </span>
+
+          {/* Barra de Búsqueda colocada al lado de Filtros */}
+          <div className="relative flex-1 min-w-[220px] max-w-sm">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input 
+              type="text" 
+              placeholder="Buscar en inventario (ID, Nombre, Categoría)..."
+              value={searchQuery || ''}
+              onChange={(e) => setSearchQuery ? setSearchQuery(e.target.value) : null}
+              className="w-full pl-9 pr-8 py-1.5 text-xs font-medium bg-slate-100 border border-slate-200 rounded-lg focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+            />
+            {searchQuery && setSearchQuery && (
+              <button 
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full w-4 h-4 flex items-center justify-center cursor-pointer"
+                title="Limpiar búsqueda"
+              >
+                ×
+              </button>
+            )}
+          </div>
 
           <select 
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 rounded-lg px-3 py-1.5 outline-none"
+            className="bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 rounded-lg px-3 py-1.5 outline-none cursor-pointer hover:border-slate-300 transition-colors"
           >
             <option value="all">Todas las Categorías</option>
             <option value="comida">🍖 Comida</option>
@@ -215,7 +238,7 @@ export default function InventoryDashboard({ products, searchQuery }) {
           <select 
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 rounded-lg px-3 py-1.5 outline-none"
+            className="bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 rounded-lg px-3 py-1.5 outline-none cursor-pointer hover:border-slate-300 transition-colors"
           >
             <option value="all">Todo el Estado</option>
             <option value="healthy">📦 En Stock Seguro</option>
@@ -223,10 +246,10 @@ export default function InventoryDashboard({ products, searchQuery }) {
             <option value="out">🚫 Agotado</option>
           </select>
 
-          {(filterCategory !== 'all' || filterStatus !== 'all') && (
+          {(filterCategory !== 'all' || filterStatus !== 'all' || searchQuery) && (
             <button 
-              onClick={() => { setFilterCategory('all'); setFilterStatus('all'); }}
-              className="text-xs text-primary font-bold underline px-2"
+              onClick={() => { setFilterCategory('all'); setFilterStatus('all'); if (setSearchQuery) setSearchQuery(''); }}
+              className="text-xs text-primary font-bold underline px-2 cursor-pointer hover:text-primary-dark"
             >
               Limpiar filtros
             </button>

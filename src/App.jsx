@@ -111,7 +111,7 @@ export function AppContent() {
           </div>
         ) : currentView === 'admin' ? (
           /* VISTA ADMINISTRADOR (ALMACÉN Y ÓRDENES DE COMPRA) */
-          <AdminMainView products={products} searchQuery={searchQuery} />
+          <AdminMainView products={products} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         ) : currentView === 'profile' ? (
           /* VISTA PERFIL Y CUENTA DE USUARIO */
           <UserProfileView onNavigate={(view) => setCurrentView(view)} />
