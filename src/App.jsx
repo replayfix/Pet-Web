@@ -259,15 +259,15 @@ export function AppContent() {
 
       {/* PIE DE PÁGINA */}
       <footer className="bg-slate-900 text-white border-t border-slate-800 py-10 mt-16">
-        <div className="container grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="space-y-3 md:col-span-1">
+        <div className="container grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="space-y-3 md:col-span-2">
             <div className="flex items-center gap-2">
               <div className="bg-primary text-white p-1.5 rounded-lg">
                 <PawPrint size={20} />
               </div>
               <span className="font-extrabold text-xl tracking-tight">Pet.Web</span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-slate-400 leading-relaxed max-w-md">
               Plataforma e-commerce especializada en bienestar animal integrada con módulo en vivo de control y gestión de almacén.
             </p>
           </div>
@@ -280,39 +280,10 @@ export function AppContent() {
               <li><button onClick={() => { setCurrentView('store'); setActiveCategory('medicinas'); }} className="text-slate-300 hover:text-primary transition-colors cursor-pointer text-left">💊 Farmacia y Cuidado</button></li>
             </ul>
           </div>
-
-          <div>
-            <h5 className="font-bold text-sm text-white mb-3 uppercase tracking-wider">Mando de Almacén</h5>
-            <ul className="space-y-2 text-xs text-slate-300">
-              <li>
-                <button 
-                  onClick={() => isAdmin ? setCurrentView('admin') : setIsLoginModalOpen(true)} 
-                  className="text-slate-300 hover:text-amber-400 font-semibold transition-colors flex items-center gap-1.5 cursor-pointer text-left"
-                >
-                  🔐 Acceso Personal de Almacén / Login
-                </button>
-              </li>
-              <li><span className="text-slate-300">📦 Alertas automáticas de stock crítico</span></li>
-              <li><span className="text-slate-300">🔄 Sincronización continua en Firestore</span></li>
-            </ul>
-          </div>
-
-          <div>
-            <h5 className="font-bold text-sm text-white mb-3 uppercase tracking-wider">Estado de Conexión</h5>
-            <div className="bg-slate-800/80 border border-slate-700/80 p-3.5 rounded-2xl space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-400">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-                <span>Firebase Conectado En Vivo</span>
-              </div>
-              <div className="text-[11px] text-slate-400 font-mono">
-                Proyecto: <strong className="text-slate-300">pet-web-5ccb1</strong>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div className="container mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <p>© 2026 Pet.Web. Todos los derechos reservados. Desarrollado en Visual Studio Code + Firebase.</p>
+          <p>© 2026 Pet.Web. Todos los derechos reservados. Desarrollado por JTECHSERV.</p>
           <div className="flex gap-4">
             <span>Privacidad</span>
             <span>Términos</span>
