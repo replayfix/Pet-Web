@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { createOrder } from '../../firebase/dbService';
@@ -37,12 +37,37 @@ export default function CartDrawer() {
     totalPrice,
     totalItems
   } = useCart();
-  const { currentUser } = useAuth();
+  const { currentUser, userProfile, userAddresses } = useAuth();
 
   const [checkoutStep, setCheckoutStep] = useState('cart'); // 'cart' | 'form' | 'success'
   const [customer, setCustomer] = useState({ name: '', phone: '', address: '' });
+  const [useSavedProfile, setUseSavedProfile] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastOrderId, setLastOrderId] = useState(null);
+
+  // Cargar y mantener sincronizados los datos del cliente logueado
+  useEffect(() => {
+    if (currentUser && currentUser.role !== 'admin') {
+      const fullName = [userProfile?.nombre, userProfile?.apellido].filter(Boolean).join(' ').trim() || currentUser.name || '';
+      const phoneOrDni = userProfile?.telefono || userProfile?.documento || '';
+      
+      const primaryAddrObj = userAddresses && userAddresses.length > 0
+        ? (userAddresses.find(a => a.esPrincipal) || userAddresses[0])
+        : null;
+      
+      const addrStr = primaryAddrObj
+        ? `${primaryAddrObj.direccionExacta || ''}, ${primaryAddrObj.distrito || ''}, ${primaryAddrObj.provincia || ''}`
+            .replace(/^[,\s]+|[,\s]+$/g, '')
+            .replace(/,\s*,/g, ', ')
+        : '';
+
+      setCustomer(prev => ({
+        name: prev.name || fullName,
+        phone: prev.phone || phoneOrDni,
+        address: prev.address || addrStr
+      }));
+    }
+  }, [currentUser, userProfile, userAddresses, isCartOpen]);
 
   if (!isCartOpen) return null;
 
@@ -75,6 +100,7 @@ export default function CartDrawer() {
     setTimeout(() => {
       setCheckoutStep('cart');
       setCustomer({ name: '', phone: '', address: '' });
+      setUseSavedProfile(true);
     }, 300);
   };
 
@@ -244,46 +270,139 @@ export default function CartDrawer() {
             </>
           )}
 
-          {checkoutStep === 'form' && (
-            <form id="checkout-form" onSubmit={handleCheckout} className="space-y-4 animate-fade-in">
-              <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3.5 text-xs">
-                ⚡ <strong>Demostración en Tiempo Real:</strong> Al confirmar esta compra, Firebase rebajará automáticamente las cantidades exactas del inventario del almacén.
-              </div>
+          {checkoutStep === 'form' && (() => {
+            const isClientLoggedIn = Boolean(currentUser && currentUser.role !== 'admin');
+            const isProfileComplete = Boolean(isClientLoggedIn && customer.name && customer.phone);
 
-              <div className="form-group">
-                <label className="form-label">Nombre del Cliente *</label>
-                <input 
-                  type="text" 
-                  required 
-                  placeholder="Ej. Jonathan Pérez"
-                  value={customer.name}
-                  onChange={(e) => setCustomer({...customer, name: e.target.value})}
-                  className="form-input text-sm"
-                />
-              </div>
+            return (
+              <form id="checkout-form" onSubmit={handleCheckout} className="space-y-4 animate-fade-in">
+                <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3.5 text-xs">
+                  ⚡ <strong>Demostración en Tiempo Real:</strong> Al confirmar esta compra, Firebase rebajará automáticamente las cantidades exactas del inventario del almacén.
+                </div>
 
-              <div className="form-group">
-                <label className="form-label">Teléfono o DNI *</label>
-                <input 
-                  type="text" 
-                  required 
-                  placeholder="Ej. 987654321 / 45678912"
-                  value={customer.phone}
-                  onChange={(e) => setCustomer({...customer, phone: e.target.value})}
-                  className="form-input text-sm"
-                />
-              </div>
+                {isProfileComplete && useSavedProfile ? (
+                  <div className="bg-white border-2 border-primary/40 rounded-2xl p-5 shadow-md space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-xs">
+                          ✓
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-sm text-slate-900 block leading-tight">
+                            Información de Entrega y Contacto
+                          </span>
+                          <span className="text-[11px] text-slate-400 font-medium">
+                            Datos de tu perfil listos para procesar
+                          </span>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setUseSavedProfile(false)}
+                        className="text-xs font-bold text-primary hover:underline cursor-pointer bg-primary-light px-2.5 py-1 rounded-lg transition-colors"
+                        title="Editar o cambiar datos para este pedido"
+                      >
+                        Cambiar datos
+                      </button>
+                    </div>
 
-              <div className="form-group">
-                <label className="form-label">Dirección de Entrega</label>
-                <input 
-                  type="text" 
-                  placeholder="Av. Javier Prado 1234, Lima..."
-                  value={customer.address}
-                  onChange={(e) => setCustomer({...customer, address: e.target.value})}
-                  className="form-input text-sm"
-                />
-              </div>
+                    <div className="space-y-2.5 text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200/60">
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-500 font-medium">Cliente:</span>
+                        <span className="font-extrabold text-slate-900 text-sm">{customer.name}</span>
+                      </div>
+                      <div className="flex items-center justify-between border-t border-slate-100 pt-2">
+                        <span className="text-slate-500 font-medium">Teléfono / DNI:</span>
+                        <span className="font-extrabold text-slate-900">{customer.phone}</span>
+                      </div>
+                      <div className="flex items-start justify-between border-t border-slate-100 pt-2 gap-2">
+                        <span className="text-slate-500 font-medium shrink-0 mt-0.5">Dirección:</span>
+                        {userAddresses && userAddresses.length > 1 ? (
+                          <select
+                            value={customer.address}
+                            onChange={(e) => setCustomer({ ...customer, address: e.target.value })}
+                            className="text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 outline-none focus:border-primary max-w-[220px] shadow-2xs"
+                          >
+                            {userAddresses.map((addr, i) => {
+                              const addrStr = `${addr.direccionExacta || ''}, ${addr.distrito || ''}, ${addr.provincia || ''}`.replace(/^[,\s]+|[,\s]+$/g, '').replace(/,\s*,/g, ', ');
+                              return (
+                                <option key={i} value={addrStr}>
+                                  {addrStr || `Dirección #${i + 1}`}
+                                </option>
+                              );
+                            })}
+                            <option value="Retiro en Tienda / Sin Especificar">Retiro en Tienda / Sin Especificar</option>
+                          </select>
+                        ) : (
+                          <span className="font-bold text-slate-900 text-right break-words max-w-[220px]">
+                            {customer.address || 'Retiro en Tienda / Sin Especificar'}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between border-t border-slate-100 pt-2">
+                        <span className="text-slate-500 font-medium">Correo Electrónico:</span>
+                        <span className="font-medium text-slate-600 truncate max-w-[200px]">
+                          {currentUser?.email || 'Sin correo registrado'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="text-[11px] text-emerald-700 bg-emerald-50 p-2.5 rounded-xl border border-emerald-200 font-semibold flex items-center gap-1.5">
+                      <span>✨</span>
+                      <span>Tus datos completos se utilizarán automáticamente al presionar <strong>Confirmar y Descontar Almacén</strong>.</span>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {isProfileComplete && !useSavedProfile && (
+                      <div className="flex justify-between items-center bg-slate-100 p-3 rounded-xl">
+                        <span className="text-xs font-medium text-slate-600">Editando datos para este pedido</span>
+                        <button
+                          type="button"
+                          onClick={() => setUseSavedProfile(true)}
+                          className="text-xs font-bold text-primary hover:underline cursor-pointer"
+                        >
+                          ← Volver a usar datos guardados
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="form-group">
+                      <label className="form-label">Nombre del Cliente *</label>
+                      <input 
+                        type="text" 
+                        required 
+                        placeholder="Ej. Jonathan Pérez"
+                        value={customer.name}
+                        onChange={(e) => setCustomer({...customer, name: e.target.value})}
+                        className="form-input text-sm"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label className="form-label">Teléfono o DNI *</label>
+                      <input 
+                        type="text" 
+                        required 
+                        placeholder="Ej. 987654321 / 45678912"
+                        value={customer.phone}
+                        onChange={(e) => setCustomer({...customer, phone: e.target.value})}
+                        className="form-input text-sm"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label className="form-label">Dirección de Entrega</label>
+                      <input 
+                        type="text" 
+                        placeholder="Av. Javier Prado 1234, Lima..."
+                        value={customer.address}
+                        onChange={(e) => setCustomer({...customer, address: e.target.value})}
+                        className="form-input text-sm"
+                      />
+                    </div>
+                  </>
+                )}
 
               <div className="border-t border-slate-100 pt-3 space-y-1 text-xs">
                 <div className="flex justify-between text-slate-500">
@@ -304,7 +423,8 @@ export default function CartDrawer() {
                 </div>
               </div>
             </form>
-          )}
+          );
+        })()}
 
           {checkoutStep === 'success' && (
             <div className="text-center py-10 space-y-4 animate-fade-in">
