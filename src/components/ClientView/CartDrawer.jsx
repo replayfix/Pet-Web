@@ -413,30 +413,30 @@ export default function CartDrawer() {
                 <label className="font-extrabold text-xs text-slate-800 block">
                   Método de Entrega / Retiro *
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2.5">
                   <button
                     type="button"
                     onClick={() => setDeliveryMethod('recojo')}
-                    className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    className={`p-2.5 rounded-xl border-2 flex items-center justify-center gap-1.5 transition-all cursor-pointer text-xs ${
                       deliveryMethod === 'recojo'
-                        ? 'border-primary bg-primary/10 text-primary font-black shadow-xs scale-[1.02]'
+                        ? 'border-emerald-500 bg-emerald-100/70 text-emerald-900 font-black shadow-xs scale-[1.01]'
                         : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 font-semibold'
                     }`}
                   >
-                    <span className="text-lg">🏬</span>
-                    <span className="text-xs">Recojo en Tienda</span>
+                    <span className="text-base shrink-0">🏬</span>
+                    <span className="truncate">Recojo en Tienda</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setDeliveryMethod('delivery')}
-                    className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    className={`p-2.5 rounded-xl border-2 flex items-center justify-center gap-1.5 transition-all cursor-pointer text-xs ${
                       deliveryMethod === 'delivery'
-                        ? 'border-primary bg-primary/10 text-primary font-black shadow-xs scale-[1.02]'
+                        ? 'border-emerald-500 bg-emerald-100/70 text-emerald-900 font-black shadow-xs scale-[1.01]'
                         : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 font-semibold'
                     }`}
                   >
-                    <span className="text-lg">🛵</span>
-                    <span className="text-xs">Delivery a Domicilio</span>
+                    <span className="text-base shrink-0">🛵</span>
+                    <span className="truncate">Delivery a Domicilio</span>
                   </button>
                 </div>
               </div>
