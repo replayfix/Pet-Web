@@ -71,9 +71,6 @@ export default function Navbar({
                 <span className="font-extrabold text-2xl tracking-tight text-slate-900 group-hover:text-primary transition-colors">
                   Pet<span className="text-primary">.Web</span>
                 </span>
-                <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  & Control de Almacén
-                </span>
               </div>
             </div>
 
