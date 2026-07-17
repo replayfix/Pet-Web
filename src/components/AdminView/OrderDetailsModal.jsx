@@ -105,21 +105,21 @@ export default function OrderDetailsModal({ isOpen, onClose, order }) {
 
               <div className="space-y-2">
                 {order.items && order.items.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between bg-white border border-slate-200 rounded-xl p-3 hover:border-slate-300 transition-colors">
-                    <div className="flex items-center gap-3 min-w-0">
+                  <div key={idx} className="flex items-center justify-between bg-white border border-slate-200 rounded-xl p-3 hover:border-slate-300 transition-colors gap-3">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
                       <div className="w-8 h-8 rounded-lg bg-primary-light text-primary font-black text-xs flex items-center justify-center shrink-0">
                         {item.quantity || 1}x
                       </div>
-                      <div className="min-w-0">
-                        <h5 className="font-bold text-xs sm:text-sm text-slate-900 truncate uppercase">
+                      <div className="min-w-0 flex-1 pr-1">
+                        <h5 className="font-bold text-xs sm:text-sm text-slate-900 break-words whitespace-normal uppercase leading-snug">
                           {item.name}
                         </h5>
-                        <span className="text-[11px] text-slate-500 font-medium">
+                        <span className="text-[11px] text-slate-500 font-medium block mt-0.5">
                           S/ {Number(item.price || 0).toFixed(2)} c/u
                         </span>
                       </div>
                     </div>
-                    <div className="font-black text-sm text-slate-900 shrink-0 ml-3">
+                    <div className="font-black text-sm text-slate-900 shrink-0 text-right whitespace-nowrap">
                       S/ {(Number(item.price || 0) * Number(item.quantity || 1)).toFixed(2)}
                     </div>
                   </div>

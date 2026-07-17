@@ -91,7 +91,7 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
       <div className="flex min-h-full items-center justify-center p-4 sm:p-6 sm:py-8 print:p-0 print:block">
         
         {/* Contenedor Compacto de la Boleta */}
-        <div className="bg-white max-w-sm w-full rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[85vh] text-left print:max-h-none print:shadow-none print:border-none print:max-w-full print:rounded-none animate-zoom-in">
+        <div className="bg-white max-w-[430px] sm:max-w-md w-full rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[85vh] text-left print:max-h-none print:shadow-none print:border-none print:max-w-full print:rounded-none animate-zoom-in">
           
           {/* Barra superior compacta (No visible al imprimir) */}
           <div className="bg-slate-900 text-white px-4 py-2.5 flex items-center justify-between shrink-0 print:hidden">
@@ -171,7 +171,7 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">CLIENTE:</span>
-                <span className="text-slate-900 font-bold text-right truncate max-w-[170px] uppercase">
+                <span className="text-slate-900 font-bold text-right truncate max-w-[240px] uppercase">
                   {order.customer?.name || 'CLIENTE GENERAL'}
                 </span>
               </div>
@@ -182,7 +182,7 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
               {order.customer?.address && (
                 <div className="flex justify-between text-[10px]">
                   <span className="text-slate-500 shrink-0 mr-1">DIRECCIÓN:</span>
-                  <span className="text-slate-800 text-right truncate max-w-[160px]">{order.customer.address}</span>
+                  <span className="text-slate-800 text-right truncate max-w-[230px]">{order.customer.address}</span>
                 </div>
               )}
             </div>
@@ -200,16 +200,16 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
                   const price = Number(item.price || 0);
                   const itemTotal = qty * price;
                   return (
-                    <div key={idx} className="flex justify-between items-start gap-2 text-[11px]">
-                      <div className="min-w-0 flex-1">
-                        <span className="font-bold text-slate-900 block truncate uppercase">
+                    <div key={idx} className="flex justify-between items-start gap-3 text-[10.5px] leading-snug py-0.5">
+                      <div className="min-w-0 flex-1 pr-1">
+                        <span className="font-bold text-slate-900 block break-words whitespace-normal uppercase">
                           {qty}x {item.name}
                         </span>
-                        <span className="text-[10px] text-slate-500">
+                        <span className="text-[9.5px] text-slate-500 block">
                           P.Unit: S/ {price.toFixed(2)}
                         </span>
                       </div>
-                      <span className="font-bold text-slate-900 shrink-0">
+                      <span className="font-black text-slate-900 shrink-0 text-right whitespace-nowrap">
                         S/ {itemTotal.toFixed(2)}
                       </span>
                     </div>
