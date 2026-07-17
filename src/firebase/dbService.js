@@ -61,6 +61,15 @@ export const subscribeOrders = (callback, errorCallback) => {
     });
     // Ordenar de más reciente a más antiguo en memoria
     orders.sort((a, b) => b.timestamp - a.timestamp);
+
+    // Asignar el número de boleta dinámicamente (la más antigua es B001, la siguiente B002, etc.)
+    orders.forEach((order, index) => {
+      const sequentialRank = orders.length - index;
+      const prefix = `B${String(sequentialRank).padStart(3, '0')}`;
+      const suffix = order.id ? order.id.slice(-6).toUpperCase() : '053514';
+      order.boletaNumber = `${prefix}-${suffix}`;
+    });
+
     callback(orders);
   }, (err) => {
     console.error("Error al escuchar órdenes en Firestore:", err);

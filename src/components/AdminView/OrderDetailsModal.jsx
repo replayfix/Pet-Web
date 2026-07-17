@@ -16,7 +16,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order }) {
     });
   };
 
-  const orderNum = order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514';
+  const orderNum = order.boletaNumber || (order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514');
 
   return (
     <div className="fixed inset-0 z-[1100] bg-slate-900/80 backdrop-blur-sm overflow-y-auto animate-fade-in">

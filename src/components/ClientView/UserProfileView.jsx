@@ -794,7 +794,7 @@ export default function UserProfileView({ onNavigate }) {
                       <div key={order.id} className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-3 hover:border-primary/50 transition-all">
                         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                           <div>
-                            <span className="text-[11px] font-bold text-slate-400 uppercase">Pedido #{order.id.slice(-6)}</span>
+                            <span className="text-[11px] font-bold text-slate-400 uppercase">Pedido {order.boletaNumber ? `#${order.boletaNumber}` : `#${order.id.slice(-6)}`}</span>
                             <div className="text-sm font-extrabold text-slate-800">{new Date(order.date).toLocaleDateString()}</div>
                           </div>
                           <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3.5 py-1.5 rounded-full">

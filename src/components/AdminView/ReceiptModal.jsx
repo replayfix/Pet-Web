@@ -18,7 +18,7 @@ export const sendOrderReceiptViaWhatsApp = (order) => {
   const cleanPhone = customerPhone.replace(/\D/g, '');
   const phoneToUse = cleanPhone.length >= 9 ? (cleanPhone.startsWith('51') ? cleanPhone : `51${cleanPhone}`) : '';
 
-  const orderNum = order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514';
+  const orderNum = order.boletaNumber || (order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514');
   const dateStr = formatDateHelper(order.timestamp);
   const customerName = order.customer?.name || 'Cliente General';
   const subtotal = (Number(order.total || 0) / 1.18).toFixed(2);
@@ -74,7 +74,7 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
     });
   };
 
-  const orderNumber = order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514';
+  const orderNumber = order.boletaNumber || (order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514');
   const subtotalNeto = order.total ? (order.total / 1.18) : 0;
   const igv = order.total ? (order.total - subtotalNeto) : 0;
 

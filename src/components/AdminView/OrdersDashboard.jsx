@@ -185,7 +185,7 @@ export default function OrdersDashboard({ searchQuery }) {
                 </tr>
               ) : (
                 filteredOrders.map((order) => {
-                  const orderNum = order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514';
+                  const orderNum = order.boletaNumber || (order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514');
                   const isRegistered = order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado';
                   const customerName = order.customer?.name || 'No Registrado';
                   const totalItemsCount = (order.items || []).reduce((acc, i) => acc + Number(i.quantity || 1), 0);
