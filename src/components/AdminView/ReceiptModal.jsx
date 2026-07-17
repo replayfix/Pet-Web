@@ -1,5 +1,44 @@
 import React from 'react';
-import { X, Printer, PawPrint } from 'lucide-react';
+import { X, Printer, PawPrint, MessageCircle } from 'lucide-react';
+
+export const sendOrderReceiptViaWhatsApp = (order) => {
+  if (!order) return;
+  const orderNumber = order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514';
+  const dateStr = order.timestamp 
+    ? new Date(order.timestamp).toLocaleString('es-PE', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }) 
+    : 'Reciente';
+  const subtotalNeto = order.total ? (order.total / 1.18).toFixed(2) : '0.00';
+  const igv = order.total ? (order.total - order.total / 1.18).toFixed(2) : '0.00';
+  
+  const itemsText = (order.items || [])
+    .map(item => `▪️ ${item.quantity || 1}x *${item.name}* : S/. ${(Number(item.price || 0) * Number(item.quantity || 1)).toFixed(2)}`)
+    .join('\n');
+
+  const message = `🐾 *PET-WEB - BOLETA ELECTRÓNICA Nº ${orderNumber}* 🐾\n` +
+    `RUC: 20608971821 | Fono: (01) 435-8890\n\n` +
+    `👤 *Cliente:* ${order.customer?.name || 'Cliente General'}\n` +
+    `📅 *Fecha:* ${dateStr}\n` +
+    `📍 *Dirección:* ${order.customer?.address || 'Retiro en Tienda'}\n\n` +
+    `🛒 *DETALLE DEL PEDIDO:*\n${itemsText || 'Sin ítems'}\n\n` +
+    `💰 *Subtotal Neto:* S/. ${subtotalNeto}\n` +
+    `⚖️ *IGV (18%):* S/. ${igv}\n` +
+    `💵 *TOTAL A PAGAR: S/. ${Number(order.total || 0).toFixed(2)}*\n\n` +
+    `¡Gracias por engreír a tu mascota con nosotros! 🐶🐱\n` +
+    `Conserve este comprobante electrónico.`;
+
+  const phoneRaw = order.customer?.phone || '';
+  let cleanPhone = phoneRaw.replace(/\D/g, '');
+  if (cleanPhone.length === 9 && cleanPhone.startsWith('9')) {
+    cleanPhone = '51' + cleanPhone;
+  }
+  
+  const encoded = encodeURIComponent(message);
+  const url = cleanPhone 
+    ? `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encoded}`
+    : `https://api.whatsapp.com/send?text=${encoded}`;
+  
+  window.open(url, '_blank', 'noopener,noreferrer');
+};
 
 export default function ReceiptModal({ isOpen, onClose, order }) {
   if (!isOpen || !order) return null;
@@ -27,6 +66,10 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
     window.print();
   };
 
+  const handleWhatsApp = () => {
+    sendOrderReceiptViaWhatsApp(order);
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-fade-in print:p-0 print:bg-white print:static">
       
@@ -41,8 +84,17 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
           </div>
           <div className="flex items-center gap-1.5">
             <button 
+              onClick={handleWhatsApp}
+              className="bg-emerald-500 hover:bg-emerald-400 text-white px-2.5 py-1 rounded-md font-black text-[11px] flex items-center gap-1 transition-colors shadow-sm cursor-pointer"
+              title="Enviar boleta electrónica por WhatsApp al cliente"
+            >
+              <MessageCircle size={13} />
+              <span>WhatsApp</span>
+            </button>
+            <button 
               onClick={handlePrint}
               className="bg-amber-400 hover:bg-amber-300 text-slate-900 px-2.5 py-1 rounded-md font-black text-[11px] flex items-center gap-1 transition-colors shadow-sm cursor-pointer"
+              title="Imprimir boleta en impresora térmica o PDF"
             >
               <Printer size={13} />
               <span>Imprimir</span>
@@ -56,8 +108,8 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
           </div>
         </div>
 
-        {/* CUERPO TICKET VETERINARIA COMPACTO */}
-        <div className="p-4 md:p-5 text-slate-900 font-mono text-xs leading-tight print:p-3 print:text-black">
+        {/* CUERPO TICKET VETERINARIA COMPACTO (id="printable-receipt-area" PARA AISLAMIENTO DE IMPRESIÓN) */}
+        <div id="printable-receipt-area" className="p-4 md:p-5 text-slate-900 font-mono text-xs leading-tight print:p-3 print:text-black">
           
           {/* Encabezado Logo y Dirección ultra compacto */}
           <div className="text-center pb-2.5 border-b border-dashed border-slate-300 space-y-0.5">
@@ -83,11 +135,11 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
             <span className="text-amber-400 font-mono">{orderNumber}</span>
           </div>
 
-          {/* Datos Generales en Grid de 2 Columnas Compacto */}
-          <div className="py-2 border-b border-dashed border-slate-300 grid grid-cols-2 gap-y-1 text-[11px] font-medium">
+          {/* Datos Generales en Grid de 2 Columnas Compacto con holgura horizontal */}
+          <div className="py-2.5 px-1 border-b border-dashed border-slate-300 grid grid-cols-2 gap-y-1 text-[11px] font-medium">
             <div className="flex gap-1 col-span-2 justify-between">
               <span className="text-slate-500">CLIENTE:</span>
-              <span className="font-extrabold text-slate-900 uppercase truncate max-w-[200px]">
+              <span className="font-extrabold text-slate-900 uppercase truncate max-w-[190px]">
                 {order.customer?.name || 'CLIENTE GENERAL'}
               </span>
             </div>
@@ -101,20 +153,20 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
             </div>
             <div className="flex gap-1 col-span-2 justify-between pt-0.5">
               <span className="text-slate-500">DIRECCIÓN:</span>
-              <span className="font-bold text-slate-800 uppercase truncate max-w-[200px]">
+              <span className="font-bold text-slate-800 uppercase truncate max-w-[190px]">
                 {order.customer?.address || 'RETIRO EN LOCAL'}
               </span>
             </div>
           </div>
 
           {/* Cabecera de Ítems */}
-          <div className="py-1.5 border-b border-slate-900 font-black text-[10px] flex justify-between tracking-wider">
+          <div className="py-1.5 px-1 border-b border-slate-900 font-black text-[10px] flex justify-between tracking-wider">
             <span>DESCRIPCIÓN / PRODUCTO</span>
             <span className="text-right">CANT x P.U. = TOTAL</span>
           </div>
 
           {/* Lista Compacta de Productos */}
-          <div className="py-2 border-b border-dashed border-slate-300 space-y-1.5 max-h-[160px] overflow-y-auto">
+          <div className="py-2 px-1 border-b border-dashed border-slate-300 space-y-1.5 max-h-[160px] overflow-y-auto">
             {order.items && order.items.length > 0 ? (
               order.items.map((item, idx) => {
                 const itemTotal = (Number(item.price || 0) * Number(item.quantity || 1)).toFixed(2);
@@ -138,7 +190,7 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
           </div>
 
           {/* Totales y Desglose en 2 líneas */}
-          <div className="py-2 border-b border-dashed border-slate-300 space-y-1 text-right text-[11px] font-medium">
+          <div className="py-2 px-1 border-b border-dashed border-slate-300 space-y-1 text-right text-[11px] font-medium">
             <div className="flex justify-between text-slate-500 text-[10px]">
               <span>NETO: S/ {subtotalNeto.toFixed(2)}</span>
               <span>IGV (18%): S/ {igv.toFixed(2)}</span>
@@ -150,7 +202,7 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
           </div>
 
           {/* Pie de Boleta Compacto */}
-          <div className="pt-2.5 text-center space-y-1.5">
+          <div className="pt-2.5 px-1 text-center space-y-1.5">
             <p className="font-extrabold text-[10px] tracking-wide uppercase text-slate-800">
               ¡GRACIAS POR ENGREÍR A TU MASCOTA! 🐶🐱
             </p>

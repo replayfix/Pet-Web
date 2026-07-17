@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { subscribeOrders, deleteOrderAndRestoreStock } from '../../firebase/dbService';
-import ReceiptModal from './ReceiptModal';
+import ReceiptModal, { sendOrderReceiptViaWhatsApp } from './ReceiptModal';
 import OrderDetailsModal from './OrderDetailsModal';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import { 
@@ -19,7 +19,8 @@ import {
   Clock, 
   Eye,
   RotateCcw,
-  ShieldCheck
+  ShieldCheck,
+  MessageCircle
 } from 'lucide-react';
 
 export default function OrdersDashboard({ searchQuery }) {
@@ -163,7 +164,7 @@ export default function OrdersDashboard({ searchQuery }) {
                 <th className="py-4 px-5">Dirección</th>
                 <th className="py-4 px-5">Ítems</th>
                 <th className="py-4 px-5 text-right">Total Pago</th>
-                <th className="py-4 px-5 text-center min-w-[280px]">Acciones Rápida (3 Botones)</th>
+                <th className="py-4 px-5 text-center min-w-[340px]">Acciones Rápidas (4 Botones)</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs font-medium text-slate-700">
@@ -246,37 +247,47 @@ export default function OrdersDashboard({ searchQuery }) {
                         </span>
                       </td>
 
-                      {/* Columna 7: LOS 3 BOTONES EXACTOS SOLICITADOS */}
+                      {/* Columna 7: LOS 4 BOTONES DE ACCIÓN RÁPIDA */}
                       <td className="py-4 px-5 text-center">
-                        <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center justify-center gap-1.5 flex-wrap">
                           
-                          {/* BOTÓN 1: Previsualización en ventana emergente */}
+                          {/* BOTÓN 1: Previsualización */}
                           <button
                             onClick={() => setSelectedOrderForPreview(order)}
-                            className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-2.5 py-2 rounded-xl flex items-center gap-1 transition-all border border-slate-200 cursor-pointer shadow-2xs hover:scale-105"
+                            className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition-all border border-slate-200 cursor-pointer shadow-2xs hover:scale-105"
                             title="Previsualizar detalles de los productos comprados"
                           >
-                            <Eye size={15} className="text-primary" />
+                            <Eye size={14} className="text-primary" />
                             <span>Detalle</span>
                           </button>
 
-                          {/* BOTÓN 2: Ver Boleta y Opción a Imprimir */}
+                          {/* BOTÓN 2: Ver Boleta */}
                           <button
                             onClick={() => setSelectedOrderForReceipt(order)}
-                            className="bg-primary hover:bg-primary-dark text-white font-black text-xs px-2.5 py-2 rounded-xl flex items-center gap-1 transition-all shadow-sm cursor-pointer hover:scale-105"
+                            className="bg-primary hover:bg-primary-dark text-white font-black text-xs px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition-all shadow-sm cursor-pointer hover:scale-105"
                             title="Ver boleta electrónica oficial emitida"
                           >
-                            <Printer size={15} />
+                            <Printer size={14} />
                             <span>Boleta</span>
                           </button>
 
-                          {/* BOTÓN 3: Eliminar Orden y Restaurar Stock automáticamente */}
+                          {/* BOTÓN 3: WhatsApp */}
+                          <button
+                            onClick={() => sendOrderReceiptViaWhatsApp(order)}
+                            className="bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition-all shadow-sm cursor-pointer hover:scale-105"
+                            title="Enviar resumen y boleta electrónica directamente por WhatsApp al cliente"
+                          >
+                            <MessageCircle size={14} />
+                            <span>WhatsApp</span>
+                          </button>
+
+                          {/* BOTÓN 4: Restaurar Stock */}
                           <button
                             onClick={() => setOrderToDelete(order)}
-                            className="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white font-bold text-xs px-2.5 py-2 rounded-xl flex items-center gap-1 transition-all border border-red-200 cursor-pointer shadow-2xs hover:scale-105"
+                            className="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white font-bold text-xs px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition-all border border-red-200 cursor-pointer shadow-2xs hover:scale-105"
                             title="Eliminar orden y devolver cantidades al stock del inventario"
                           >
-                            <RotateCcw size={15} />
+                            <RotateCcw size={14} />
                             <span>Restaurar</span>
                           </button>
 
