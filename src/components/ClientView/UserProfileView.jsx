@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
+import ReceiptModal from '../AdminView/ReceiptModal';
 import { 
   User, 
   MapPin, 
@@ -139,6 +140,7 @@ export default function UserProfileView({ onNavigate }) {
   const [addrSuccess, setAddrSuccess] = useState(false);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState(null);
+  const [selectedOrderForReceipt, setSelectedOrderForReceipt] = useState(null);
 
   useEffect(() => {
     if (userProfile) {
@@ -765,9 +767,12 @@ export default function UserProfileView({ onNavigate }) {
             {/* APARTADO 3: PEDIDOS (Al lado derecho dentro del gran recuadro) */}
             {activeTab === 'Pedidos' && (
               <div className="space-y-6 pt-2">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                  <h2 className="font-extrabold text-3xl sm:text-4xl text-slate-900">Mis Pedidos Guardados</h2>
-                  <span className="bg-primary/10 text-primary text-xs font-black px-3.5 py-1 rounded-full">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 gap-2">
+                  <div>
+                    <h2 className="font-extrabold text-3xl sm:text-4xl text-slate-900">Mis Pedidos Guardados</h2>
+                    <p className="text-xs text-slate-500 mt-1">Historial en vivo y estado de pago verificado por almacén</p>
+                  </div>
+                  <span className="bg-primary/10 text-primary text-xs font-black px-3.5 py-1.5 rounded-full self-start sm:self-center">
                     {userOrders.length} {userOrders.length === 1 ? 'pedido en base de datos' : 'pedidos en base de datos'}
                   </span>
                 </div>
@@ -783,30 +788,132 @@ export default function UserProfileView({ onNavigate }) {
                     </p>
                     <button
                       onClick={() => onNavigate && onNavigate('store')}
-                      className="btn btn-primary px-8 py-3.5 text-xs font-black rounded-full mt-3 shadow-md shadow-primary/20"
+                      className="btn btn-primary px-8 py-3.5 text-xs font-black rounded-full mt-3 shadow-md shadow-primary/20 cursor-pointer"
                     >
                       Ir al Catálogo de Tienda
                     </button>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    {userOrders.map(order => (
-                      <div key={order.id} className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-3 hover:border-primary/50 transition-all">
-                        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                          <div>
-                            <span className="text-[11px] font-bold text-slate-400 uppercase">Pedido {order.boletaNumber ? `#${order.boletaNumber}` : `#${order.id.slice(-6)}`}</span>
-                            <div className="text-sm font-extrabold text-slate-800">{new Date(order.date).toLocaleDateString()}</div>
+                  <div className="space-y-5">
+                    {userOrders.map(order => {
+                      const orderDate = new Date(order.timestamp || order.createdAt || order.date || Date.now()).toLocaleString();
+                      const paymentState = order.paymentStatus || 'Pendiente de pago';
+                      const isRecojo = order.customer?.deliveryMethod === 'recojo' || order.customer?.deliveryType === 'Recojo en tienda';
+                      const itemsList = Array.isArray(order.items) ? order.items : [];
+
+                      return (
+                        <div key={order.id} className="bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-4 hover:border-primary/40 transition-all">
+                          {/* Encabezado: Nº Boleta, Fecha y Estados */}
+                          <div className="flex flex-wrap items-center justify-between border-b border-slate-200/60 pb-3.5 gap-3">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-black text-slate-900 uppercase bg-white border border-slate-300 px-2.5 py-1 rounded-lg shadow-2xs">
+                                  {order.boletaNumber ? `Pedido #${order.boletaNumber}` : `Pedido #${order.id.slice(-6).toUpperCase()}`}
+                                </span>
+                                <span className="bg-blue-100 text-blue-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">
+                                  {order.status || 'Completado'}
+                                </span>
+                              </div>
+                              <div className="text-xs font-semibold text-slate-500 mt-1.5 flex items-center gap-1.5">
+                                <Calendar size={13} className="text-slate-400" />
+                                <span>{orderDate}</span>
+                              </div>
+                            </div>
+
+                            {/* Estado de Pago Marcado por Admin */}
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-bold text-slate-500">Estado de Pago:</span>
+                              <span className={`text-xs font-black px-3 py-1 rounded-full border shadow-2xs flex items-center gap-1.5 uppercase ${
+                                paymentState === 'Pago'
+                                  ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                                  : paymentState === 'No pago'
+                                  ? 'bg-rose-100 text-rose-800 border-rose-300'
+                                  : 'bg-amber-100 text-amber-800 border-amber-300'
+                              }`}>
+                                {paymentState === 'Pago' && '✅ '}
+                                {paymentState === 'No pago' && '❌ '}
+                                {paymentState !== 'Pago' && paymentState !== 'No pago' && '⏳ '}
+                                {paymentState}
+                              </span>
+                            </div>
                           </div>
-                          <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3.5 py-1.5 rounded-full">
-                            {order.status || 'Completado'}
-                          </span>
+
+                          {/* Método y Dirección de Entrega */}
+                          <div className="bg-white rounded-xl p-3.5 border border-slate-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                            <div className="flex items-center gap-2">
+                              <span className="text-base">{isRecojo ? '🏬' : '🛵'}</span>
+                              <div>
+                                <span className="font-extrabold text-slate-800 block">
+                                  {isRecojo ? 'Recojo en Tienda' : 'Delivery a Domicilio'}
+                                </span>
+                                <span className="text-slate-500 font-medium truncate max-w-sm block">
+                                  {order.customer?.address || 'Sin dirección especificada'}
+                                </span>
+                              </div>
+                            </div>
+                            {order.customer?.phone && (
+                              <div className="text-slate-500 font-medium sm:text-right">
+                                Tel/DNI: <strong className="text-slate-800 font-extrabold">{order.customer.phone}</strong>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Lista de Ítems del Pedido */}
+                          <div className="space-y-2">
+                            <h4 className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">
+                              Productos en la compra ({itemsList.reduce((acc, it) => acc + (it.quantity || 1), 0)} ítems)
+                            </h4>
+                            <div className="bg-white rounded-xl border border-slate-200/60 divide-y divide-slate-100 max-h-52 overflow-y-auto">
+                              {itemsList.map((item, idx) => {
+                                const qty = item.quantity || 1;
+                                const price = Number(item.price || 0);
+                                return (
+                                  <div key={idx} className="p-2.5 flex items-center justify-between text-xs">
+                                    <div className="flex items-center gap-2 pr-3">
+                                      <span className="w-5 h-5 rounded-full bg-slate-100 text-slate-600 font-bold flex items-center justify-center shrink-0 text-[11px]">
+                                        {qty}
+                                      </span>
+                                      <span className="font-bold text-slate-800 leading-tight">
+                                        {item.name || 'Producto del catálogo'}
+                                      </span>
+                                    </div>
+                                    <span className="font-black text-slate-900 shrink-0">
+                                      S/ {(qty * price).toFixed(2)}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          {/* Pie: Total y Botón de Boleta */}
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-2 border-t border-slate-200/60 gap-3">
+                            <div>
+                              <span className="text-xs text-slate-500 block font-medium">Total Pagado / a Pagar</span>
+                              <div className="flex items-baseline gap-2">
+                                <span className="text-xl font-black text-primary">
+                                  S/ {Number(order.total || 0).toFixed(2)}
+                                </span>
+                                {order.customer?.shippingCost > 0 && (
+                                  <span className="text-[11px] font-semibold text-slate-400">
+                                    (Incl. S/ {Number(order.customer.shippingCost).toFixed(2)} envío)
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => setSelectedOrderForReceipt(order)}
+                              className="btn bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold py-2.5 px-5 rounded-xl shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all hover:scale-[1.02]"
+                            >
+                              <span>📄</span>
+                              <span>Ver Boleta / Ticket</span>
+                            </button>
+                          </div>
                         </div>
-                        <div className="flex justify-between items-center text-sm pt-1">
-                          <span className="text-slate-600 font-bold">{order.itemsCount || 1} productos</span>
-                          <span className="font-black text-primary text-base">S/ {order.total.toFixed(2)}</span>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -829,6 +936,15 @@ export default function UserProfileView({ onNavigate }) {
         title="¿Deseas eliminar esta dirección?"
         message={`Estás a punto de eliminar la dirección de "${addressToDelete?.distrito || ''}, ${addressToDelete?.provincia || ''}". Esta acción no se puede deshacer.`}
       />
+
+      {/* MODAL DE BOLETA / TICKET DE VENTA */}
+      {selectedOrderForReceipt && (
+        <ReceiptModal 
+          isOpen={Boolean(selectedOrderForReceipt)}
+          onClose={() => setSelectedOrderForReceipt(null)}
+          order={selectedOrderForReceipt}
+        />
+      )}
     </div>
   );
 }

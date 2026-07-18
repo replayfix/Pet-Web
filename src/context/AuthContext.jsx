@@ -9,6 +9,7 @@ import {
   signInWithEmailAndPassword 
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { subscribeOrders } from '../firebase/dbService';
 
 const AuthContext = createContext();
 
@@ -99,10 +100,6 @@ export const AuthProvider = ({ children }) => {
               setUserAddresses(data.addresses);
               localStorage.setItem(`petweb_addresses_${userKey}`, JSON.stringify(data.addresses));
             }
-            if (data.orders) {
-              setUserOrders(data.orders);
-              localStorage.setItem(`petweb_orders_${userKey}`, JSON.stringify(data.orders));
-            }
           }
         } catch (err) {
           console.warn('No se pudo cargar desde Firestore (usando fallback local):', err);
@@ -111,6 +108,32 @@ export const AuthProvider = ({ children }) => {
     };
 
     loadUserData();
+
+    // Suscripción en tiempo real a la colección de órdenes (ORDERS_COLLECTION)
+    const unsubscribeOrders = subscribeOrders((allOrders) => {
+      const userEmail = currentUser.email?.toLowerCase();
+      const userName = currentUser.name?.toLowerCase().trim();
+
+      const filtered = allOrders.filter(order => {
+        const cust = order.customer || {};
+        const custEmail = (cust.email || '').toLowerCase();
+        const custName = (cust.name || '').toLowerCase().trim();
+        const custPhone = (cust.phone || '').trim();
+
+        if (userEmail && custEmail && custEmail === userEmail && custEmail !== 'sin correo registrado') return true;
+        if (userName && custName && custName === userName) return true;
+        if (currentUser.phone && custPhone && custPhone === currentUser.phone) return true;
+        return false;
+      });
+      setUserOrders(filtered);
+      localStorage.setItem(`petweb_orders_${currentUser.email || currentUser.name}`, JSON.stringify(filtered));
+    });
+
+    return () => {
+      if (unsubscribeOrders && typeof unsubscribeOrders === 'function') {
+        unsubscribeOrders();
+      }
+    };
   }, [currentUser]);
 
   // Guardar perfil del usuario en Firestore y localStorage
