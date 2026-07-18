@@ -84,60 +84,71 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
 
   return (
     <div className="fixed inset-0 z-[1100] bg-slate-900/80 backdrop-blur-sm overflow-y-auto animate-fade-in print:p-0 print:bg-white print:static">
-      <div className="flex min-h-full items-center justify-center p-4 sm:p-6 sm:py-8 print:p-0 print:block">
+      <div className="flex min-h-full items-center justify-center p-3 sm:p-6 sm:py-8 print:p-0 print:block">
         
         {/* Contenedor Compacto de la Boleta */}
-        <div className="bg-white max-w-[430px] sm:max-w-md w-full rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[85vh] text-left print:max-h-none print:shadow-none print:border-none print:max-w-full print:rounded-none animate-zoom-in">
+        <div className="bg-white max-w-[450px] sm:max-w-md w-full rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh] text-left print:max-h-none print:shadow-none print:border-none print:max-w-full print:rounded-none animate-zoom-in">
           
-          {/* Barra superior compacta (No visible al imprimir) */}
-          <div className="bg-slate-900 text-white px-4 py-2.5 flex items-center justify-between shrink-0 print:hidden">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-black text-xs tracking-wider uppercase">Boleta Oficial</span>
-            </div>
-            <div className="flex items-center gap-1.5">
+          {/* Barra superior estilo oficial (BOLETA OFICIAL + Botón WhatsApp + Botón Imprimir + X) */}
+          <div className="bg-slate-950 text-white px-4 py-3 flex items-center justify-between shrink-0 print:hidden gap-2">
+            <span className="font-black text-sm tracking-wider uppercase text-white">BOLETA OFICIAL</span>
+            
+            <div className="flex items-center gap-2">
               <button 
+                type="button"
+                onClick={() => sendOrderReceiptViaWhatsApp(order)}
+                className="bg-[#25D366] hover:bg-[#20bd5a] text-white px-3 py-1.5 rounded-lg font-extrabold text-xs flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer"
+                title="Enviar boleta por WhatsApp"
+              >
+                <span>💬</span>
+                <span>WhatsApp</span>
+              </button>
+
+              <button 
+                type="button"
                 onClick={handlePrint}
-                className="bg-amber-400 hover:bg-amber-300 text-slate-900 px-2.5 py-1 rounded-md font-black text-[11px] flex items-center gap-1 transition-colors shadow-sm cursor-pointer"
+                className="bg-[#FFC107] hover:bg-[#ffb300] text-slate-950 px-3 py-1.5 rounded-lg font-extrabold text-xs flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer"
                 title="Imprimir boleta en impresora térmica o PDF"
               >
-                <Printer size={13} />
+                <Printer size={14} />
                 <span>Imprimir</span>
               </button>
+
               <button 
+                type="button"
                 onClick={onClose}
-                className="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors ml-1 cursor-pointer"
+                className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors ml-1 cursor-pointer"
                 title="Cerrar boleta"
               >
-                <X size={15} />
+                <X size={16} />
               </button>
             </div>
           </div>
 
-          {/* CUERPO TICKET VETERINARIA COMPACTO (id="printable-receipt-area" PARA AISLAMIENTO DE IMPRESIÓN) */}
-          <div id="printable-receipt-area" className="p-4 md:p-5 text-slate-900 font-mono text-xs leading-tight overflow-y-auto flex-1 print:p-3 print:text-black print:overflow-visible print:max-h-none">
+          {/* CUERPO TICKET VETERINARIA COMPACTO CON RECUADROS PUNTEADOS */}
+          <div id="printable-receipt-area" className="p-3 sm:p-4.5 text-slate-900 font-mono text-xs leading-tight overflow-y-auto flex-1 print:p-2 print:text-black print:overflow-visible print:max-h-none space-y-2.5 bg-slate-50/40">
             
-            {/* Encabezado Logo y Dirección ultra compacto */}
-            <div className="text-center pb-2.5 border-b border-dashed border-slate-300 space-y-0.5">
-              <div className="flex items-center justify-center gap-1">
+            {/* Recuadro 1: Encabezado Logo y Dirección */}
+            <div className="border-2 border-dashed border-slate-800 rounded-xl p-3 text-center bg-white shadow-2xs space-y-1">
+              <div className="flex items-center justify-center gap-1.5">
                 <div className="w-5 h-5 rounded-md bg-slate-900 text-amber-400 flex items-center justify-center font-black text-[10px]">
                   <PawPrint size={12} />
                 </div>
                 <h2 className="font-black text-base text-slate-900 uppercase tracking-tight">PET-WEB</h2>
               </div>
-              <p className="text-[10px] text-slate-600 font-bold">RUC: 20601234567 • VETERINARIA & TIENDA</p>
+              <p className="text-[10.5px] text-slate-700 font-bold">RUC: 20601234567 • VETERINARIA & TIENDA</p>
               <p className="text-[10px] text-slate-500">Av. Las Mascotas 123 - Lima, Perú • Tel: (01) 555-0199</p>
             </div>
 
-            {/* Datos del Ticket */}
-            <div className="py-2.5 border-b border-dashed border-slate-300 space-y-1 text-[11px]">
+            {/* Recuadro 2: Datos del Ticket */}
+            <div className="border-2 border-dashed border-slate-800 rounded-xl p-3 bg-white shadow-2xs space-y-1.5 text-[11px]">
               <div className="flex justify-between font-bold">
                 <span className="text-slate-500">BOLETA:</span>
                 <span className="text-slate-900 font-black">{orderNumber}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">FECHA:</span>
-                <span className="text-slate-900">{formatDate(order.timestamp)}</span>
+                <span className="text-slate-900 font-semibold">{formatDate(order.timestamp || order.createdAt || order.date)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">CAJERO:</span>
@@ -145,21 +156,21 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
               </div>
             </div>
 
-            {/* Datos del Cliente y Registro */}
-            <div className="py-2.5 border-b border-dashed border-slate-300 space-y-1 text-[11px]">
+            {/* Recuadro 3: Datos del Cliente y Registro */}
+            <div className="border-2 border-dashed border-slate-800 rounded-xl p-3 bg-white shadow-2xs space-y-1.5 text-[11px]">
               <div className="flex justify-between items-center">
                 <span className="text-slate-500">TIPO USER:</span>
-                <span className={`px-1.5 py-0.2 rounded text-[9px] font-black uppercase ${
+                <span className={`px-1.5 py-0.5 rounded text-[9.5px] font-black uppercase ${
                   order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado'
                     ? 'bg-emerald-100 text-emerald-800'
                     : 'bg-amber-100 text-amber-800'
                 }`}>
-                  {(order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado') ? 'Registrado' : 'No Registrado'}
+                  {(order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado') ? 'REGISTRADO' : 'NO REGISTRADO'}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">CLIENTE:</span>
-                <span className="text-slate-900 font-bold text-right truncate max-w-[240px] uppercase">
+                <span className="text-slate-900 font-bold text-right truncate max-w-[230px] uppercase">
                   {order.customer?.name || 'CLIENTE GENERAL'}
                 </span>
               </div>
@@ -177,37 +188,39 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">ESTADO PAGO:</span>
-                <span className="text-slate-900 font-black uppercase">
+                <span className={`font-black uppercase ${
+                  order.paymentStatus === 'Pago' ? 'text-emerald-700' : order.paymentStatus === 'No pago' ? 'text-rose-700' : 'text-amber-700'
+                }`}>
                   {order.paymentStatus || 'Pendiente de pago'}
                 </span>
               </div>
               {order.customer?.address && (
-                <div className="flex justify-between text-[10px]">
+                <div className="flex justify-between text-[10.5px]">
                   <span className="text-slate-500 shrink-0 mr-1">DIRECCIÓN:</span>
-                  <span className="text-slate-800 text-right truncate max-w-[230px]">{order.customer.address}</span>
+                  <span className="text-slate-800 font-semibold text-right truncate max-w-[220px] uppercase">{order.customer.address}</span>
                 </div>
               )}
             </div>
 
-            {/* Tabla de Productos Compacta */}
-            <div className="py-2.5 border-b border-dashed border-slate-300 space-y-1.5">
-              <div className="flex justify-between font-bold text-[10px] text-slate-400 pb-1 border-b border-slate-100">
+            {/* Recuadro 4: Tabla de Productos */}
+            <div className="border-2 border-dashed border-slate-800 rounded-xl p-3 bg-white shadow-2xs space-y-2">
+              <div className="flex justify-between font-bold text-[10.5px] text-slate-400 pb-1.5 border-b border-slate-200">
                 <span>DESCRIPCIÓN</span>
                 <span>TOTAL</span>
               </div>
               
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {order.items && order.items.map((item, idx) => {
                   const qty = item.quantity || 1;
                   const price = Number(item.price || 0);
                   const itemTotal = qty * price;
                   return (
-                    <div key={idx} className="flex justify-between items-start gap-3 text-[10.5px] leading-snug py-0.5">
+                    <div key={idx} className="flex justify-between items-start gap-3 text-[11px] leading-snug py-0.5">
                       <div className="min-w-0 flex-1 pr-1">
-                        <span className="font-bold text-slate-900 block break-words whitespace-normal uppercase">
-                          {qty}x {item.name}
+                        <span className="font-black text-slate-900 block break-words whitespace-normal uppercase">
+                          {qty}X {item.name}
                         </span>
-                        <span className="text-[9.5px] text-slate-500 block">
+                        <span className="text-[10px] text-slate-500 font-semibold block mt-0.5">
                           P.Unit: S/ {price.toFixed(2)}
                         </span>
                       </div>
@@ -220,48 +233,31 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
               </div>
             </div>
 
-            {/* Totales y Desglose Financiero */}
-            <div className="py-2.5 border-b border-dashed border-slate-300 space-y-1 text-xs">
-              <div className="flex justify-between text-slate-500 text-[11px]">
+            {/* Recuadro 5: Totales y Desglose Financiero */}
+            <div className="border-2 border-dashed border-slate-800 rounded-xl p-3 bg-white shadow-2xs space-y-1 text-xs">
+              <div className="flex justify-between text-slate-500 text-[11px] font-semibold">
                 <span>OP. GRAVADA (NETO):</span>
-                <span>S/ {subtotalNeto.toFixed(2)}</span>
+                <span className="text-slate-800">S/ {subtotalNeto.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-slate-500 text-[11px]">
+              <div className="flex justify-between text-slate-500 text-[11px] font-semibold">
                 <span>IGV (18%):</span>
-                <span>S/ {igv.toFixed(2)}</span>
+                <span className="text-slate-800">S/ {igv.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between font-black text-sm text-slate-900 pt-1 border-t border-slate-200">
+              <div className="flex justify-between font-black text-sm sm:text-base text-slate-950 pt-1.5 border-t border-slate-200">
                 <span>TOTAL A PAGAR:</span>
                 <span>S/ {Number(order.total || 0).toFixed(2)}</span>
               </div>
             </div>
 
             {/* Pie del Ticket / Código de Barras */}
-            <div className="pt-3 text-center space-y-1.5">
-              <p className="font-bold text-[10px] text-slate-600 uppercase">¡Gracias por cuidar de tu mascota con nosotros!</p>
+            <div className="pt-2 text-center space-y-2">
+              <p className="font-bold text-[10.5px] text-slate-600 uppercase">¡GRACIAS POR CUIDAR DE TU MASCOTA CON NOSOTROS!</p>
               
-              {/* Mini Código de Barras visual */}
-              <div className="flex items-center justify-center gap-0.5 h-6 w-3/4 mx-auto overflow-hidden opacity-80 select-none">
-                <span className="w-1 h-full bg-slate-900 inline-block" />
-                <span className="w-0.5 h-full bg-slate-900 inline-block" />
-                <span className="w-1.5 h-full bg-slate-900 inline-block" />
-                <span className="w-0.5 h-full bg-slate-900 inline-block" />
-                <span className="w-2 h-full bg-slate-900 inline-block" />
-                <span className="w-1 h-full bg-slate-900 inline-block" />
-                <span className="w-1.5 h-full bg-slate-900 inline-block" />
-                <span className="w-0.5 h-full bg-slate-900 inline-block" />
-                <span className="w-2.5 h-full bg-slate-900 inline-block" />
-                <span className="w-1 h-full bg-slate-900 inline-block" />
-                <span className="w-1.5 h-full bg-slate-900 inline-block" />
-                <span className="w-0.5 h-full bg-slate-900 inline-block" />
-                <span className="w-2 h-full bg-slate-900 inline-block" />
-                <span className="w-1 h-full bg-slate-900 inline-block" />
-              </div>
-
-              <div className="bg-slate-900 text-white py-1 px-3 rounded text-[9px] font-mono tracking-widest inline-block uppercase">
+              {/* Representación de Código de Barras Visual */}
+              <div className="bg-slate-900 text-white py-2 px-6 rounded-xl font-mono font-black tracking-widest text-xs inline-block uppercase shadow-md">
                 * * {orderNumber} * *
               </div>
-              <p className="text-[9px] text-slate-400 font-sans">Representación impresa de la Boleta de Venta Electrónica</p>
+              <p className="text-[9.5px] text-slate-400 font-sans block">Representación impresa de la Boleta de Venta</p>
             </div>
 
           </div>
@@ -269,8 +265,9 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
           {/* Botón inferior al cerrar (Solo pantalla) */}
           <div className="bg-slate-50 p-3 border-t border-slate-200 flex justify-end shrink-0 print:hidden">
             <button 
+              type="button"
               onClick={onClose}
-              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 rounded-xl transition-colors text-xs cursor-pointer"
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl transition-colors text-xs cursor-pointer shadow-sm"
             >
               Cerrar Boleta
             </button>
