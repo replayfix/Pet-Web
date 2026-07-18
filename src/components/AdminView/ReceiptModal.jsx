@@ -84,10 +84,10 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
 
   return (
     <div className="fixed inset-0 z-[1100] bg-slate-900/80 backdrop-blur-sm overflow-y-auto animate-fade-in print:p-0 print:bg-white print:static">
-      <div className="flex min-h-full items-start justify-center pt-24 sm:pt-28 pb-12 px-3 sm:px-6 print:p-0 print:block">
+      <div className="flex min-h-full items-start justify-center pt-32 sm:pt-36 pb-16 px-3 sm:px-6 print:p-0 print:block">
         
         {/* Contenedor Compacto de la Boleta */}
-        <div className="bg-white max-w-[450px] sm:max-w-md w-full rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[80vh] text-left print:max-h-none print:shadow-none print:border-none print:max-w-full print:rounded-none animate-zoom-in my-auto">
+        <div className="bg-white max-w-[480px] w-full rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[75vh] text-left print:max-h-none print:shadow-none print:border-none print:max-w-full print:rounded-none animate-zoom-in">
           
           {/* Barra superior estilo oficial (BOLETA OFICIAL + Botón WhatsApp + Botón Imprimir + X) */}
           <div className="bg-slate-950 text-white px-4 py-3 flex items-center justify-between shrink-0 print:hidden gap-2">
