@@ -354,7 +354,7 @@ export default function CartDrawer() {
 
                     <div className="text-[11px] text-emerald-700 bg-emerald-50 p-2.5 rounded-xl border border-emerald-200 font-semibold flex items-center gap-1.5">
                       <span>✨</span>
-                      <span>Tus datos completos se utilizarán automáticamente al presionar <strong>Confirmar y Descontar Almacén</strong>.</span>
+                      <span>Tus datos completos se utilizarán automáticamente al presionar <strong>Confirmar Pedido</strong>.</span>
                     </div>
                   </div>
                 ) : (
@@ -565,7 +565,7 @@ export default function CartDrawer() {
                   disabled={isSubmitting}
                   className="btn btn-primary flex-2 py-3 text-xs font-extrabold flex items-center justify-center gap-2"
                 >
-                  {isSubmitting ? 'Descontando Stock...' : 'Confirmar y Descontar Almacén'}
+                  {isSubmitting ? 'Procesando Pedido...' : 'Confirmar Pedido'}
                 </button>
               </div>
             )}
