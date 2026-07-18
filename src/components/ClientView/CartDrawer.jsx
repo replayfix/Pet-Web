@@ -478,13 +478,13 @@ export default function CartDrawer() {
               <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-md">
                 <CheckCircle size={36} />
               </div>
-              <h4 className="font-extrabold text-xl text-slate-900">¡Pedido Realizado y Almacén Actualizado!</h4>
+              <h4 className="font-extrabold text-xl text-slate-900">¡Pedido Realizado con éxito!</h4>
               <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">
-                El pedido <strong className="text-slate-800 font-mono">#{lastOrderId ? lastOrderId.slice(0, 8) : 'ORD-101'}</strong> ha sido registrado en Firebase. El inventario se ha rebajado automáticamente en tiempo real.
+                El pedido <strong className="text-slate-800 font-mono">#{lastOrderId ? lastOrderId.slice(0, 8) : 'ORD-101'}</strong> ha sido registrado correctamente.
               </p>
               
-              <div className="bg-slate-100 p-3 rounded-xl text-[11px] text-slate-600 font-medium">
-                👉 Puedes cambiar a la pestaña de <strong className="text-slate-900">Control de Almacén</strong> en la barra superior para comprobar el stock restante en la base de datos.
+              <div className="bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl text-xs text-emerald-800 font-bold leading-relaxed">
+                🐾 ¡Listo! Ya pusimos a mover la colita a nuestro equipo para preparar tu pedido. 🐾
               </div>
 
               <button 
