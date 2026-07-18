@@ -417,10 +417,15 @@ export default function CartDrawer() {
                   <button
                     type="button"
                     onClick={() => setDeliveryMethod('recojo')}
-                    className={`w-1/2 py-3 px-2 rounded-xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer text-center ${
+                    style={{
+                      backgroundColor: deliveryMethod === 'recojo' ? '#dcfce7' : '#f8fafc',
+                      border: deliveryMethod === 'recojo' ? '2px solid #22c55e' : '2px solid #e2e8f0',
+                      cursor: 'pointer'
+                    }}
+                    className={`w-1/2 py-3 px-2 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-center ${
                       deliveryMethod === 'recojo'
-                        ? 'bg-[#dcfce7] border-[#22c55e] text-slate-900 font-black shadow-sm scale-[1.02]'
-                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 font-semibold'
+                        ? 'text-slate-900 font-black shadow-sm scale-[1.02]'
+                        : 'text-slate-600 hover:bg-slate-100 font-semibold'
                     }`}
                   >
                     <span className="text-xl">🏬</span>
@@ -429,10 +434,15 @@ export default function CartDrawer() {
                   <button
                     type="button"
                     onClick={() => setDeliveryMethod('delivery')}
-                    className={`w-1/2 py-3 px-2 rounded-xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer text-center ${
+                    style={{
+                      backgroundColor: deliveryMethod === 'delivery' ? '#dcfce7' : '#f8fafc',
+                      border: deliveryMethod === 'delivery' ? '2px solid #22c55e' : '2px solid #e2e8f0',
+                      cursor: 'pointer'
+                    }}
+                    className={`w-1/2 py-3 px-2 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-center ${
                       deliveryMethod === 'delivery'
-                        ? 'bg-[#dcfce7] border-[#22c55e] text-slate-900 font-black shadow-sm scale-[1.02]'
-                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 font-semibold'
+                        ? 'text-slate-900 font-black shadow-sm scale-[1.02]'
+                        : 'text-slate-600 hover:bg-slate-100 font-semibold'
                     }`}
                   >
                     <span className="text-xl">🛵</span>
