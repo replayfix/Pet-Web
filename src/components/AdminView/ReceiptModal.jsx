@@ -96,16 +96,6 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
             <div className="flex items-center gap-2">
               <button 
                 type="button"
-                onClick={() => sendOrderReceiptViaWhatsApp(order)}
-                className="bg-[#25D366] hover:bg-[#20bd5a] text-white px-3 py-1.5 rounded-lg font-extrabold text-xs flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer"
-                title="Enviar boleta por WhatsApp"
-              >
-                <span>💬</span>
-                <span>WhatsApp</span>
-              </button>
-
-              <button 
-                type="button"
                 onClick={handlePrint}
                 className="bg-[#FFC107] hover:bg-[#ffb300] text-slate-950 px-3 py-1.5 rounded-lg font-extrabold text-xs flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer"
                 title="Imprimir boleta en impresora térmica o PDF"
