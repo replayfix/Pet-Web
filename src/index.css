@@ -100,6 +100,8 @@ input, select, textarea {
 .z-10 { z-index: 10; }
 .z-50 { z-index: 50; }
 .z-1000 { z-index: 1000; }
+.z-\[1100\] { z-index: 1100; }
+.z-\[1200\] { z-index: 1200; }
 
 /* Flex & Grid Alignment */
 .flex-col { flex-direction: column; }
@@ -248,10 +250,18 @@ input, select, textarea {
 .h-56 { height: 14rem; }
 .h-72 { height: 18rem; }
 .h-80 { height: 20rem; }
+.min-h-full { min-height: 100%; }
+.max-h-\[75vh\] { max-height: 75vh; }
+.max-h-\[80vh\] { max-height: 80vh; }
+.max-h-\[85vh\] { max-height: 85vh; }
+.max-h-\[90vh\] { max-height: 90vh; }
 .max-w-xs { max-width: 20rem; }
 .max-w-sm { max-width: 24rem; }
 .max-w-md { max-width: 28rem; }
+.max-w-lg { max-width: 32rem; }
 .max-w-xl { max-width: 36rem; }
+.max-w-\[480px\] { max-width: 480px; }
+.max-w-\[500px\] { max-width: 500px; }
 
 /* Textos y Tipografía */
 .text-center { text-align: center; }
@@ -288,6 +298,12 @@ input, select, textarea {
 .decoration-wavy { text-decoration-style: wavy; }
 .decoration-2 { text-decoration-thickness: 2px; }
 .whitespace-nowrap { white-space: nowrap; }
+
+/* Desbordamiento (Overflow) */
+.overflow-hidden { overflow: hidden; }
+.overflow-auto { overflow: auto; }
+.overflow-y-auto { overflow-y: auto; }
+.overflow-x-auto { overflow-x: auto; }
 
 /* Truncado de texto */
 .truncate {
