@@ -25,7 +25,7 @@ export default function HeroBanner({ setActiveCategory }) {
             </h1>
             
             <p className="text-sm md:text-base text-blue-100 font-normal leading-relaxed">
-              Encuentra marcas super premium, medicinas especializadas y juguetes interactivos. Todo conectado a nuestro control de inventario en vivo para que nunca te quedes sin stock.
+              Encuentra marcas super premium, medicinas especializadas y juguetes interactivos, reunido en un solo lugar con la comodidad y seguridad que tú y tu mascota merecen.
             </p>
             
             <div className="pt-2 flex flex-wrap gap-3 justify-center md:justify-start">
