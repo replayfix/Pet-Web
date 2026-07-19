@@ -34,6 +34,7 @@ export default function OrdersDashboard({ searchQuery }) {
 
   const [localSearch, setLocalSearch] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(5);
 
   useEffect(() => {
     const unsubscribe = subscribeOrders((data) => {
@@ -100,6 +101,12 @@ export default function OrdersDashboard({ searchQuery }) {
            itemsNames.includes(activeSearch);
   });
 
+  useEffect(() => {
+    setVisibleCount(5);
+  }, [activeSearch]);
+
+  const displayedOrders = filteredOrders.slice(0, visibleCount);
+
   const totalRevenue = orders.reduce((sum, o) => sum + Number(o.total || 0), 0);
   const totalItemsSold = orders.reduce((sum, o) => sum + (o.items || []).reduce((s, i) => s + Number(i.quantity || 1), 0), 0);
 
@@ -155,8 +162,8 @@ export default function OrdersDashboard({ searchQuery }) {
         </div>
         <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
           <span>Mostrando</span>
-          <span className="bg-slate-900 text-white px-2 py-0.5 rounded-md font-mono font-black">{filteredOrders.length}</span>
-          <span>de {orders.length} pedidos</span>
+          <span className="bg-slate-900 text-white px-2 py-0.5 rounded-md font-mono font-black">{displayedOrders.length}</span>
+          <span>de {filteredOrders.length} pedidos</span>
         </div>
       </div>
 
@@ -193,17 +200,17 @@ export default function OrdersDashboard({ searchQuery }) {
                   </td>
                 </tr>
               ) : (
-                filteredOrders.map((order) => {
+                displayedOrders.map((order) => {
                   const orderNum = order.boletaNumber || (order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514');
                   const isRegistered = order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado';
                   const customerName = order.customer?.name || 'No Registrado';
                   const totalItemsCount = (order.items || []).reduce((acc, i) => acc + Number(i.quantity || 1), 0);
 
                   return (
-                    <tr key={order.id} className="hover:bg-slate-50/80 transition-colors">
+                    <tr key={order.id} className="border-b border-slate-200 hover:bg-slate-50/80 transition-colors">
                       
                       {/* Columna 1: ID y Fecha */}
-                      <td className="py-4 px-5 whitespace-nowrap">
+                      <td className="py-5 px-6 whitespace-nowrap">
                         <div className="font-mono font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-lg inline-block text-xs border border-slate-200">
                           {orderNum}
                         </div>
@@ -214,7 +221,7 @@ export default function OrdersDashboard({ searchQuery }) {
                       </td>
 
                       {/* Columna 2: Cliente y Badge de Registro */}
-                      <td className="py-4 px-5">
+                      <td className="py-5 px-6">
                         <div className="font-black text-slate-900 text-sm uppercase">
                           {customerName}
                         </div>
@@ -231,12 +238,12 @@ export default function OrdersDashboard({ searchQuery }) {
                       </td>
 
                       {/* Columna 3: DNI / Teléfono */}
-                      <td className="py-4 px-5 font-mono font-bold text-slate-800">
+                      <td className="py-5 px-6 font-mono font-bold text-slate-800">
                         {order.customer?.phone || '-'}
                       </td>
 
                       {/* Columna 4: Entrega / Dirección */}
-                      <td className="py-4 px-5 max-w-[240px]">
+                      <td className="py-5 px-6 max-w-[240px]">
                         <div className="flex items-center gap-1.5 mb-1">
                           {order.customer?.deliveryMethod === 'recojo' || order.customer?.deliveryType === 'Recojo en tienda' ? (
                             <span className="bg-purple-100 text-purple-800 border border-purple-300 text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1 uppercase tracking-wider">
@@ -254,21 +261,21 @@ export default function OrdersDashboard({ searchQuery }) {
                       </td>
 
                       {/* Columna 5: Resumen de Ítems */}
-                      <td className="py-4 px-5 whitespace-nowrap">
+                      <td className="py-5 px-6 whitespace-nowrap">
                         <span className="bg-primary/10 text-primary font-black px-2.5 py-1 rounded-xl text-xs border border-primary/20">
                           {totalItemsCount} {totalItemsCount === 1 ? 'ítem' : 'ítems'}
                         </span>
                       </td>
 
                       {/* Columna 6: Total Pagado */}
-                      <td className="py-4 px-5 text-right whitespace-nowrap">
+                      <td className="py-5 px-6 text-right whitespace-nowrap">
                         <span className="font-black text-slate-900 text-sm font-mono">
                           S/ {Number(order.total || 0).toFixed(2)}
                         </span>
                       </td>
 
                       {/* Columna 7: Estado de Pago */}
-                      <td className="py-4 px-5 text-center whitespace-nowrap">
+                      <td className="py-5 px-6 text-center whitespace-nowrap">
                         <select
                           value={order.paymentStatus || 'Pendiente de pago'}
                           onChange={(e) => handleUpdatePaymentStatus(order.id, e.target.value)}
@@ -287,7 +294,7 @@ export default function OrdersDashboard({ searchQuery }) {
                       </td>
 
                       {/* Columna 8: LOS 4 BOTONES DE ACCIÓN RÁPIDA */}
-                      <td className="py-4 px-5 text-center">
+                      <td className="py-5 px-6 text-center">
                         <div className="flex items-center justify-center gap-1.5 flex-wrap">
                           
                           {/* BOTÓN 1: Previsualización */}
@@ -340,6 +347,23 @@ export default function OrdersDashboard({ searchQuery }) {
             </tbody>
           </table>
         </div>
+
+        {/* BOTÓN CARGAR MÁS (Paginación progresiva de 5 en 5) */}
+        {filteredOrders.length > visibleCount && (
+          <div className="py-6 px-4 text-center bg-slate-50/70 border-t border-slate-200 flex flex-col items-center justify-center space-y-2.5">
+            <button
+              type="button"
+              onClick={() => setVisibleCount(prev => prev + 5)}
+              className="bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs px-8 py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-95"
+            >
+              <span>Cargar más</span>
+              <span className="bg-primary px-2 py-0.5 rounded-md text-[10px] font-black">+{Math.min(5, filteredOrders.length - visibleCount)} siguientes</span>
+            </button>
+            <span className="text-[11px] font-bold text-slate-400">
+              Mostrando los primeros {displayedOrders.length} de {filteredOrders.length} pedidos
+            </span>
+          </div>
+        )}
       </div>
 
       {/* MODAL BOTÓN 1: PREVISUALIZACIÓN DE DETALLES Y PRODUCTOS COMPRADOS */}
