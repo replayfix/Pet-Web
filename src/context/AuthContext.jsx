@@ -255,7 +255,7 @@ export const AuthProvider = ({ children }) => {
         return { success: true, user: clientData };
       } catch (firebaseErr) {
         if (firebaseErr.code === 'auth/user-not-found' || firebaseErr.code === 'auth/wrong-password' || firebaseErr.code === 'auth/invalid-credential') {
-          return { success: false, message: 'Correo electrónico o contraseña incorrectos en Firebase.' };
+          return { success: false, message: 'Correo electrónico o contraseña incorrectos' };
         }
       }
     }
