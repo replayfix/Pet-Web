@@ -331,6 +331,12 @@ input, select, textarea {
 .bg-emerald-600 { background-color: #059669 !important; }
 .bg-emerald-50 { background-color: #ecfdf5 !important; }
 .bg-emerald-100 { background-color: #d1fae5 !important; }
+.bg-emerald-200 { background-color: #a7f3d0 !important; }
+.bg-rose-100 { background-color: #ffe4e6 !important; }
+.bg-rose-200 { background-color: #fecdd3 !important; }
+.bg-rose-500 { background-color: #f43f5e !important; }
+.bg-red-100 { background-color: #fee2e2 !important; }
+.bg-red-200 { background-color: #fecaca !important; }
 .bg-red-500 { background-color: #ef4444 !important; }
 .bg-red-600 { background-color: #dc2626 !important; }
 .bg-red-50 { background-color: #fef2f2 !important; }
@@ -360,13 +366,18 @@ input, select, textarea {
 .text-amber-300 { color: #fcd34d !important; }
 .text-amber-400 { color: #fbbf24 !important; }
 .text-amber-600 { color: #d97706 !important; }
+.text-amber-700 { color: #b45309 !important; }
 .text-amber-800 { color: #92400e !important; }
 .text-emerald-400 { color: #34d399 !important; }
 .text-emerald-600 { color: #059669 !important; }
 .text-emerald-700 { color: #047857 !important; }
+.text-emerald-800 { color: #065f46 !important; }
+.text-rose-700 { color: #be123c !important; }
+.text-rose-800 { color: #9f1239 !important; }
 .text-red-500 { color: #ef4444 !important; }
 .text-red-600 { color: #dc2626 !important; }
 .text-red-700 { color: #b91c1c !important; }
+.text-red-800 { color: #991b1b !important; }
 .text-blue-100 { color: #dbeafe !important; }
 .text-slate-900 { color: #0f172a !important; }
 .text-slate-800 { color: #1e293b !important; }
@@ -390,7 +401,10 @@ input, select, textarea {
 .border-amber-200 { border-color: #fde68a !important; }
 .border-amber-300 { border-color: #fcd34d !important; }
 .border-amber-500 { border-color: #f59e0b !important; }
+.border-emerald-300 { border-color: #6ee7b7 !important; }
+.border-rose-300 { border-color: #fda4af !important; }
 .border-red-200 { border-color: #fecaca !important; }
+.border-red-300 { border-color: #fca5a5 !important; }
 .border-red-500 { border-color: #ef4444 !important; }
 .border-white { border-color: #ffffff !important; }
 .border-white\/20 { border-color: rgba(255, 255, 255, 0.2) !important; }

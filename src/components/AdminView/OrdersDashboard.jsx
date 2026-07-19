@@ -282,7 +282,7 @@ export default function OrdersDashboard({ searchQuery }) {
                         className={`w-full px-2 py-1.5 rounded-full text-xs font-black cursor-pointer border outline-none transition-all shadow-xs truncate ${
                           order.paymentStatus === 'Pago' || order.paymentStatus === 'Pagado'
                             ? 'bg-emerald-100 text-emerald-800 border-emerald-300 hover:bg-emerald-200'
-                            : order.paymentStatus === 'No pago'
+                            : order.paymentStatus === 'No pago' || order.paymentStatus === 'No pagado'
                             ? 'bg-rose-100 text-rose-800 border-rose-300 hover:bg-rose-200'
                             : 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200'
                         }`}

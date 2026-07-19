@@ -824,15 +824,15 @@ export default function UserProfileView({ onNavigate }) {
                             <div className="flex items-center gap-2">
                               <span className="text-xs font-bold text-slate-500">Estado de Pago:</span>
                               <span className={`text-xs font-black px-3 py-1 rounded-full border shadow-2xs flex items-center gap-1.5 uppercase ${
-                                paymentState === 'Pago'
+                                paymentState === 'Pago' || paymentState === 'Pagado'
                                   ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
-                                  : paymentState === 'No pago'
+                                  : paymentState === 'No pago' || paymentState === 'No pagado'
                                   ? 'bg-rose-100 text-rose-800 border-rose-300'
                                   : 'bg-amber-100 text-amber-800 border-amber-300'
                               }`}>
-                                {paymentState === 'Pago' && '✅ '}
-                                {paymentState === 'No pago' && '❌ '}
-                                {paymentState !== 'Pago' && paymentState !== 'No pago' && '⏳ '}
+                                {(paymentState === 'Pago' || paymentState === 'Pagado') && '✅ '}
+                                {(paymentState === 'No pago' || paymentState === 'No pagado') && '❌ '}
+                                {paymentState !== 'Pago' && paymentState !== 'Pagado' && paymentState !== 'No pago' && paymentState !== 'No pagado' && '⏳ '}
                                 {paymentState}
                               </span>
                             </div>
