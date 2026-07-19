@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { X, Printer, PawPrint } from 'lucide-react';
 
 export const sendOrderReceiptViaWhatsApp = (order) => {
@@ -82,7 +83,7 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
     window.print();
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[1100] bg-slate-900/80 backdrop-blur-sm overflow-y-auto animate-fade-in print:p-0 print:bg-white print:static">
       <div className="flex min-h-full items-center justify-center p-4 sm:p-6 sm:py-8 print:p-0 print:block">
         
@@ -265,6 +266,7 @@ export default function ReceiptModal({ isOpen, onClose, order }) {
 
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -1,10 +1,11 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { Trash2 } from 'lucide-react';
 
 export default function ConfirmDeleteModal({ isOpen, onClose, onConfirm, title, message, isDeleting }) {
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div 
       className="fixed inset-0 z-[1100] bg-slate-900/75 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200"
       style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
@@ -50,6 +51,7 @@ export default function ConfirmDeleteModal({ isOpen, onClose, onConfirm, title, 
 
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

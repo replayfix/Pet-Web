@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { X, ShoppingBag, User, Phone, MapPin, Calendar, Tag, ShieldCheck } from 'lucide-react';
 
 export default function OrderDetailsModal({ isOpen, onClose, order }) {
@@ -18,7 +19,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order }) {
 
   const orderNum = order.boletaNumber || (order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514');
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[1100] bg-slate-900/80 backdrop-blur-sm overflow-y-auto animate-fade-in">
       <div className="flex min-h-full items-center justify-center p-4 sm:p-6 sm:py-8">
         <div className="bg-white max-w-lg w-full rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[85vh] text-left animate-zoom-in">
@@ -177,6 +178,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order }) {
 
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
