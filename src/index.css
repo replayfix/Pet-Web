@@ -565,6 +565,36 @@ input, select, textarea {
 .data-table tr:last-child td { border-bottom: none; }
 .data-table tr:hover td { background: #f8fafc; }
 
+/* Corrección estricta para tabla de órdenes (Sin scroll horizontal, líneas horizontales puras, padding compacto 12px 8px) */
+.orders-table-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+.orders-table-fixed {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+}
+.orders-table-row {
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+.orders-table-cell {
+  padding: 12px 8px !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+}
+
 /* Modales y Drawers */
 .modal-overlay {
   position: fixed;

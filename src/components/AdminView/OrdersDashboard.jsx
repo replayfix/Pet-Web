@@ -168,185 +168,184 @@ export default function OrdersDashboard({ searchQuery }) {
       </div>
 
       {/* TABLA ORDENADA POR COLUMNAS CON LOS DATOS Y LOS 3 BOTONES */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-900 text-white text-[11px] font-black uppercase tracking-wider border-b border-slate-800">
-                <th className="py-4 px-5">ID / Boleta</th>
-                <th className="py-4 px-5">Cliente / Registro</th>
-                <th className="py-4 px-5">DNI o Teléfono</th>
-                <th className="py-4 px-5">Entrega / Dirección</th>
-                <th className="py-4 px-5">Ítems</th>
-                <th className="py-4 px-5 text-right">Total Pago</th>
-                <th className="py-4 px-5 text-center">Estado de Pago</th>
-                <th className="py-4 px-5 text-center min-w-[340px]">Acciones Rápidas (4 Botones)</th>
+      {/* TABLA ORDENADA POR COLUMNAS CON LOS DATOS Y LOS 3 BOTONES */}
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm orders-table-container">
+        <table className="orders-table-fixed">
+          <thead>
+            <tr className="bg-slate-900 text-white text-[11px] font-black uppercase tracking-wider orders-table-row">
+              <th className="py-3 px-2 w-[11%] truncate" title="ID / Boleta">ID / Boleta</th>
+              <th className="py-3 px-2 w-[13%] truncate" title="Cliente / Registro">Cliente / Reg.</th>
+              <th className="py-3 px-2 w-[11%] truncate" title="DNI o Teléfono">Teléfono</th>
+              <th className="py-3 px-2 w-[14%] truncate" title="Entrega / Dirección">Entrega / Dir.</th>
+              <th className="py-3 px-2 w-[7%] text-center truncate" title="Ítems">Ítems</th>
+              <th className="py-3 px-2 w-[10%] text-right truncate" title="Total Pago">Total Pago</th>
+              <th className="py-3 px-2 w-[12%] text-center truncate" title="Estado de Pago">Estado</th>
+              <th className="py-3 px-2 w-[22%] text-center truncate" title="Acciones Rápidas (4 Botones)">Acciones</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 text-xs font-medium text-slate-700">
+            {loading ? (
+              <tr className="orders-table-row">
+                <td colSpan="8" className="orders-table-cell text-center py-16">
+                  <Clock size={32} className="mx-auto text-primary animate-spin mb-2" />
+                  <p className="font-bold text-slate-500">Cargando tabla de órdenes...</p>
+                </td>
               </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 text-xs font-medium text-slate-700">
-              {loading ? (
-                <tr>
-                  <td colSpan="8" className="text-center py-16">
-                    <Clock size={32} className="mx-auto text-primary animate-spin mb-2" />
-                    <p className="font-bold text-slate-500">Cargando tabla de órdenes...</p>
-                  </td>
-                </tr>
-              ) : filteredOrders.length === 0 ? (
-                <tr>
-                  <td colSpan="8" className="text-center py-16 space-y-2">
-                    <ShoppingBag size={36} className="mx-auto text-slate-300" />
-                    <p className="font-extrabold text-slate-700 text-sm">No hay órdenes registradas en este momento</p>
-                    <p className="text-slate-400 text-xs">Las compras realizadas en el carrito aparecerán aquí listadas en orden real.</p>
-                  </td>
-                </tr>
-              ) : (
-                displayedOrders.map((order) => {
-                  const orderNum = order.boletaNumber || (order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514');
-                  const isRegistered = order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado';
-                  const customerName = order.customer?.name || 'No Registrado';
-                  const totalItemsCount = (order.items || []).reduce((acc, i) => acc + Number(i.quantity || 1), 0);
+            ) : filteredOrders.length === 0 ? (
+              <tr className="orders-table-row">
+                <td colSpan="8" className="orders-table-cell text-center py-16 space-y-2">
+                  <ShoppingBag size={36} className="mx-auto text-slate-300" />
+                  <p className="font-extrabold text-slate-700 text-sm">No hay órdenes registradas en este momento</p>
+                  <p className="text-slate-400 text-xs">Las compras realizadas en el carrito aparecerán aquí listadas en orden real.</p>
+                </td>
+              </tr>
+            ) : (
+              displayedOrders.map((order) => {
+                const orderNum = order.boletaNumber || (order.id ? `B001-${order.id.slice(-6).toUpperCase()}` : 'B001-053514');
+                const isRegistered = order.customer?.isRegistered || order.customer?.userType === 'Usuario Registrado' || order.customer?.userType === 'Registrado';
+                const customerName = order.customer?.name || 'No Registrado';
+                const totalItemsCount = (order.items || []).reduce((acc, i) => acc + Number(i.quantity || 1), 0);
 
-                  return (
-                    <tr key={order.id} className="border-b border-slate-200 hover:bg-slate-50/80 transition-colors">
-                      
-                      {/* Columna 1: ID y Fecha */}
-                      <td className="py-5 px-6 whitespace-nowrap">
-                        <div className="font-mono font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-lg inline-block text-xs border border-slate-200">
-                          {orderNum}
-                        </div>
-                        <div className="text-[11px] text-slate-400 font-semibold mt-1 flex items-center gap-1">
-                          <Calendar size={12} />
-                          <span>{formatDate(order.timestamp)}</span>
-                        </div>
-                      </td>
+                return (
+                  <tr key={order.id} className="orders-table-row hover:bg-slate-50/80 transition-colors">
+                    
+                    {/* Columna 1: ID y Fecha */}
+                    <td className="orders-table-cell whitespace-nowrap">
+                      <div className="font-mono font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-lg inline-block text-xs border border-slate-200">
+                        {orderNum}
+                      </div>
+                      <div className="text-[11px] text-slate-400 font-semibold mt-1 flex items-center gap-1">
+                        <Calendar size={12} className="shrink-0" />
+                        <span className="truncate">{formatDate(order.timestamp)}</span>
+                      </div>
+                    </td>
 
-                      {/* Columna 2: Cliente y Badge de Registro */}
-                      <td className="py-5 px-6">
-                        <div className="font-black text-slate-900 text-sm uppercase">
-                          {customerName}
-                        </div>
-                        <div className="mt-1">
-                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                            isRegistered
-                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                              : 'bg-amber-100 text-amber-800 border border-amber-200'
-                          }`}>
-                            <User size={10} />
-                            <span>{isRegistered ? 'Registrado' : 'No Registrado'}</span>
+                    {/* Columna 2: Cliente y Badge de Registro */}
+                    <td className="orders-table-cell">
+                      <div className="font-black text-slate-900 text-sm uppercase truncate" title={customerName}>
+                        {customerName}
+                      </div>
+                      <div className="mt-1">
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase truncate ${
+                          isRegistered
+                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                            : 'bg-amber-100 text-amber-800 border border-amber-200'
+                        }`}>
+                          <User size={10} className="shrink-0" />
+                          <span className="truncate">{isRegistered ? 'Registrado' : 'No Registrado'}</span>
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Columna 3: DNI / Teléfono */}
+                    <td className="orders-table-cell font-mono font-bold text-slate-800 truncate" title={order.customer?.phone || '-'}>
+                      {order.customer?.phone || '-'}
+                    </td>
+
+                    {/* Columna 4: Entrega / Dirección */}
+                    <td className="orders-table-cell">
+                      <div className="flex items-center gap-1 mb-1">
+                        {order.customer?.deliveryMethod === 'recojo' || order.customer?.deliveryType === 'Recojo en tienda' ? (
+                          <span className="bg-purple-100 text-purple-800 border border-purple-300 text-[10px] font-black px-1.5 py-0.5 rounded-md flex items-center gap-1 uppercase tracking-wider truncate">
+                            🏬 Recojo en tienda
                           </span>
-                        </div>
-                      </td>
+                        ) : (
+                          <span className="bg-blue-100 text-blue-800 border border-blue-300 text-[10px] font-black px-1.5 py-0.5 rounded-md flex items-center gap-1 uppercase tracking-wider truncate">
+                            🛵 Delivery
+                          </span>
+                        )}
+                      </div>
+                      <span className="truncate block font-semibold text-slate-600 text-xs" title={order.customer?.address || 'Retiro en Tienda'}>
+                        {order.customer?.address || 'Sin dirección registrada (Retiro)'}
+                      </span>
+                    </td>
 
-                      {/* Columna 3: DNI / Teléfono */}
-                      <td className="py-5 px-6 font-mono font-bold text-slate-800">
-                        {order.customer?.phone || '-'}
-                      </td>
+                    {/* Columna 5: Resumen de Ítems */}
+                    <td className="orders-table-cell text-center whitespace-nowrap">
+                      <span className="bg-primary/10 text-primary font-black px-2 py-1 rounded-xl text-xs border border-primary/20">
+                        {totalItemsCount} {totalItemsCount === 1 ? 'ítem' : 'ítems'}
+                      </span>
+                    </td>
 
-                      {/* Columna 4: Entrega / Dirección */}
-                      <td className="py-5 px-6 max-w-[240px]">
-                        <div className="flex items-center gap-1.5 mb-1">
-                          {order.customer?.deliveryMethod === 'recojo' || order.customer?.deliveryType === 'Recojo en tienda' ? (
-                            <span className="bg-purple-100 text-purple-800 border border-purple-300 text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1 uppercase tracking-wider">
-                              🏬 Recojo en tienda
-                            </span>
-                          ) : (
-                            <span className="bg-blue-100 text-blue-800 border border-blue-300 text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1 uppercase tracking-wider">
-                              🛵 Delivery
-                            </span>
-                          )}
-                        </div>
-                        <span className="truncate block font-semibold text-slate-600 text-xs" title={order.customer?.address || 'Retiro en Tienda'}>
-                          {order.customer?.address || 'Sin dirección registrada (Retiro)'}
-                        </span>
-                      </td>
+                    {/* Columna 6: Total Pagado */}
+                    <td className="orders-table-cell text-right whitespace-nowrap">
+                      <span className="font-black text-slate-900 text-sm font-mono">
+                        S/ {Number(order.total || 0).toFixed(2)}
+                      </span>
+                    </td>
 
-                      {/* Columna 5: Resumen de Ítems */}
-                      <td className="py-5 px-6 whitespace-nowrap">
-                        <span className="bg-primary/10 text-primary font-black px-2.5 py-1 rounded-xl text-xs border border-primary/20">
-                          {totalItemsCount} {totalItemsCount === 1 ? 'ítem' : 'ítems'}
-                        </span>
-                      </td>
+                    {/* Columna 7: Estado de Pago */}
+                    <td className="orders-table-cell text-center">
+                      <select
+                        value={order.paymentStatus || 'Pendiente de pago'}
+                        onChange={(e) => handleUpdatePaymentStatus(order.id, e.target.value)}
+                        className={`w-full px-2 py-1.5 rounded-full text-xs font-black cursor-pointer border outline-none transition-all shadow-xs truncate ${
+                          order.paymentStatus === 'Pago' || order.paymentStatus === 'Pagado'
+                            ? 'bg-emerald-100 text-emerald-800 border-emerald-300 hover:bg-emerald-200'
+                            : order.paymentStatus === 'No pago'
+                            ? 'bg-rose-100 text-rose-800 border-rose-300 hover:bg-rose-200'
+                            : 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200'
+                        }`}
+                      >
+                        <option value="Pendiente de pago" className="bg-white text-amber-800 font-bold">⏳ Pendiente</option>
+                        <option value="Pago" className="bg-white text-emerald-800 font-bold">✅ Pago</option>
+                        <option value="No pago" className="bg-white text-rose-800 font-bold">❌ No pago</option>
+                      </select>
+                    </td>
 
-                      {/* Columna 6: Total Pagado */}
-                      <td className="py-5 px-6 text-right whitespace-nowrap">
-                        <span className="font-black text-slate-900 text-sm font-mono">
-                          S/ {Number(order.total || 0).toFixed(2)}
-                        </span>
-                      </td>
-
-                      {/* Columna 7: Estado de Pago */}
-                      <td className="py-5 px-6 text-center whitespace-nowrap">
-                        <select
-                          value={order.paymentStatus || 'Pendiente de pago'}
-                          onChange={(e) => handleUpdatePaymentStatus(order.id, e.target.value)}
-                          className={`px-3 py-1.5 rounded-full text-xs font-black cursor-pointer border outline-none transition-all shadow-xs ${
-                            order.paymentStatus === 'Pago' || order.paymentStatus === 'Pagado'
-                              ? 'bg-emerald-100 text-emerald-800 border-emerald-300 hover:bg-emerald-200'
-                              : order.paymentStatus === 'No pago'
-                              ? 'bg-rose-100 text-rose-800 border-rose-300 hover:bg-rose-200'
-                              : 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200'
-                          }`}
+                    {/* Columna 8: LOS 4 BOTONES DE ACCIÓN RÁPIDA */}
+                    <td className="orders-table-cell text-center">
+                      <div className="flex items-center justify-center gap-1 flex-wrap">
+                        
+                        {/* BOTÓN 1: Previsualización */}
+                        <button
+                          onClick={() => setSelectedOrderForPreview(order)}
+                          className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] px-2 py-1 rounded-lg flex items-center gap-1 transition-all border border-slate-200 cursor-pointer shadow-2xs hover:scale-105"
+                          title="Previsualizar detalles de los productos comprados"
                         >
-                          <option value="Pendiente de pago" className="bg-white text-amber-800 font-bold">⏳ Pendiente de pago</option>
-                          <option value="Pago" className="bg-white text-emerald-800 font-bold">✅ Pago</option>
-                          <option value="No pago" className="bg-white text-rose-800 font-bold">❌ No pago</option>
-                        </select>
-                      </td>
+                          <Eye size={13} className="text-primary shrink-0" />
+                          <span>Detalle</span>
+                        </button>
 
-                      {/* Columna 8: LOS 4 BOTONES DE ACCIÓN RÁPIDA */}
-                      <td className="py-5 px-6 text-center">
-                        <div className="flex items-center justify-center gap-1.5 flex-wrap">
-                          
-                          {/* BOTÓN 1: Previsualización */}
-                          <button
-                            onClick={() => setSelectedOrderForPreview(order)}
-                            className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition-all border border-slate-200 cursor-pointer shadow-2xs hover:scale-105"
-                            title="Previsualizar detalles de los productos comprados"
-                          >
-                            <Eye size={14} className="text-primary" />
-                            <span>Detalle</span>
-                          </button>
+                        {/* BOTÓN 2: Ver Boleta */}
+                        <button
+                          onClick={() => setSelectedOrderForReceipt(order)}
+                          className="bg-primary hover:bg-primary-dark text-white font-black text-[11px] px-2 py-1 rounded-lg flex items-center gap-1 transition-all shadow-sm cursor-pointer hover:scale-105"
+                          title="Ver boleta electrónica oficial emitida"
+                        >
+                          <Printer size={13} className="shrink-0" />
+                          <span>Boleta</span>
+                        </button>
 
-                          {/* BOTÓN 2: Ver Boleta */}
-                          <button
-                            onClick={() => setSelectedOrderForReceipt(order)}
-                            className="bg-primary hover:bg-primary-dark text-white font-black text-xs px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition-all shadow-sm cursor-pointer hover:scale-105"
-                            title="Ver boleta electrónica oficial emitida"
-                          >
-                            <Printer size={14} />
-                            <span>Boleta</span>
-                          </button>
+                        {/* BOTÓN 3: WhatsApp */}
+                        <button
+                          onClick={() => sendOrderReceiptViaWhatsApp(order)}
+                          className="bg-emerald-500 hover:bg-emerald-400 text-white font-black text-[11px] px-2 py-1 rounded-lg flex items-center gap-1 transition-all shadow-sm cursor-pointer hover:scale-105"
+                          title="Enviar resumen y boleta electrónica directamente por WhatsApp al cliente"
+                        >
+                          <MessageCircle size={13} className="shrink-0" />
+                          <span>WhatsApp</span>
+                        </button>
 
-                          {/* BOTÓN 3: WhatsApp */}
-                          <button
-                            onClick={() => sendOrderReceiptViaWhatsApp(order)}
-                            className="bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition-all shadow-sm cursor-pointer hover:scale-105"
-                            title="Enviar resumen y boleta electrónica directamente por WhatsApp al cliente"
-                          >
-                            <MessageCircle size={14} />
-                            <span>WhatsApp</span>
-                          </button>
+                        {/* BOTÓN 4: Restaurar Stock */}
+                        <button
+                          onClick={() => setOrderToDelete(order)}
+                          className="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white font-bold text-[11px] px-2 py-1 rounded-lg flex items-center gap-1 transition-all border border-red-200 cursor-pointer shadow-2xs hover:scale-105"
+                          title="Eliminar orden y devolver cantidades al stock del inventario"
+                        >
+                          <RotateCcw size={13} className="shrink-0" />
+                          <span>Restaurar</span>
+                        </button>
 
-                          {/* BOTÓN 4: Restaurar Stock */}
-                          <button
-                            onClick={() => setOrderToDelete(order)}
-                            className="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white font-bold text-xs px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition-all border border-red-200 cursor-pointer shadow-2xs hover:scale-105"
-                            title="Eliminar orden y devolver cantidades al stock del inventario"
-                          >
-                            <RotateCcw size={14} />
-                            <span>Restaurar</span>
-                          </button>
+                      </div>
+                    </td>
 
-                        </div>
-                      </td>
-
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
 
         {/* BOTÓN CARGAR MÁS (Paginación progresiva de 5 en 5) */}
         {filteredOrders.length > visibleCount && (
