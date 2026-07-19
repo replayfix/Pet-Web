@@ -152,9 +152,11 @@ export default function Navbar({
                       <span className="truncate text-slate-900 group-hover:text-primary font-extrabold text-[13px] sm:text-sm transition-colors">
                         {currentUser.name}
                       </span>
-                      <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mt-0.5 flex items-center gap-1">
-                        {isAdmin ? '👑 Admin' : '👤 Cliente'}
-                      </span>
+                      {isAdmin && (
+                        <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mt-0.5 flex items-center gap-1">
+                          👑 Admin
+                        </span>
+                      )}
                     </div>
                     <ChevronDown 
                       size={16} 
