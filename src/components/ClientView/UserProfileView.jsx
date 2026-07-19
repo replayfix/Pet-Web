@@ -105,6 +105,7 @@ const DEPARTAMENTOS_PERU = Object.keys(DATOS_UBIGEO_PERU);
 export default function UserProfileView({ onNavigate }) {
   const { 
     currentUser, 
+    isAdmin,
     userProfile, 
     userAddresses, 
     userOrders, 
@@ -201,90 +202,97 @@ export default function UserProfileView({ onNavigate }) {
         
         {/* Contenedor Flexbox en fila con justify-content: flex-start y gap: 30px para que el contenido se pegue al menú sin dispersarse */}
         <div 
-          className="flex flex-col sm:flex-row items-start justify-start"
+          className="flex flex-col sm:flex-row items-stretch justify-start"
           style={{ gap: '30px', justifyContent: 'flex-start' }}
         >
           
           {/* MENÚ LATERAL con ancho controlado (width: 250px; box-sizing: border-box;) */}
           <aside 
-            className="w-full sm:w-[250px] shrink-0 space-y-6 sm:border-r sm:border-slate-100 sm:pr-6"
+            className="w-full sm:w-[250px] shrink-0 flex flex-col justify-between sm:border-r sm:border-slate-100 sm:pr-6"
             style={{ width: '250px', boxSizing: 'border-box' }}
           >
-            {/* Cabecera del usuario / Hola! */}
-            <div className="flex items-center gap-3.5 pb-6 border-b border-slate-100">
-              <div className="w-14 h-14 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-black text-xl shrink-0 shadow-xs">
-                <User size={28} />
+            <div className="space-y-6">
+              {/* Cabecera del usuario / Hola! */}
+              <div className="flex items-center gap-3.5 pb-6 border-b border-slate-100">
+                <div className="w-14 h-14 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-black text-xl shrink-0 shadow-xs">
+                  <User size={28} />
+                </div>
+                <div className="overflow-hidden">
+                  <span className="text-xs font-semibold text-slate-400 block">Hola!</span>
+                  <h3 className="font-extrabold text-lg text-slate-900 leading-tight truncate">
+                    {currentUser.name}
+                  </h3>
+                </div>
               </div>
-              <div className="overflow-hidden">
-                <span className="text-xs font-semibold text-slate-400 block">Hola!</span>
-                <h3 className="font-extrabold text-lg text-slate-900 leading-tight truncate">
-                  {currentUser.name}
-                </h3>
-              </div>
+
+              {/* Opciones de Navegación (ÚNICAS solicitadas: Perfil, Direcciones, Pedidos, Salir) */}
+              <nav className="flex flex-col space-y-1.5">
+                <button
+                  onClick={() => { setActiveTab('Perfil'); setIsAddingAddress(false); }}
+                  className={`text-left px-4 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-3 cursor-pointer ${
+                    activeTab === 'Perfil'
+                      ? 'border-l-4 border-primary pl-3 bg-primary/10 text-primary shadow-xs'
+                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                >
+                  <User size={18} />
+                  <span>Perfil</span>
+                </button>
+
+                {!isAdmin && (
+                  <>
+                    <button
+                      onClick={() => { setActiveTab('Direcciones'); setIsAddingAddress(false); }}
+                      className={`text-left px-4 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center justify-between cursor-pointer ${
+                        activeTab === 'Direcciones'
+                          ? 'border-l-4 border-primary pl-3 bg-primary/10 text-primary shadow-xs'
+                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <MapPin size={18} />
+                        <span>Direcciones</span>
+                      </div>
+                      {userAddresses.length > 0 && (
+                        <span className="bg-slate-200 text-slate-700 text-[11px] font-black px-2.5 py-0.5 rounded-full">
+                          {userAddresses.length}
+                        </span>
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() => { setActiveTab('Pedidos'); setIsAddingAddress(false); }}
+                      className={`text-left px-4 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center justify-between cursor-pointer ${
+                        activeTab === 'Pedidos'
+                          ? 'border-l-4 border-primary pl-3 bg-primary/10 text-primary shadow-xs'
+                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <ShoppingBag size={18} />
+                        <span>Pedidos</span>
+                      </div>
+                      {userOrders.length > 0 && (
+                        <span className="bg-slate-200 text-slate-700 text-[11px] font-black px-2.5 py-0.5 rounded-full">
+                          {userOrders.length}
+                        </span>
+                      )}
+                    </button>
+                  </>
+                )}
+              </nav>
             </div>
 
-            {/* Opciones de Navegación (ÚNICAS solicitadas: Perfil, Direcciones, Pedidos, Salir) */}
-            <nav className="flex flex-col space-y-1.5">
+            {/* Botón Salir anclado al fondo */}
+            <div className="pt-6 mt-auto border-t border-slate-100">
               <button
-                onClick={() => { setActiveTab('Perfil'); setIsAddingAddress(false); }}
-                className={`text-left px-4 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-3 cursor-pointer ${
-                  activeTab === 'Perfil'
-                    ? 'border-l-4 border-primary pl-3 bg-primary/10 text-primary shadow-xs'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`}
+                onClick={handleLogout}
+                className="text-left px-4 py-3 rounded-2xl font-extrabold text-sm text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all flex items-center gap-3 w-full cursor-pointer"
               >
-                <User size={18} />
-                <span>Perfil</span>
+                <LogOut size={18} />
+                <span>Salir</span>
               </button>
-
-              <button
-                onClick={() => { setActiveTab('Direcciones'); setIsAddingAddress(false); }}
-                className={`text-left px-4 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center justify-between cursor-pointer ${
-                  activeTab === 'Direcciones'
-                    ? 'border-l-4 border-primary pl-3 bg-primary/10 text-primary shadow-xs'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <MapPin size={18} />
-                  <span>Direcciones</span>
-                </div>
-                {userAddresses.length > 0 && (
-                  <span className="bg-slate-200 text-slate-700 text-[11px] font-black px-2.5 py-0.5 rounded-full">
-                    {userAddresses.length}
-                  </span>
-                )}
-              </button>
-
-              <button
-                onClick={() => { setActiveTab('Pedidos'); setIsAddingAddress(false); }}
-                className={`text-left px-4 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center justify-between cursor-pointer ${
-                  activeTab === 'Pedidos'
-                    ? 'border-l-4 border-primary pl-3 bg-primary/10 text-primary shadow-xs'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <ShoppingBag size={18} />
-                  <span>Pedidos</span>
-                </div>
-                {userOrders.length > 0 && (
-                  <span className="bg-slate-200 text-slate-700 text-[11px] font-black px-2.5 py-0.5 rounded-full">
-                    {userOrders.length}
-                  </span>
-                )}
-              </button>
-
-              <div className="pt-6 mt-6 border-t border-slate-100">
-                <button
-                  onClick={handleLogout}
-                  className="text-left px-4 py-3 rounded-2xl font-extrabold text-sm text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all flex items-center gap-3 w-full cursor-pointer"
-                >
-                  <LogOut size={18} />
-                  <span>Salir</span>
-                </button>
-              </div>
-            </nav>
+            </div>
           </aside>
 
           {/* CONTENIDO PRINCIPAL a la derecha con flex: 1, max-width: 800px y box-sizing: border-box para nunca desbordarse */}
@@ -485,7 +493,7 @@ export default function UserProfileView({ onNavigate }) {
             )}
 
             {/* APARTADO 2: DIRECCIONES (Al lado derecho dentro del gran recuadro) */}
-            {activeTab === 'Direcciones' && (
+            {!isAdmin && activeTab === 'Direcciones' && (
               <div className="space-y-8">
                 
                 {/* Direcciones ya guardadas */}
@@ -765,7 +773,7 @@ export default function UserProfileView({ onNavigate }) {
             )}
 
             {/* APARTADO 3: PEDIDOS (Al lado derecho dentro del gran recuadro) */}
-            {activeTab === 'Pedidos' && (
+            {!isAdmin && activeTab === 'Pedidos' && (
               <div className="space-y-6 pt-2">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 gap-2">
                   <div>
