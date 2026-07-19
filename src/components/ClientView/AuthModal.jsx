@@ -226,7 +226,7 @@ export default function AuthModal() {
               <div className="auth-input-pill">
                 <input 
                   type="text"
-                  placeholder="Ej.: cliente@mail.com o admin@petweb.pe"
+                  placeholder="Ingrese su correo"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
                   required
@@ -304,7 +304,7 @@ export default function AuthModal() {
               <div className="auth-input-pill">
                 <input 
                   type="text"
-                  placeholder="Ej.: Juan Pérez"
+                  placeholder="Ingresar nombre completo"
                   value={regName}
                   onChange={(e) => setRegName(e.target.value)}
                   required
@@ -320,7 +320,7 @@ export default function AuthModal() {
               <div className="auth-input-pill">
                 <input 
                   type="email"
-                  placeholder="Ej.: ejemplo@gmail.com o @hotmail.com"
+                  placeholder="Ingresar Correo"
                   value={regEmail}
                   onChange={(e) => setRegEmail(e.target.value)}
                   required
