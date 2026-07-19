@@ -53,7 +53,7 @@ export default function Navbar({
       <header className="glass-header sticky top-0 z-50 transition-all">
         {/* Top bar de promociones estilo GoPet.pe */}
         <div className="bg-primary text-white text-xs font-semibold py-1.5 px-4 text-center tracking-wide">
-          🎉 ¡Envío GRATIS por compras mayores a S/ 99 en todo el Perú! | 🛒 Control de Inventario En Tiempo Real
+          🐶Menos estrés, más colitas felices. Recibe todo lo que tu peludito necesita sin salir de casa. ❤️ ¡Haz tu pedido ahora!🐱
         </div>
 
         <div className="container py-3.5">
