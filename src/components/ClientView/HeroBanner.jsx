@@ -17,7 +17,7 @@ export default function HeroBanner({ setActiveCategory }) {
           <div className="max-w-xl space-y-4 text-center md:text-left">
             <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-amber-300 border border-white/20">
               <Sparkles size={14} className="animate-spin" style={{ animationDuration: '4s' }} />
-              <span>Tienda Veterinaria y Almacén en Tiempo Real</span>
+              <span>Todo para tu mascota, con stock real y entrega inmediata.</span>
             </div>
             
             <h1 className="font-extrabold text-3xl md:text-5xl leading-tight">
