@@ -62,7 +62,7 @@ export default function HeroBanner({ setActiveCategory }) {
       badgeColor: 'text-emerald-200 border-white/20 bg-white/15',
       titlePrefix: 'Salud preventiva y máxima vitalidad en cada ',
       titleHighlight: 'etapa de vida',
-      titleSuffix: ' ❤️🌿',
+      titleSuffix: ' ❤️',
       description: 'Antiparasitarios, vitaminas, condroprotectores y cuidados dermatológicos recomendados por especialistas con control riguroso de caducidad.',
       btn1Text: 'Ver Farmacia',
       btn1Action: 'medicinas',
