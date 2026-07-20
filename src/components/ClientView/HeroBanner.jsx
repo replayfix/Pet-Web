@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ShieldCheck, Truck, HeartPulse, ChevronRight, ChevronLeft, Award, Zap } from 'lucide-react';
+import { Sparkles, ShieldCheck, Truck, HeartPulse, ChevronRight, Award, Zap } from 'lucide-react';
 
 export default function HeroBanner({ setActiveCategory }) {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -81,9 +81,6 @@ export default function HeroBanner({ setActiveCategory }) {
     return () => clearInterval(timer);
   }, [isPaused, SLIDES.length]);
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
-
   const slide = SLIDES[currentSlide];
 
   return (
@@ -99,24 +96,6 @@ export default function HeroBanner({ setActiveCategory }) {
         <div className="absolute -top-16 -right-16 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none transition-all duration-700" />
         <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-amber-400/15 rounded-full blur-3xl pointer-events-none transition-all duration-700" />
         
-        {/* Flecha Lateral Izquierda */}
-        <button
-          onClick={prevSlide}
-          aria-label="Diapositiva anterior"
-          className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 z-30 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-md transition-all cursor-pointer opacity-80 hover:opacity-100 hover:scale-110"
-        >
-          <ChevronLeft size={22} />
-        </button>
-
-        {/* Flecha Lateral Derecha */}
-        <button
-          onClick={nextSlide}
-          aria-label="Siguiente diapositiva"
-          className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 z-30 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-md transition-all cursor-pointer opacity-80 hover:opacity-100 hover:scale-110"
-        >
-          <ChevronRight size={22} />
-        </button>
-
         {/* Contenido del Slide actual */}
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 p-8 md:p-12 pb-14 md:pb-16 hero-banner-flex min-h-[420px] transition-opacity duration-500">
           
@@ -175,24 +154,38 @@ export default function HeroBanner({ setActiveCategory }) {
 
         </div>
 
-        {/* Indicadores Visuales (Puntitos / Dots abajo al centro) */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2.5 bg-black/20 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
+        {/* Indicadores / Burbujas de Paginación circulares (position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%)) */}
+        <div 
+          style={{
+            position: 'absolute',
+            bottom: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            zIndex: 20
+          }}
+        >
           {SLIDES.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setCurrentSlide(idx)}
               aria-label={`Ir a la diapositiva ${idx + 1}`}
-              className={`transition-all duration-300 rounded-full cursor-pointer ${
+              style={{
+                width: '12px',
+                height: '12px',
+                borderRadius: '50%',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+              className={`border border-white/30 shadow-sm ${
                 currentSlide === idx 
-                  ? 'w-7 h-2.5 bg-amber-300 shadow-sm' 
-                  : 'w-2.5 h-2.5 bg-white/50 hover:bg-white'
+                  ? 'bg-amber-300 scale-125 ring-2 ring-white/60' 
+                  : 'bg-white/40 hover:bg-white/70'
               }`}
             />
           ))}
-          {/* Indicador de estado de Autoplay */}
-          <span className="text-[10px] text-white/70 ml-1 font-mono font-semibold select-none hidden sm:inline">
-            {isPaused ? '⏸️ Pausado' : '▶️ Autoplay'}
-          </span>
         </div>
 
       </div>
