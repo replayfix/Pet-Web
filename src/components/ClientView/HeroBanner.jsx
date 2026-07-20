@@ -20,8 +20,14 @@ export default function HeroBanner({ setActiveCategory }) {
       btn1Text: 'Ver Alimentos',
       btn1Action: 'comida',
       btn1Class: 'bg-amber-400 hover:bg-amber-300 text-slate-900 shadow-amber-500/30',
-      btn2Text: 'Medicinas & Farmacia',
-      btn2Action: 'medicinas',
+      btn2Text: 'Ver Accesorios >',
+      btn2Action: 'accesorios',
+      btn2Class: 'bg-white/15 hover:bg-white/25 border border-white/40 hover:border-white text-white backdrop-blur-md font-bold px-6 py-3 text-sm hover:underline underline-offset-4 transition-all duration-300 cursor-pointer',
+      btn2Style: { color: '#ffffff' },
+      btn3Text: 'Medicinas & Farmacia',
+      btn3Action: 'medicinas',
+      btn3Class: 'text-white/90 hover:text-white bg-transparent hover:bg-white/10 rounded-xl px-4 py-3 font-bold text-sm hover:underline underline-offset-4 transition-all duration-300 cursor-pointer',
+      btn3Style: { color: '#ffffff' },
       cardBadge: 'En Almacén 📦',
       cardBadgeClass: 'bg-red-500',
       cardImage: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80',
@@ -38,11 +44,13 @@ export default function HeroBanner({ setActiveCategory }) {
       titleHighlight: 'fiel amigo',
       titleSuffix: ' 🦴✨',
       description: 'Correas resistentes, camas ortopédicas y juguetes diseñados por veterinarios para estimular la inteligencia y vitalidad de tu perro o gato cada día.',
-      btn1Text: 'Ver Accesorios',
+      btn1Text: 'Ver Accesorios >',
       btn1Action: 'accesorios',
-      btn1Class: 'bg-yellow-300 hover:bg-yellow-200 text-slate-900 shadow-yellow-500/30',
+      btn1Class: 'bg-white/20 hover:bg-white/30 border border-white/40 hover:border-white text-white shadow-lg font-bold px-6 py-3 text-sm hover:underline underline-offset-4 transition-all duration-300 cursor-pointer',
+      btn1Style: { color: '#ffffff' },
       btn2Text: 'Explorar Todo',
       btn2Action: 'all',
+      btn2Class: 'bg-yellow-300 hover:bg-yellow-200 text-slate-900 font-bold px-6 py-3 text-sm transition-all duration-300 cursor-pointer',
       cardBadge: 'Garantía Total 🛡️',
       cardBadgeClass: 'bg-emerald-600',
       cardImage: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&auto=format&fit=crop&q=80',
@@ -64,6 +72,7 @@ export default function HeroBanner({ setActiveCategory }) {
       btn1Class: 'bg-emerald-300 hover:bg-emerald-200 text-slate-900 shadow-emerald-500/30',
       btn2Text: 'Catálogo General',
       btn2Action: 'all',
+      btn2Class: 'bg-white/20 hover:bg-white/30 text-white backdrop-blur-md font-bold px-6 py-3 text-sm transition-all duration-300 cursor-pointer',
       cardBadge: 'Despacho Rápido 🚚',
       cardBadgeClass: 'bg-blue-600',
       cardImage: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=400&auto=format&fit=crop&q=80',
@@ -118,19 +127,32 @@ export default function HeroBanner({ setActiveCategory }) {
               {slide.description}
             </p>
             
-            <div className="pt-2 flex flex-wrap gap-3 justify-center md:justify-start">
+            <div className="pt-2 flex flex-wrap items-center gap-3 justify-center md:justify-start">
               <button 
                 onClick={() => setActiveCategory(slide.btn1Action)}
-                className={`btn font-extrabold px-6 py-3 shadow-lg text-sm flex items-center gap-1.5 ${slide.btn1Class}`}
+                style={slide.btn1Style || {}}
+                className={`btn font-extrabold px-6 py-3 shadow-lg text-sm flex items-center gap-1.5 transition-all duration-300 ${slide.btn1Class}`}
               >
-                {slide.btn1Text} <ChevronRight size={16} />
+                {slide.btn1Text} {!slide.btn1Text.includes('>') && <ChevronRight size={16} />}
               </button>
               <button 
                 onClick={() => setActiveCategory(slide.btn2Action)}
-                className="btn bg-white/20 hover:bg-white/30 text-white backdrop-blur-md font-bold px-6 py-3 text-sm"
+                style={slide.btn2Style || {}}
+                className={`btn font-bold px-6 py-3 text-sm flex items-center gap-1.5 transition-all duration-300 ${
+                  slide.btn2Class || 'bg-white/20 hover:bg-white/30 text-white backdrop-blur-md'
+                }`}
               >
                 {slide.btn2Text}
               </button>
+              {slide.btn3Text && (
+                <button 
+                  onClick={() => setActiveCategory(slide.btn3Action)}
+                  style={slide.btn3Style || { color: '#ffffff' }}
+                  className={`flex items-center gap-1 transition-all duration-300 cursor-pointer ${slide.btn3Class || 'text-white hover:underline underline-offset-4 font-bold text-sm px-3 py-2'}`}
+                >
+                  {slide.btn3Text}
+                </button>
+              )}
             </div>
           </div>
 
