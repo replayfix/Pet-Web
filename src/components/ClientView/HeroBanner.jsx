@@ -1,68 +1,200 @@
-import React from 'react';
-import { Sparkles, ShieldCheck, Truck, HeartPulse, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Sparkles, ShieldCheck, Truck, HeartPulse, ChevronRight, ChevronLeft, Award, Zap } from 'lucide-react';
 
 export default function HeroBanner({ setActiveCategory }) {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Configuración de las 3 Diapositivas (Slides) del Carrusel
+  const SLIDES = [
+    {
+      id: 1,
+      bgGradient: 'from-[#004e66] via-[#0077a3] to-[#0097cc]',
+      badgeText: 'Todo para tu mascota, con stock real y entrega inmediata.',
+      badgeIcon: <Sparkles size={14} className="animate-spin" style={{ animationDuration: '4s' }} />,
+      badgeColor: 'text-amber-300 border-white/20 bg-white/15',
+      titlePrefix: 'Cuidado, nutrición y amor para tu ',
+      titleHighlight: 'engreído',
+      titleSuffix: ' 🐶🐱',
+      description: 'Encuentra marcas super premium, medicinas especializadas y juguetes interactivos, reunido en un solo lugar con la comodidad y seguridad que tú y tu mascota merecen.',
+      btn1Text: 'Ver Alimentos',
+      btn1Action: 'comida',
+      btn1Class: 'bg-amber-400 hover:bg-amber-300 text-slate-900 shadow-amber-500/30',
+      btn2Text: 'Medicinas & Farmacia',
+      btn2Action: 'medicinas',
+      cardBadge: 'En Almacén 📦',
+      cardBadgeClass: 'bg-red-500',
+      cardImage: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80',
+      cardTitle: 'Stock 100% Sincronizado',
+      cardSubtitle: 'Al comprar, el sistema reduce las existencias del inventario general al instante.'
+    },
+    {
+      id: 2,
+      bgGradient: 'from-[#7c2d12] via-[#c2410c] to-[#ea580c]',
+      badgeText: '¡Nueva Colección de Juguetes & Accesorios Ergonómicos!',
+      badgeIcon: <Zap size={14} className="animate-bounce" />,
+      badgeColor: 'text-yellow-200 border-white/20 bg-black/20',
+      titlePrefix: 'Horas de diversión y estilo para tu ',
+      titleHighlight: 'fiel amigo',
+      titleSuffix: ' 🦴✨',
+      description: 'Correas resistentes, camas ortopédicas y juguetes diseñados por veterinarios para estimular la inteligencia y vitalidad de tu perro o gato cada día.',
+      btn1Text: 'Ver Accesorios',
+      btn1Action: 'accesorios',
+      btn1Class: 'bg-yellow-300 hover:bg-yellow-200 text-slate-900 shadow-yellow-500/30',
+      btn2Text: 'Explorar Todo',
+      btn2Action: 'all',
+      cardBadge: 'Garantía Total 🛡️',
+      cardBadgeClass: 'bg-emerald-600',
+      cardImage: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&auto=format&fit=crop&q=80',
+      cardTitle: 'Materiales No Tóxicos',
+      cardSubtitle: 'Inspeccionados y certificados en almacén para cuidar los dientes y encías de tu mascota.'
+    },
+    {
+      id: 3,
+      bgGradient: 'from-[#064e3b] via-[#047857] to-[#10b981]',
+      badgeText: 'Cuidado Clínico & Suplementos Esenciales',
+      badgeIcon: <Award size={14} className="animate-pulse" />,
+      badgeColor: 'text-emerald-200 border-white/20 bg-white/15',
+      titlePrefix: 'Salud preventiva y máxima vitalidad en cada ',
+      titleHighlight: 'etapa de vida',
+      titleSuffix: ' ❤️🌿',
+      description: 'Antiparasitarios, vitaminas, condroprotectores y cuidados dermatológicos recomendados por especialistas con control riguroso de caducidad.',
+      btn1Text: 'Ver Farmacia',
+      btn1Action: 'medicinas',
+      btn1Class: 'bg-emerald-300 hover:bg-emerald-200 text-slate-900 shadow-emerald-500/30',
+      btn2Text: 'Catálogo General',
+      btn2Action: 'all',
+      cardBadge: 'Despacho Rápido 🚚',
+      cardBadgeClass: 'bg-blue-600',
+      cardImage: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=400&auto=format&fit=crop&q=80',
+      cardTitle: 'Asesoría Veterinaria',
+      cardSubtitle: 'Fórmulas certificadas con fechas de vencimiento garantizadas y control de calidad en almacén.'
+    }
+  ];
+
+  // Transición automática cada 4.5 segundos (se pausa al pasar el mouse por encima)
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [isPaused, SLIDES.length]);
+
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+
+  const slide = SLIDES[currentSlide];
+
   return (
     <div className="py-6 animate-fade-in">
-      {/* Banner Principal */}
-      <div className="relative rounded-[28px] overflow-hidden bg-gradient-to-r from-[#004e66] via-[#0077a3] to-[#0097cc] text-white shadow-xl p-8 md:p-12">
+      {/* Banner Principal dinámico (Carrusel) */}
+      <div 
+        className={`relative rounded-[28px] overflow-hidden bg-gradient-to-r ${slide.bgGradient} text-white shadow-xl transition-all duration-700`}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
         
         {/* Círculos decorativos de fondo */}
-        <div className="absolute -top-16 -right-16 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-16 -right-16 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none transition-all duration-700" />
+        <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-amber-400/15 rounded-full blur-3xl pointer-events-none transition-all duration-700" />
         
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 hero-banner-flex">
+        {/* Flecha Lateral Izquierda */}
+        <button
+          onClick={prevSlide}
+          aria-label="Diapositiva anterior"
+          className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 z-30 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-md transition-all cursor-pointer opacity-80 hover:opacity-100 hover:scale-110"
+        >
+          <ChevronLeft size={22} />
+        </button>
+
+        {/* Flecha Lateral Derecha */}
+        <button
+          onClick={nextSlide}
+          aria-label="Siguiente diapositiva"
+          className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 z-30 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-md transition-all cursor-pointer opacity-80 hover:opacity-100 hover:scale-110"
+        >
+          <ChevronRight size={22} />
+        </button>
+
+        {/* Contenido del Slide actual */}
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 p-8 md:p-12 pb-14 md:pb-16 hero-banner-flex min-h-[420px] transition-opacity duration-500">
           
-          {/* Textos */}
-          <div className="max-w-xl space-y-4 text-center md:text-left">
-            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-amber-300 border border-white/20">
-              <Sparkles size={14} className="animate-spin" style={{ animationDuration: '4s' }} />
-              <span>Todo para tu mascota, con stock real y entrega inmediata.</span>
+          {/* Columna Izquierda: Textos y Botones */}
+          <div className="max-w-xl space-y-4 text-center md:text-left px-4 md:px-6">
+            <div className={`inline-flex items-center gap-2 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${slide.badgeColor}`}>
+              {slide.badgeIcon}
+              <span>{slide.badgeText}</span>
             </div>
             
             <h1 className="font-extrabold text-3xl md:text-5xl leading-tight">
-              Cuidado, nutrición y amor para tu <span className="text-amber-300 underline decoration-wavy decoration-2">engreído</span> 🐶🐱
+              {slide.titlePrefix}
+              <span className="text-amber-300 underline decoration-wavy decoration-2">
+                {slide.titleHighlight}
+              </span>
+              {slide.titleSuffix}
             </h1>
             
-            <p className="text-sm md:text-base text-blue-100 font-normal leading-relaxed">
-              Encuentra marcas super premium, medicinas especializadas y juguetes interactivos, reunido en un solo lugar con la comodidad y seguridad que tú y tu mascota merecen.
+            <p className="text-sm md:text-base text-white/90 font-normal leading-relaxed">
+              {slide.description}
             </p>
             
             <div className="pt-2 flex flex-wrap gap-3 justify-center md:justify-start">
               <button 
-                onClick={() => setActiveCategory('comida')}
-                className="btn bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold px-6 py-3 shadow-lg shadow-amber-500/30 text-sm flex items-center gap-1.5"
+                onClick={() => setActiveCategory(slide.btn1Action)}
+                className={`btn font-extrabold px-6 py-3 shadow-lg text-sm flex items-center gap-1.5 ${slide.btn1Class}`}
               >
-                Ver Alimentos <ChevronRight size={16} />
+                {slide.btn1Text} <ChevronRight size={16} />
               </button>
               <button 
-                onClick={() => setActiveCategory('medicinas')}
+                onClick={() => setActiveCategory(slide.btn2Action)}
                 className="btn bg-white/20 hover:bg-white/30 text-white backdrop-blur-md font-bold px-6 py-3 text-sm"
               >
-                Medicinas & Farmacia
+                {slide.btn2Text}
               </button>
             </div>
           </div>
 
-          {/* Ilustración / Tarjeta Destacada */}
-          <div className="hidden lg:flex flex-col items-center justify-center w-80 shrink-0">
-            <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-3xl text-center shadow-2xl relative transform rotate-1 hover:rotate-0 transition-transform">
-              <div className="absolute -top-3 -right-3 bg-red-500 text-white text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow">
-                En Almacén 📦
+          {/* Columna Derecha: Ilustración / Tarjeta Destacada */}
+          <div className="hidden lg:flex flex-col items-center justify-center w-80 shrink-0 pr-6">
+            <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-3xl text-center shadow-2xl relative transform rotate-1 hover:rotate-0 transition-all duration-300">
+              <div className={`absolute -top-3 -right-3 text-white text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow ${slide.cardBadgeClass}`}>
+                {slide.cardBadge}
               </div>
               <img 
-                src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80" 
-                alt="Perro feliz" 
-                className="w-36 h-36 object-cover rounded-full mx-auto border-4 border-amber-300 shadow-md mb-3"
+                src={slide.cardImage} 
+                alt={slide.cardTitle} 
+                className="w-36 h-36 object-cover rounded-full mx-auto border-4 border-amber-300 shadow-md mb-3 transition-transform duration-500 hover:scale-105"
               />
-              <h4 className="font-bold text-lg text-white">Stock 100% Sincronizado</h4>
-              <p className="text-xs text-blue-100 mt-1">
-                Al comprar, el sistema reduce las existencias del inventario general al instante.
+              <h4 className="font-bold text-lg text-white">{slide.cardTitle}</h4>
+              <p className="text-xs text-white/80 mt-1 leading-normal">
+                {slide.cardSubtitle}
               </p>
             </div>
           </div>
 
         </div>
+
+        {/* Indicadores Visuales (Puntitos / Dots abajo al centro) */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2.5 bg-black/20 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
+          {SLIDES.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentSlide(idx)}
+              aria-label={`Ir a la diapositiva ${idx + 1}`}
+              className={`transition-all duration-300 rounded-full cursor-pointer ${
+                currentSlide === idx 
+                  ? 'w-7 h-2.5 bg-amber-300 shadow-sm' 
+                  : 'w-2.5 h-2.5 bg-white/50 hover:bg-white'
+              }`}
+            />
+          ))}
+          {/* Indicador de estado de Autoplay */}
+          <span className="text-[10px] text-white/70 ml-1 font-mono font-semibold select-none hidden sm:inline">
+            {isPaused ? '⏸️ Pausado' : '▶️ Autoplay'}
+          </span>
+        </div>
+
       </div>
 
       {/* Tiras de Promesa / Ventajas estilo GoPet */}
