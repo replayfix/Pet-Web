@@ -76,14 +76,14 @@ export default function Navbar({
 
             {/* Buscador central (sólo visible en tienda) */}
             {currentView === 'store' && (
-              <div className="hidden md:flex flex-1 max-w-md mx-4 relative items-center">
-                <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <div className="hidden md:flex flex-1 max-w-md mx-4 relative items-center group">
+                <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary group-focus-within:scale-110 pointer-events-none transition-all duration-300" />
                 <input 
                   type="text" 
                   placeholder="Buscar por marca, producto"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-9 py-2 text-sm bg-slate-100 border border-slate-200 rounded-full focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                  className="w-full pl-10 pr-9 py-2 text-sm bg-slate-100 border border-slate-200 rounded-full focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/25 focus:shadow-lg focus:shadow-primary/15 outline-none transition-all duration-300"
                 />
                 {searchQuery && (
                   <button 
@@ -242,14 +242,14 @@ export default function Navbar({
           {/* Buscador móvil (sólo visible en tienda) */}
           {currentView === 'store' && (
             <div className="mt-3 md:hidden">
-              <div className="relative flex items-center">
-                <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <div className="relative flex items-center group">
+                <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary group-focus-within:scale-110 pointer-events-none transition-all duration-300" />
                 <input 
                   type="text" 
                   placeholder="Buscar por marca, producto"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-9 py-2 text-sm bg-slate-100 border border-slate-200 rounded-full outline-none"
+                  className="w-full pl-10 pr-9 py-2 text-sm bg-slate-100 border border-slate-200 rounded-full focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/25 focus:shadow-lg focus:shadow-primary/15 outline-none transition-all duration-300"
                 />
                 {searchQuery && (
                   <button 
