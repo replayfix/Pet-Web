@@ -231,7 +231,7 @@ export const updateOrderPaymentStatus = async (orderId, newStatus, orderObject =
     }
 
     if (isConfirmingPayment && !alreadyDeducted) {
-      // Validar stock disponible y descontar en transacción
+      // Validar stock disponible y descontar en transacción asegurando TODAS LAS LECTURAS antes de cualquier escritura
       await runTransaction(db, async (transaction) => {
         const orderSnap = await transaction.get(orderRef);
         if (!orderSnap.exists()) throw new Error("El pedido no existe en la base de datos.");
@@ -243,7 +243,9 @@ export const updateOrderPaymentStatus = async (orderId, newStatus, orderObject =
         }
 
         const items = orderData.items || [];
-        // 1. Verificación previa: ¿hay stock suficiente en almacén para cada ítem?
+        
+        // 1. LECTURAS (GET): Obtener todos los snapshots de productos en memoria PRIMERO
+        const productDataMap = [];
         for (const item of items) {
           if (!item.id) continue;
           const productRef = doc(db, PRODUCTS_COLLECTION, item.id);
@@ -257,18 +259,15 @@ export const updateOrderPaymentStatus = async (orderId, newStatus, orderObject =
           if (currentStock < requiredQty) {
             throw new Error(`INSUFFICIENT_STOCK:${item.name}|Disponibles: ${currentStock} unds|Requeridos: ${requiredQty} unds`);
           }
+          productDataMap.push({
+            ref: productRef,
+            updatedStock: Math.max(0, currentStock - requiredQty)
+          });
         }
 
-        // 2. Descontar del stock real producto por producto
-        for (const item of items) {
-          if (!item.id) continue;
-          const productRef = doc(db, PRODUCTS_COLLECTION, item.id);
-          const productSnap = await transaction.get(productRef);
-          const productData = productSnap.data();
-          const currentStock = Number(productData.stock || 0);
-          const requiredQty = Number(item.quantity || 1);
-          const updatedStock = Math.max(0, currentStock - requiredQty);
-          transaction.update(productRef, { stock: updatedStock, updatedAt: serverTimestamp() });
+        // 2. ESCRITURAS (UPDATE): Una vez finalizadas absolutamente todas las lecturas, aplicar las restas de stock
+        for (const prod of productDataMap) {
+          transaction.update(prod.ref, { stock: prod.updatedStock, updatedAt: serverTimestamp() });
         }
 
         // 3. Marcar orden como confirmada y con stock descontado
@@ -290,16 +289,29 @@ export const updateOrderPaymentStatus = async (orderId, newStatus, orderObject =
           transaction.update(orderRef, { paymentStatus: newStatus, status: newStatus === 'No pago' ? 'Cancelado' : 'Pendiente', updatedAt: serverTimestamp() });
           return;
         }
+        
         const items = orderData.items || [];
+        
+        // 1. LECTURAS (GET): Leer todos los productos a restaurar PRIMERO
+        const productUpdates = [];
         for (const item of items) {
           if (!item.id) continue;
           const productRef = doc(db, PRODUCTS_COLLECTION, item.id);
           const productSnap = await transaction.get(productRef);
           if (productSnap.exists()) {
             const currentStock = Number(productSnap.data().stock || 0);
-            transaction.update(productRef, { stock: currentStock + Number(item.quantity || 1), updatedAt: serverTimestamp() });
+            productUpdates.push({
+              ref: productRef,
+              updatedStock: currentStock + Number(item.quantity || 1)
+            });
           }
         }
+
+        // 2. ESCRITURAS (UPDATE): Realizar todas las restauraciones una vez terminadas las lecturas
+        for (const prod of productUpdates) {
+          transaction.update(prod.ref, { stock: prod.updatedStock, updatedAt: serverTimestamp() });
+        }
+
         transaction.update(orderRef, {
           paymentStatus: newStatus,
           status: newStatus === 'No pago' ? 'Cancelado' : 'Pendiente',
