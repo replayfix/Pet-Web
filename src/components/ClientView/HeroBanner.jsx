@@ -167,25 +167,27 @@ export default function HeroBanner({ setActiveCategory }) {
             zIndex: 20
           }}
         >
-          {SLIDES.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentSlide(idx)}
-              aria-label={`Ir a la diapositiva ${idx + 1}`}
-              style={{
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
-              className={`border border-white/30 shadow-sm ${
-                currentSlide === idx 
-                  ? 'bg-amber-300 scale-125 ring-2 ring-white/60' 
-                  : 'bg-white/40 hover:bg-white/70'
-              }`}
-            />
-          ))}
+          {SLIDES.map((_, idx) => {
+            const isActive = currentSlide === idx;
+            return (
+              <button
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                aria-label={`Ir a la diapositiva ${idx + 1}`}
+                className={`dot ${isActive ? 'active' : ''}`}
+                style={{
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '50%',
+                  border: '2px solid white',
+                  backgroundColor: isActive ? 'white' : 'transparent',
+                  opacity: isActive ? 1 : 0.5,
+                  cursor: 'pointer',
+                  transition: 'background-color 0.3s ease, opacity 0.3s ease, transform 0.3s ease'
+                }}
+              />
+            );
+          })}
         </div>
 
       </div>
