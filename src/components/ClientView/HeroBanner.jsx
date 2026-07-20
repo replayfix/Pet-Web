@@ -125,30 +125,33 @@ export default function HeroBanner({ setActiveCategory }) {
               {slide.description}
             </p>
             
-            <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start" style={{ gap: '15px' }}>
+            <div 
+              className="pt-2 flex flex-row flex-nowrap items-center justify-center md:justify-start overflow-x-auto sm:overflow-visible" 
+              style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', gap: '10px' }}
+            >
               <button 
                 onClick={() => setActiveCategory(slide.btn1Action)}
-                style={slide.btn1Style || {}}
-                className={`btn font-extrabold px-6 py-3 shadow-lg text-sm flex items-center gap-1.5 transition-all duration-300 ${slide.btn1Class}`}
+                style={slide.btn1Style || { padding: '10px 15px' }}
+                className={`btn font-extrabold px-4 py-2.5 shadow-lg text-xs sm:text-sm flex items-center gap-1.5 whitespace-nowrap transition-all duration-300 ${slide.btn1Class}`}
               >
-                {slide.btn1Text} {!slide.btn1Text.includes('>') && <ChevronRight size={16} />}
+                {slide.btn1Text} {!slide.btn1Text.includes('>') && <ChevronRight size={16} className="shrink-0" />}
               </button>
               {slide.btn2Text && (
                 <button 
                   onClick={() => setActiveCategory(slide.btn2Action)}
-                  style={slide.btn2Style || {}}
-                  className={`btn font-extrabold px-6 py-3 shadow-lg text-sm flex items-center gap-1.5 transition-all duration-300 ${slide.btn2Class}`}
+                  style={slide.btn2Style || { padding: '10px 15px' }}
+                  className={`btn font-extrabold px-4 py-2.5 shadow-lg text-xs sm:text-sm flex items-center gap-1.5 whitespace-nowrap transition-all duration-300 ${slide.btn2Class}`}
                 >
-                  {slide.btn2Text} {!slide.btn2Text.includes('>') && <ChevronRight size={16} />}
+                  {slide.btn2Text} {!slide.btn2Text.includes('>') && <ChevronRight size={16} className="shrink-0" />}
                 </button>
               )}
               {slide.btn3Text && (
                 <button 
                   onClick={() => setActiveCategory(slide.btn3Action)}
-                  style={slide.btn3Style || {}}
-                  className={`btn font-extrabold px-6 py-3 shadow-lg text-sm flex items-center gap-1.5 transition-all duration-300 ${slide.btn3Class}`}
+                  style={slide.btn3Style || { padding: '10px 15px' }}
+                  className={`btn font-extrabold px-4 py-2.5 shadow-lg text-xs sm:text-sm flex items-center gap-1.5 whitespace-nowrap transition-all duration-300 ${slide.btn3Class}`}
                 >
-                  {slide.btn3Text} {!slide.btn3Text.includes('>') && <ChevronRight size={16} />}
+                  {slide.btn3Text} {!slide.btn3Text.includes('>') && <ChevronRight size={16} className="shrink-0" />}
                 </button>
               )}
             </div>
