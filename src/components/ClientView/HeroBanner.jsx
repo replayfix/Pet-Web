@@ -19,15 +19,13 @@ export default function HeroBanner({ setActiveCategory }) {
       description: 'Encuentra marcas super premium, medicinas especializadas y juguetes interactivos, reunido en un solo lugar con la comodidad y seguridad que tú y tu mascota merecen.',
       btn1Text: 'Ver Alimentos',
       btn1Action: 'comida',
-      btn1Class: 'bg-amber-400 hover:bg-amber-300 text-slate-900 shadow-amber-500/30',
-      btn2Text: 'Ver Accesorios >',
+      btn1Class: 'bg-amber-400 hover:bg-amber-300 text-slate-900 shadow-amber-500/30 font-extrabold rounded-full hover:scale-105 cursor-pointer',
+      btn2Text: 'Ver Accesorios',
       btn2Action: 'accesorios',
-      btn2Class: 'bg-white/15 hover:bg-white/25 border border-white/40 hover:border-white text-white backdrop-blur-md font-bold px-6 py-3 text-sm hover:underline underline-offset-4 transition-all duration-300 cursor-pointer',
-      btn2Style: { color: '#ffffff' },
+      btn2Class: 'bg-amber-400 hover:bg-amber-300 text-slate-900 shadow-amber-500/30 font-extrabold rounded-full hover:scale-105 cursor-pointer',
       btn3Text: 'Medicinas & Farmacia',
       btn3Action: 'medicinas',
-      btn3Class: 'text-white/90 hover:text-white bg-transparent hover:bg-white/10 rounded-xl px-4 py-3 font-bold text-sm hover:underline underline-offset-4 transition-all duration-300 cursor-pointer',
-      btn3Style: { color: '#ffffff' },
+      btn3Class: 'bg-amber-400 hover:bg-amber-300 text-slate-900 shadow-amber-500/30 font-extrabold rounded-full hover:scale-105 cursor-pointer',
       cardBadge: 'En Almacén 📦',
       cardBadgeClass: 'bg-red-500',
       cardImage: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80',
@@ -46,11 +44,11 @@ export default function HeroBanner({ setActiveCategory }) {
       description: 'Correas resistentes, camas ortopédicas y juguetes diseñados por veterinarios para estimular la inteligencia y vitalidad de tu perro o gato cada día.',
       btn1Text: 'Ver Accesorios >',
       btn1Action: 'accesorios',
-      btn1Class: 'bg-white/20 hover:bg-white/30 border border-white/40 hover:border-white text-white shadow-lg font-bold px-6 py-3 text-sm hover:underline underline-offset-4 transition-all duration-300 cursor-pointer',
+      btn1Class: 'bg-white/20 hover:bg-white/30 border border-white/40 hover:border-white text-white shadow-lg font-bold px-6 py-3 text-sm hover:underline underline-offset-4 transition-all duration-300 cursor-pointer rounded-full',
       btn1Style: { color: '#ffffff' },
       btn2Text: 'Explorar Todo',
       btn2Action: 'all',
-      btn2Class: 'bg-yellow-300 hover:bg-yellow-200 text-slate-900 font-bold px-6 py-3 text-sm transition-all duration-300 cursor-pointer',
+      btn2Class: 'bg-yellow-300 hover:bg-yellow-200 text-slate-900 font-bold px-6 py-3 text-sm transition-all duration-300 cursor-pointer rounded-full',
       cardBadge: 'Garantía Total 🛡️',
       cardBadgeClass: 'bg-emerald-600',
       cardImage: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&auto=format&fit=crop&q=80',
@@ -69,10 +67,10 @@ export default function HeroBanner({ setActiveCategory }) {
       description: 'Antiparasitarios, vitaminas, condroprotectores y cuidados dermatológicos recomendados por especialistas con control riguroso de caducidad.',
       btn1Text: 'Ver Farmacia',
       btn1Action: 'medicinas',
-      btn1Class: 'bg-emerald-300 hover:bg-emerald-200 text-slate-900 shadow-emerald-500/30',
+      btn1Class: 'bg-emerald-300 hover:bg-emerald-200 text-slate-900 shadow-emerald-500/30 rounded-full',
       btn2Text: 'Catálogo General',
       btn2Action: 'all',
-      btn2Class: 'bg-white/20 hover:bg-white/30 text-white backdrop-blur-md font-bold px-6 py-3 text-sm transition-all duration-300 cursor-pointer',
+      btn2Class: 'bg-white/20 hover:bg-white/30 text-white backdrop-blur-md font-bold px-6 py-3 text-sm transition-all duration-300 cursor-pointer rounded-full',
       cardBadge: 'Despacho Rápido 🚚',
       cardBadgeClass: 'bg-blue-600',
       cardImage: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=400&auto=format&fit=crop&q=80',
@@ -127,7 +125,7 @@ export default function HeroBanner({ setActiveCategory }) {
               {slide.description}
             </p>
             
-            <div className="pt-2 flex flex-wrap items-center gap-3 justify-center md:justify-start">
+            <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start" style={{ gap: '15px' }}>
               <button 
                 onClick={() => setActiveCategory(slide.btn1Action)}
                 style={slide.btn1Style || {}}
@@ -135,22 +133,22 @@ export default function HeroBanner({ setActiveCategory }) {
               >
                 {slide.btn1Text} {!slide.btn1Text.includes('>') && <ChevronRight size={16} />}
               </button>
-              <button 
-                onClick={() => setActiveCategory(slide.btn2Action)}
-                style={slide.btn2Style || {}}
-                className={`btn font-bold px-6 py-3 text-sm flex items-center gap-1.5 transition-all duration-300 ${
-                  slide.btn2Class || 'bg-white/20 hover:bg-white/30 text-white backdrop-blur-md'
-                }`}
-              >
-                {slide.btn2Text}
-              </button>
+              {slide.btn2Text && (
+                <button 
+                  onClick={() => setActiveCategory(slide.btn2Action)}
+                  style={slide.btn2Style || {}}
+                  className={`btn font-extrabold px-6 py-3 shadow-lg text-sm flex items-center gap-1.5 transition-all duration-300 ${slide.btn2Class}`}
+                >
+                  {slide.btn2Text} {!slide.btn2Text.includes('>') && <ChevronRight size={16} />}
+                </button>
+              )}
               {slide.btn3Text && (
                 <button 
                   onClick={() => setActiveCategory(slide.btn3Action)}
-                  style={slide.btn3Style || { color: '#ffffff' }}
-                  className={`flex items-center gap-1 transition-all duration-300 cursor-pointer ${slide.btn3Class || 'text-white hover:underline underline-offset-4 font-bold text-sm px-3 py-2'}`}
+                  style={slide.btn3Style || {}}
+                  className={`btn font-extrabold px-6 py-3 shadow-lg text-sm flex items-center gap-1.5 transition-all duration-300 ${slide.btn3Class}`}
                 >
-                  {slide.btn3Text}
+                  {slide.btn3Text} {!slide.btn3Text.includes('>') && <ChevronRight size={16} />}
                 </button>
               )}
             </div>
