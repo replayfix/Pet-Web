@@ -63,11 +63,18 @@ export default function OrdersDashboard({ searchQuery }) {
     }
   };
 
-  const handleUpdatePaymentStatus = async (orderId, newStatus) => {
+  const handleUpdatePaymentStatus = async (orderId, newStatus, orderObject) => {
     try {
-      await updateOrderPaymentStatus(orderId, newStatus);
+      await updateOrderPaymentStatus(orderId, newStatus, orderObject);
     } catch (error) {
-      alert('Error al actualizar el estado de pago en la base de datos.');
+      if (error.message && error.message.startsWith("INSUFFICIENT_STOCK:")) {
+        const parts = error.message.split(":");
+        const details = parts[1] || "";
+        const [prodName, available, required] = details.split("|");
+        alert(`❌ ALERTA DE STOCK INSUFICIENTE\n\nNo se puede confirmar el pedido como "${newStatus}" porque no hay suficiente inventario en almacén:\n\n▪️ Producto: ${prodName}\n▪️ ${available}\n▪️ ${required}\n\nPor favor, ajusta el stock en el almacén o contacta al cliente antes de confirmar.`);
+      } else {
+        alert(error.message || 'Error al actualizar el estado de pago en la base de datos.');
+      }
     }
   };
 
@@ -278,7 +285,7 @@ export default function OrdersDashboard({ searchQuery }) {
                     <td className="orders-table-cell text-center">
                       <select
                         value={order.paymentStatus || 'Pendiente de pago'}
-                        onChange={(e) => handleUpdatePaymentStatus(order.id, e.target.value)}
+                        onChange={(e) => handleUpdatePaymentStatus(order.id, e.target.value, order)}
                         className={`w-full px-2 py-1.5 rounded-full text-xs font-black cursor-pointer border outline-none transition-all shadow-xs truncate ${
                           order.paymentStatus === 'Pago' || order.paymentStatus === 'Pagado'
                             ? 'bg-emerald-100 text-emerald-800 border-emerald-300 hover:bg-emerald-200'

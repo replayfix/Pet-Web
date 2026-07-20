@@ -9,7 +9,9 @@ import {
   query, 
   orderBy, 
   getDocs,
-  serverTimestamp 
+  serverTimestamp,
+  runTransaction,
+  getDoc
 } from "firebase/firestore";
 import { db } from "./config";
 
@@ -89,11 +91,12 @@ export const deleteOrder = async (orderId) => {
   }
 };
 
-// Eliminar una orden y RESTAURAR automáticamente los ítems al inventario
+// Eliminar una orden y RESTAURAR automáticamente los ítems al inventario si ya se había descontado stock
 export const deleteOrderAndRestoreStock = async (order) => {
   try {
-    const currentProducts = await getProducts();
-    if (order.items && Array.isArray(order.items)) {
+    const isDeducted = Boolean(order.stockDeducted || (order.status === 'completed' && typeof order.stockDeducted === 'undefined') || order.paymentStatus === 'Pago' || order.paymentStatus === 'Pagado');
+    if (isDeducted && order.items && Array.isArray(order.items)) {
+      const currentProducts = await getProducts();
       for (const item of order.items) {
         if (item.id) {
           const prod = currentProducts.find(p => p.id === item.id);
@@ -177,12 +180,12 @@ export const adjustStock = async (productId, currentStock, delta) => {
   }
 };
 
-// Crear un pedido (y descontar stock automáticamente del almacén con Batch de Firestore)
+// Crear un pedido (se guarda en estado Pendiente y NO descuenta stock del almacén)
 export const createOrder = async (customerInfo, cartItems, totalAmount) => {
   try {
     const batch = writeBatch(db);
     
-    // 1. Crear documento en la colección de pedidos
+    // 1. Crear documento en la colección de pedidos en estado 'Pendiente'
     const orderRef = doc(collection(db, ORDERS_COLLECTION));
     batch.set(orderRef, {
       customer: customerInfo,
@@ -194,38 +197,126 @@ export const createOrder = async (customerInfo, cartItems, totalAmount) => {
         category: item.category
       })),
       total: totalAmount,
-      status: "completed",
+      status: "Pendiente",
       paymentStatus: customerInfo.paymentStatus || "Pendiente de pago",
+      stockDeducted: false,
       createdAt: serverTimestamp()
     });
 
-    // 2. Descontar stock de cada ítem en el almacén
-    cartItems.forEach(item => {
-      const productRef = doc(db, PRODUCTS_COLLECTION, item.id);
-      const updatedStock = Math.max(0, (Number(item.stock) || 0) - Number(item.quantity));
-      batch.update(productRef, {
-        stock: updatedStock,
-        updatedAt: serverTimestamp()
-      });
-    });
+    // 2. NO se descuenta stock aquí para evitar que pedidos falsos o no confirmados vacíen el inventario.
+    // El inventario solo se resta cuando el Administrador confirma o marca el pedido como Pagado.
 
     await batch.commit();
     return orderRef.id;
   } catch (error) {
-    console.error("Error al procesar orden y actualizar stock:", error);
+    console.error("Error al procesar orden:", error);
     throw error;
   }
 };
 
-// Actualizar el estado de pago de una boleta/orden en Firestore
-export const updateOrderPaymentStatus = async (orderId, newStatus) => {
+// Actualizar el estado de pago de una boleta/orden en Firestore y descontar stock si corresponde
+export const updateOrderPaymentStatus = async (orderId, newStatus, orderObject = null) => {
   try {
-    const docRef = doc(db, ORDERS_COLLECTION, orderId);
-    await updateDoc(docRef, {
-      paymentStatus: newStatus,
-      updatedAt: serverTimestamp()
-    });
-    return true;
+    const orderRef = doc(db, ORDERS_COLLECTION, orderId);
+    
+    const isConfirmingPayment = newStatus === 'Pago' || newStatus === 'Pagado' || newStatus === 'Confirmado';
+    
+    let alreadyDeducted = orderObject?.stockDeducted || false;
+    if (orderObject === null || typeof orderObject.stockDeducted === 'undefined') {
+      const orderSnap = await getDoc(orderRef);
+      if (orderSnap.exists()) {
+        const orderData = orderSnap.data();
+        alreadyDeducted = Boolean(orderData.stockDeducted || (orderData.status === 'completed' && typeof orderData.stockDeducted === 'undefined') || orderData.paymentStatus === 'Pago' || orderData.paymentStatus === 'Pagado');
+      }
+    }
+
+    if (isConfirmingPayment && !alreadyDeducted) {
+      // Validar stock disponible y descontar en transacción
+      await runTransaction(db, async (transaction) => {
+        const orderSnap = await transaction.get(orderRef);
+        if (!orderSnap.exists()) throw new Error("El pedido no existe en la base de datos.");
+        
+        const orderData = orderSnap.data();
+        if (orderData.stockDeducted) {
+          transaction.update(orderRef, { paymentStatus: newStatus, status: "Confirmado", updatedAt: serverTimestamp() });
+          return;
+        }
+
+        const items = orderData.items || [];
+        // 1. Verificación previa: ¿hay stock suficiente en almacén para cada ítem?
+        for (const item of items) {
+          if (!item.id) continue;
+          const productRef = doc(db, PRODUCTS_COLLECTION, item.id);
+          const productSnap = await transaction.get(productRef);
+          if (!productSnap.exists()) {
+            throw new Error(`INSUFFICIENT_STOCK:${item.name}|Disponibles: 0 unds|Requeridos: ${item.quantity} unds (Producto ya no existe)`);
+          }
+          const productData = productSnap.data();
+          const currentStock = Number(productData.stock || 0);
+          const requiredQty = Number(item.quantity || 1);
+          if (currentStock < requiredQty) {
+            throw new Error(`INSUFFICIENT_STOCK:${item.name}|Disponibles: ${currentStock} unds|Requeridos: ${requiredQty} unds`);
+          }
+        }
+
+        // 2. Descontar del stock real producto por producto
+        for (const item of items) {
+          if (!item.id) continue;
+          const productRef = doc(db, PRODUCTS_COLLECTION, item.id);
+          const productSnap = await transaction.get(productRef);
+          const productData = productSnap.data();
+          const currentStock = Number(productData.stock || 0);
+          const requiredQty = Number(item.quantity || 1);
+          const updatedStock = Math.max(0, currentStock - requiredQty);
+          transaction.update(productRef, { stock: updatedStock, updatedAt: serverTimestamp() });
+        }
+
+        // 3. Marcar orden como confirmada y con stock descontado
+        transaction.update(orderRef, {
+          paymentStatus: newStatus,
+          status: "Confirmado",
+          stockDeducted: true,
+          updatedAt: serverTimestamp()
+        });
+      });
+      return true;
+    } else if (!isConfirmingPayment && alreadyDeducted) {
+      // Si el pedido ya tenía stock restado (Pagado) y el Admin lo cambia a "No pago" / "Pendiente", restaurar stock
+      await runTransaction(db, async (transaction) => {
+        const orderSnap = await transaction.get(orderRef);
+        if (!orderSnap.exists()) return;
+        const orderData = orderSnap.data();
+        if (!orderData.stockDeducted) {
+          transaction.update(orderRef, { paymentStatus: newStatus, status: newStatus === 'No pago' ? 'Cancelado' : 'Pendiente', updatedAt: serverTimestamp() });
+          return;
+        }
+        const items = orderData.items || [];
+        for (const item of items) {
+          if (!item.id) continue;
+          const productRef = doc(db, PRODUCTS_COLLECTION, item.id);
+          const productSnap = await transaction.get(productRef);
+          if (productSnap.exists()) {
+            const currentStock = Number(productSnap.data().stock || 0);
+            transaction.update(productRef, { stock: currentStock + Number(item.quantity || 1), updatedAt: serverTimestamp() });
+          }
+        }
+        transaction.update(orderRef, {
+          paymentStatus: newStatus,
+          status: newStatus === 'No pago' ? 'Cancelado' : 'Pendiente',
+          stockDeducted: false,
+          updatedAt: serverTimestamp()
+        });
+      });
+      return true;
+    } else {
+      // Solo actualización del estado sin movimiento de stock
+      await updateDoc(orderRef, {
+        paymentStatus: newStatus,
+        status: isConfirmingPayment ? 'Confirmado' : (newStatus === 'No pago' ? 'Cancelado' : 'Pendiente'),
+        updatedAt: serverTimestamp()
+      });
+      return true;
+    }
   } catch (error) {
     console.error("Error al actualizar estado de pago:", error);
     throw error;
