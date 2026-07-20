@@ -57,7 +57,7 @@ export default function Navbar({
         </div>
 
         <div className="container py-3.5">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-4 navbar-main-row">
             
             {/* Logo y Marca */}
             <div 
@@ -97,7 +97,7 @@ export default function Navbar({
             )}
 
             {/* Acciones del menú: Carrito, Login e Inventario (si es Admin) */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 navbar-actions-group">
               
               {/* 1. Botón Carrito de Compras (Sólo se muestra si NO es administrador) */}
               {currentView === 'store' && !isAdmin && (
@@ -263,7 +263,7 @@ export default function Navbar({
             </div>
           )}
 
-          {/* Navegación por categorías y filtros (Solo visible en tienda) */}
+          {/* Navegación por categorías y filtros (Solo visible en tienda en desktop y tablets) */}
           {currentView === 'store' && (
             <div className="flex items-center gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar border-t border-slate-100 pt-3">
               {categories.map((cat) => (
@@ -279,6 +279,118 @@ export default function Navbar({
                   {cat.label}
                 </button>
               ))}
+            </div>
+          )}
+
+          {/* Menú Móvil Desplegable (Menú tipo hamburguesa compacto apilado en columna para pantallas pequeñas) */}
+          {mobileMenuOpen && (
+            <div className="md:hidden mt-3 pt-3 border-t border-slate-200 flex flex-col gap-3.5 animate-fade-in bg-white/95 rounded-2xl p-4 shadow-lg">
+              <div className="text-xs font-extrabold uppercase text-slate-400 tracking-wider">
+                Menú de Usuario & Acciones
+              </div>
+
+              {/* Botón Mi Cuenta / Login en móvil */}
+              {currentUser ? (
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2.5 p-2 bg-slate-50 rounded-xl border border-slate-200">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-black">
+                      <User size={16} />
+                    </div>
+                    <div className="flex flex-col overflow-hidden">
+                      <span className="font-extrabold text-xs text-slate-900 truncate">{currentUser.name}</span>
+                      <span className="text-[10px] text-slate-500 font-semibold">{currentUser.email}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setCurrentView('profile');
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full text-left px-3.5 py-2.5 text-xs font-extrabold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl flex items-center gap-2 transition-colors cursor-pointer"
+                  >
+                    <User size={16} className="text-primary" />
+                    <span>MI CUENTA / PERFIL</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      setIsLogoutConfirmOpen(true);
+                    }}
+                    className="w-full text-left px-3.5 py-2.5 text-xs font-extrabold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl flex items-center gap-2 transition-colors cursor-pointer"
+                  >
+                    <LogOut size={16} className="text-red-500" />
+                    <span>CERRAR SESIÓN</span>
+                  </button>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setIsLoginModalOpen(true);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-xl font-extrabold text-sm shadow-md cursor-pointer"
+                >
+                  <User size={18} />
+                  <span>Iniciar Sesión / Registrarse</span>
+                </button>
+              )}
+
+              {/* Botón Carrito en menú móvil */}
+              {currentView === 'store' && !isAdmin && (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setIsCartOpen(true);
+                  }}
+                  className="w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-extrabold text-primary bg-primary/10 rounded-xl cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <ShoppingCart size={16} />
+                    <span>VER MI CARRITO</span>
+                  </div>
+                  <span className="bg-primary text-white px-2 py-0.5 rounded-full text-[11px]">
+                    {totalItems} ítems
+                  </span>
+                </button>
+              )}
+
+              {/* Toggle Admin / Almacén en móvil */}
+              {isAdmin && (
+                <button 
+                  onClick={() => {
+                    handleAdminToggle();
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-extrabold text-xs shadow-md ${
+                    currentView === 'admin' 
+                      ? 'bg-slate-900 text-white' 
+                      : 'bg-amber-500 text-white'
+                  }`}
+                >
+                  {currentView === 'admin' ? (
+                    <>
+                      <Store size={16} />
+                      <span>Volver a Tienda</span>
+                    </>
+                  ) : (
+                    <>
+                      <Boxes size={16} />
+                      <span>Control de Almacén</span>
+                    </>
+                  )}
+                </button>
+              )}
+
+              <div className="border-t border-slate-100 pt-2 text-center">
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-xs text-slate-400 font-bold hover:text-slate-600 underline"
+                >
+                  Cerrar menú
+                </button>
+              </div>
             </div>
           )}
 

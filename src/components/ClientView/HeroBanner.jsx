@@ -11,7 +11,7 @@ export default function HeroBanner({ setActiveCategory }) {
         <div className="absolute -top-16 -right-16 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
         
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 hero-banner-flex">
           
           {/* Textos */}
           <div className="max-w-xl space-y-4 text-center md:text-left">
@@ -66,8 +66,8 @@ export default function HeroBanner({ setActiveCategory }) {
       </div>
 
       {/* Tiras de Promesa / Ventajas estilo GoPet */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-        <div className="card p-4 flex items-center gap-3.5 bg-white shadow-sm border border-slate-100">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 benefits-grid">
+        <div className="card p-4 flex items-center gap-3.5 bg-white shadow-sm border border-slate-100 benefit-card">
           <div className="w-12 h-12 rounded-2xl bg-blue-50 text-primary flex items-center justify-center shrink-0">
             <Truck size={24} />
           </div>
@@ -77,7 +77,7 @@ export default function HeroBanner({ setActiveCategory }) {
           </div>
         </div>
 
-        <div className="card p-4 flex items-center gap-3.5 bg-white shadow-sm border border-slate-100">
+        <div className="card p-4 flex items-center gap-3.5 bg-white shadow-sm border border-slate-100 benefit-card">
           <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
             <ShieldCheck size={24} />
           </div>
@@ -87,7 +87,7 @@ export default function HeroBanner({ setActiveCategory }) {
           </div>
         </div>
 
-        <div className="card p-4 flex items-center gap-3.5 bg-white shadow-sm border border-slate-100">
+        <div className="card p-4 flex items-center gap-3.5 bg-white shadow-sm border border-slate-100 benefit-card">
           <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
             <HeartPulse size={24} />
           </div>

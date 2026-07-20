@@ -708,6 +708,89 @@ input, select, textarea {
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* ====================================================
+   DISEÑO RESPONSIVO MÓVIL ESTRICTO (@media max-width: 768px)
+   ==================================================== */
+@media (max-width: 768px) {
+  /* 1. Contenedores Flexbox y Grid en pantallas móviles apilados verticalmente (flex-direction: column) */
+  .navbar-main-row,
+  .hero-banner-flex,
+  .benefits-grid,
+  .benefit-card,
+  .profile-main-flex {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  /* Ajuste de cuadrícula y tarjetas en la sección de beneficios / banner */
+  .benefits-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  .benefit-card {
+    align-items: center !important;
+    text-align: center !important;
+    gap: 0.75rem !important;
+    padding: 1rem !important;
+  }
+  .hero-banner-flex {
+    align-items: center !important;
+    text-align: center !important;
+    gap: 1.5rem !important;
+  }
+
+  /* 2. Anchos relativos (width: 100%; max-width: 100%;) para que no se desborden */
+  .card,
+  .modal-content,
+  .drawer-content,
+  .profile-sidebar,
+  .table-container,
+  .orders-table-container,
+  .orders-table-fixed,
+  [class*="max-w-"],
+  [class*="w-["] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Evitar desbordes en menús laterales y modales */
+  .profile-sidebar {
+    border-right: none !important;
+    padding-right: 0 !important;
+    border-bottom: 1px solid var(--border) !important;
+    padding-bottom: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  .modal-content {
+    padding: 1.25rem !important;
+    max-height: 85vh !important;
+  }
+
+  /* 3. Imágenes y Textos (max-width: 100%; height: auto; y reducción ligera de fuentes) */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain;
+  }
+
+  /* Reducción ligera del tamaño de fuentes en títulos principales para pantallas pequeñas */
+  h1, .text-5xl, .text-4xl, .text-3xl {
+    font-size: 1.65rem !important;
+    line-height: 1.25 !important;
+  }
+  h2, .text-2xl {
+    font-size: 1.35rem !important;
+    line-height: 1.3 !important;
+  }
+  h3, .text-xl {
+    font-size: 1.15rem !important;
+    line-height: 1.35 !important;
+  }
+}
+
+/* ====================================================
    AISLAMIENTO GLOBAL DE IMPRESIÓN PARA BOLETA OFICIAL
    ==================================================== */
 @media print {
