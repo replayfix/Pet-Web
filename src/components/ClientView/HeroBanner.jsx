@@ -9,7 +9,7 @@ export default function HeroBanner({ setActiveCategory }) {
   const SLIDES = [
     {
       id: 1,
-      bgGradient: 'from-[#004e66] via-[#0077a3] to-[#0097cc]',
+      bgGradient: 'linear-gradient(135deg, #0284c7 0%, #06b6d4 100%)',
       badgeText: 'Todo para tu mascota, con stock real y entrega inmediata.',
       badgeIcon: <Sparkles size={14} className="animate-spin" style={{ animationDuration: '4s' }} />,
       badgeColor: 'text-amber-300 border-white/20 bg-white/15',
@@ -34,7 +34,7 @@ export default function HeroBanner({ setActiveCategory }) {
     },
     {
       id: 2,
-      bgGradient: 'from-[#7c2d12] via-[#c2410c] to-[#ea580c]',
+      bgGradient: 'linear-gradient(135deg, #059669 0%, #14b8a6 100%)',
       badgeText: '¡Nueva Colección de Juguetes & Accesorios Ergonómicos!',
       badgeIcon: <Zap size={14} className="animate-bounce" />,
       badgeColor: 'text-yellow-200 border-white/20 bg-black/20',
@@ -56,7 +56,7 @@ export default function HeroBanner({ setActiveCategory }) {
     },
     {
       id: 3,
-      bgGradient: 'from-[#064e3b] via-[#047857] to-[#10b981]',
+      bgGradient: 'linear-gradient(135deg, #d97706 0%, #ea580c 100%)',
       badgeText: 'Cuidado Clínico & Suplementos Esenciales',
       badgeIcon: <Award size={14} className="animate-pulse" />,
       badgeColor: 'text-emerald-200 border-white/20 bg-white/15',
@@ -93,17 +93,21 @@ export default function HeroBanner({ setActiveCategory }) {
     <div className="py-6 animate-fade-in">
       {/* Banner Principal dinámico (Carrusel) */}
       <div 
-        className={`relative rounded-[28px] overflow-hidden bg-gradient-to-r ${slide.bgGradient} text-white shadow-xl transition-all duration-700`}
+        className="relative rounded-[28px] overflow-hidden text-white shadow-xl"
+        style={{ 
+          background: slide.bgGradient,
+          transition: 'background 0.7s ease-in-out'
+        }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        
+
         {/* Círculos decorativos de fondo */}
-        <div className="absolute -top-16 -right-16 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none transition-all duration-700" />
-        <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-amber-400/15 rounded-full blur-3xl pointer-events-none transition-all duration-700" />
+        <div className="absolute -top-16 -right-16 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none transition-all duration-700 z-0" />
+        <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none transition-all duration-700 z-0" />
         
         {/* Contenido del Slide actual */}
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 p-8 md:p-12 pb-14 md:pb-16 hero-banner-flex min-h-[420px] transition-opacity duration-500">
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 p-8 md:p-12 pb-14 md:pb-14 hero-banner-flex min-h-[360px] transition-opacity duration-500">
           
           {/* Columna Izquierda: Textos y Botones */}
           <div className="max-w-xl space-y-4 text-center md:text-left px-4 md:px-6">
@@ -124,36 +128,7 @@ export default function HeroBanner({ setActiveCategory }) {
               {slide.description}
             </p>
             
-            <div 
-              className="pt-2 flex flex-row flex-nowrap items-center justify-center md:justify-start overflow-x-auto sm:overflow-visible" 
-              style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', gap: '10px' }}
-            >
-              <button 
-                onClick={() => setActiveCategory(slide.btn1Action)}
-                style={slide.btn1Style || { padding: '10px 15px' }}
-                className={`btn font-extrabold px-4 py-2.5 shadow-lg text-xs sm:text-sm flex items-center gap-1.5 whitespace-nowrap transition-all duration-300 ${slide.btn1Class}`}
-              >
-                {slide.btn1Text} {!slide.btn1Text.includes('>') && <ChevronRight size={16} className="shrink-0" />}
-              </button>
-              {slide.btn2Text && (
-                <button 
-                  onClick={() => setActiveCategory(slide.btn2Action)}
-                  style={slide.btn2Style || { padding: '10px 15px' }}
-                  className={`btn font-extrabold px-4 py-2.5 shadow-lg text-xs sm:text-sm flex items-center gap-1.5 whitespace-nowrap transition-all duration-300 ${slide.btn2Class}`}
-                >
-                  {slide.btn2Text} {!slide.btn2Text.includes('>') && <ChevronRight size={16} className="shrink-0" />}
-                </button>
-              )}
-              {slide.btn3Text && (
-                <button 
-                  onClick={() => setActiveCategory(slide.btn3Action)}
-                  style={slide.btn3Style || { padding: '10px 15px' }}
-                  className={`btn font-extrabold px-4 py-2.5 shadow-lg text-xs sm:text-sm flex items-center gap-1.5 whitespace-nowrap transition-all duration-300 ${slide.btn3Class}`}
-                >
-                  {slide.btn3Text} {!slide.btn3Text.includes('>') && <ChevronRight size={16} className="shrink-0" />}
-                </button>
-              )}
-            </div>
+
           </div>
 
           {/* Columna Derecha: Ilustración / Tarjeta Destacada */}

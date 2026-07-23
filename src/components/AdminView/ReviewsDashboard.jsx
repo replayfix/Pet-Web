@@ -125,19 +125,19 @@ export default function ReviewsDashboard() {
         </div>
 
         {/* Barra de búsqueda */}
-        <div className="relative w-full md:w-80">
+        <div className="relative w-full md:w-80 flex items-center">
+          <Search size={16} className="absolute left-3.5 text-slate-400 pointer-events-none" />
           <input
             type="text"
             placeholder="Buscar por producto, cliente u opinión..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary text-xs font-bold text-slate-800 transition-all"
+            className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary text-xs font-bold text-slate-800 transition-all"
           />
-          <Search size={16} className="absolute left-3.5 top-3.5 text-slate-400" />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-3 text-xs text-slate-400 hover:text-slate-600 font-bold"
+              className="absolute right-3.5 flex items-center justify-center text-xs text-slate-400 hover:text-slate-600 font-bold"
             >
               ✕
             </button>
@@ -146,12 +146,12 @@ export default function ReviewsDashboard() {
       </div>
 
       {/* Pestañas de Filtro por Estado */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-4 overflow-x-auto">
+      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-4 px-1 pt-1 -mx-1 overflow-x-auto">
         <button
           onClick={() => setActiveTab('pending')}
           className={`px-5 py-3 rounded-2xl font-extrabold text-xs transition-all flex items-center gap-2 cursor-pointer shrink-0 ${
             activeTab === 'pending'
-              ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20 scale-105'
+              ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80'
           }`}
         >
@@ -168,7 +168,7 @@ export default function ReviewsDashboard() {
           onClick={() => setActiveTab('approved')}
           className={`px-5 py-3 rounded-2xl font-extrabold text-xs transition-all flex items-center gap-2 cursor-pointer shrink-0 ${
             activeTab === 'approved'
-              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 scale-105'
+              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80'
           }`}
         >
@@ -185,14 +185,14 @@ export default function ReviewsDashboard() {
           onClick={() => setActiveTab('rejected')}
           className={`px-5 py-3 rounded-2xl font-extrabold text-xs transition-all flex items-center gap-2 cursor-pointer shrink-0 ${
             activeTab === 'rejected'
-              ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20 scale-105'
+              ? 'bg-rose-100 text-rose-700 border border-rose-500 shadow-sm'
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80'
           }`}
         >
           <XCircle size={16} />
           <span>Rechazadas</span>
           <span className={`px-2 py-0.5 rounded-full text-[10px] ${
-            activeTab === 'rejected' ? 'bg-white text-rose-700 font-black' : 'bg-slate-200 text-slate-700'
+            activeTab === 'rejected' ? 'bg-rose-200 text-rose-800 font-black' : 'bg-slate-200 text-slate-700'
           }`}>
             {counts.rejected}
           </span>
@@ -202,13 +202,13 @@ export default function ReviewsDashboard() {
           onClick={() => setActiveTab('all')}
           className={`px-5 py-3 rounded-2xl font-extrabold text-xs transition-all flex items-center gap-2 cursor-pointer shrink-0 ml-auto ${
             activeTab === 'all'
-              ? 'bg-slate-900 text-white shadow-md'
+              ? 'bg-slate-800 text-white border border-slate-900 shadow-md'
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80'
           }`}
         >
           <span>Todas las Reseñas</span>
           <span className={`px-2 py-0.5 rounded-full text-[10px] ${
-            activeTab === 'all' ? 'bg-white text-slate-900 font-black' : 'bg-slate-200 text-slate-700'
+            activeTab === 'all' ? 'bg-slate-700 text-white font-black' : 'bg-slate-200 text-slate-700'
           }`}>
             {counts.all}
           </span>

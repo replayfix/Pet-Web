@@ -340,6 +340,7 @@ export const seedInitialProducts = async () => {
   const initialData = [
     {
       name: "Alimento Pro Plan Adulto Raza Mediana 15kg",
+      brand: "Pro Plan",
       category: "comida",
       petType: "perro",
       price: 245.90,
@@ -350,9 +351,11 @@ export const seedInitialProducts = async () => {
     },
     {
       name: "Hill's Science Diet Gato Adulto Pollo & Arroz 3kg",
+      brand: "Hill's",
       category: "comida",
       petType: "gato",
       price: 139.00,
+      discountPrice: 119.00,
       stock: 12,
       minStock: 4,
       description: "Nutrición balanceada con precisión para el estilo de vida de gatos adultos de 1 a 6 años. Alta taurina para la salud cardíaca.",
@@ -360,6 +363,7 @@ export const seedInitialProducts = async () => {
     },
     {
       name: "Rascador Torre 3 Niveles con Hamaca para Gato",
+      brand: "GoPet",
       category: "accesorios",
       petType: "gato",
       price: 165.50,
@@ -370,6 +374,7 @@ export const seedInitialProducts = async () => {
     },
     {
       name: "Juguete KONG Classic Masticable para Perro",
+      brand: "KONG",
       category: "accesorios",
       petType: "perro",
       price: 54.90,
@@ -380,6 +385,7 @@ export const seedInitialProducts = async () => {
     },
     {
       name: "Bravecto Antiparasitario Tableta Masticable Perro 20-40kg",
+      brand: "Bravecto",
       category: "medicinas",
       petType: "perro",
       price: 135.00,
@@ -390,9 +396,11 @@ export const seedInitialProducts = async () => {
     },
     {
       name: "Advocate Pipeta Antiparasitaria para Gato de 4 a 8kg",
+      brand: "Bayer",
       category: "medicinas",
       petType: "gato",
       price: 68.00,
+      discountPrice: 59.90,
       stock: 15,
       minStock: 5,
       description: "Solución tópica de acción rápida y amplio espectro contra pulgas, ácaros, gusanos del corazón y parásitos intestinales.",
@@ -400,6 +408,7 @@ export const seedInitialProducts = async () => {
     },
     {
       name: "Cama Ortopédica Memory Foam Impermeable L",
+      brand: "GoPet",
       category: "accesorios",
       petType: "perro",
       price: 189.90,
@@ -410,6 +419,7 @@ export const seedInitialProducts = async () => {
     },
     {
       name: "Nutri-Plus Gel Suplemento Vitamínico Alta Energía 120g",
+      brand: "Virbac",
       category: "medicinas",
       petType: "general",
       price: 49.50,
@@ -420,9 +430,11 @@ export const seedInitialProducts = async () => {
     },
     {
       name: "Alimento Natural Gourmet en Lata Pollo y Pavo Gato 85g",
+      brand: "Gourmet",
       category: "comida",
       petType: "gato",
       price: 9.90,
+      discountPrice: 7.90,
       stock: 45,
       minStock: 15,
       description: "Alimento húmedo completo elaborado con finos trozos de pollo y pavo en salsa natural. Libre de granos y conservantes artificiales.",
@@ -430,6 +442,7 @@ export const seedInitialProducts = async () => {
     },
     {
       name: "Correa Retráctil Flexi New Classic 5m hasta 25kg",
+      brand: "Flexi",
       category: "accesorios",
       petType: "perro",
       price: 79.00,

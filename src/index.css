@@ -831,3 +831,20 @@ input, select, textarea {
 .fill-rose-500 { fill: #f43f5e !important; }
 .text-rose-600 { color: #e11d48 !important; }
 .fill-rose-100 { fill: #ffe4e6 !important; }
+.bg-rose-500 { background-color: #f43f5e !important; }
+.bg-rose-100 { background-color: #ffe4e6 !important; }
+
+/* Media Queries para Responsive Design (Desktop) */
+@media (min-width: 1024px) {
+  .lg\:hidden { display: none !important; }
+  .lg\:block { display: block !important; }
+  .lg\:flex { display: flex !important; }
+  .lg\:flex-row { flex-direction: row !important; }
+  .filter-sidebar-desktop { width: 220px !important; }
+  .lg\:w-64 { width: 16rem !important; }
+  .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+}
+
+@media (min-width: 1280px) {
+  .xl\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+}

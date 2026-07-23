@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import HeroBanner from './components/ClientView/HeroBanner';
 import ProductCard from './components/ClientView/ProductCard';
 import CartDrawer from './components/ClientView/CartDrawer';
+import StoreFiltersSidebar from './components/ClientView/StoreFiltersSidebar';
 import InventoryDashboard from './components/AdminView/InventoryDashboard';
 import AdminMainView from './components/AdminView/AdminMainView';
 import UserProfileView from './components/ClientView/UserProfileView';
@@ -25,7 +26,8 @@ import {
   Phone,
   Mail,
   MapPin,
-  Clock
+  Clock,
+  Filter
 } from 'lucide-react';
 
 const WhatsAppFooterIcon = ({ size = 14, className = "" }) => (
@@ -44,6 +46,13 @@ export function AppContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('featured'); // 'featured' | 'price-asc' | 'price-desc' | 'stock'
   const [isSeeding, setIsSeeding] = useState(false);
+  
+  // Nuevos estados para filtros avanzados
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [onlyOffers, setOnlyOffers] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // Si no es admin y está intentando ver el admin, regresarlo o pedir login
   useEffect(() => {
@@ -81,13 +90,29 @@ export function AppContent() {
 
   // Filtrado de productos en la tienda
   const filteredProducts = products.filter(p => {
-    const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
-    const matchesPet = activePetType === 'all' || p.petType === activePetType || p.petType === 'general';
-    const matchesSearch = searchQuery === '' || 
-      p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.description?.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesPet && matchesSearch && p.status !== 'inactive';
+    // 1. Filtro por Categoría
+    if (activeCategory !== 'all' && p.category?.toLowerCase() !== activeCategory) return false;
+    // 2. Filtro por Tipo de Mascota
+    if (activePetType !== 'all' && p.petType?.toLowerCase() !== activePetType && p.petType !== 'general') return false;
+    // 3. Filtro por Búsqueda (Texto)
+    if (searchQuery && !(p.name?.toLowerCase().includes(searchQuery.toLowerCase()) || p.description?.toLowerCase().includes(searchQuery.toLowerCase()))) return false;
+    
+    // 4. Nuevos Filtros: Rango de Precio
+    const productPrice = Number(p.discountPrice || p.price);
+    if (minPrice && productPrice < Number(minPrice)) return false;
+    if (maxPrice && productPrice > Number(maxPrice)) return false;
+    
+    // 5. Nuevos Filtros: Marcas
+    if (selectedBrands.length > 0 && (!p.brand || !selectedBrands.includes(p.brand))) return false;
+    
+    // 6. Nuevos Filtros: Solo Ofertas
+    if (onlyOffers && !p.discountPrice) return false;
+
+    return p.status !== 'inactive';
   });
+
+  // Obtener lista única de marcas disponibles para la barra lateral
+  const availableBrands = [...new Set(products.map(p => p.brand).filter(Boolean))].sort();
 
   // Ordenamiento
   const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -132,59 +157,20 @@ export function AppContent() {
             <HeroBanner setActiveCategory={setActiveCategory} />
 
             {/* Filtros de Tipo de Mascota y Ordenamiento */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-end gap-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
               
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-                <span className="text-xs font-bold text-slate-400 uppercase mr-1">Mascota:</span>
-                
-                <button 
-                  onClick={() => setActivePetType('all')}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all ${
-                    activePetType === 'all' 
-                      ? 'bg-slate-900 text-white shadow' 
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  <PawPrint size={14} /> Todos
-                </button>
 
-                <button 
-                  onClick={() => setActivePetType('perro')}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all ${
-                    activePetType === 'perro' 
-                      ? 'bg-primary text-white shadow' 
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  <Dog size={14} /> Perros
-                </button>
-
-                <button 
-                  onClick={() => setActivePetType('gato')}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all ${
-                    activePetType === 'gato' 
-                      ? 'bg-amber-500 text-white shadow' 
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  <Cat size={14} /> Gatos
-                </button>
-
-                <button 
-                  onClick={() => setActivePetType('aves')}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all ${
-                    activePetType === 'aves' 
-                      ? 'bg-emerald-600 text-white shadow' 
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  <Bird size={14} /> Aves y Otros
-                </button>
-              </div>
 
               <div className="flex items-center gap-2 self-end sm:self-auto">
-                <SlidersHorizontal size={16} className="text-slate-400" />
-                <span className="text-xs font-bold text-slate-500">Ordenar por:</span>
+                <button 
+                  onClick={() => setIsMobileSidebarOpen(true)}
+                  className="lg:hidden flex items-center gap-1.5 bg-slate-100 text-slate-700 px-3 py-1.5 rounded-xl font-bold text-xs"
+                >
+                  <Filter size={14} />
+                  Filtros
+                </button>
+                <SlidersHorizontal size={16} className="text-slate-400 hidden sm:block" />
+                <span className="text-xs font-bold text-slate-500 hidden sm:block">Ordenar:</span>
                 <select 
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
@@ -199,62 +185,84 @@ export function AppContent() {
 
             </div>
 
-            {/* SECCIÓN DE PRODUCTOS */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-extrabold text-xl md:text-2xl text-slate-900 flex items-center gap-2">
-                  <span>Catálogo de Productos</span>
-                  {activeCategory !== 'all' && (
-                    <span className="text-xs font-bold bg-primary-light text-primary px-3 py-1 rounded-full uppercase">
-                      {activeCategory}
-                    </span>
-                  )}
-                </h2>
-                <span className="text-xs font-medium text-slate-400">
-                  {sortedProducts.length} producto{sortedProducts.length !== 1 ? 's' : ''} encontrado{sortedProducts.length !== 1 ? 's' : ''}
-                </span>
-              </div>
+            {/* CONTENEDOR FLEX PARA BARRA LATERAL Y PRODUCTOS */}
+            <div className="flex flex-col lg:flex-row gap-8 items-start">
+              
+              <StoreFiltersSidebar 
+                activeCategory={activeCategory}
+                setActiveCategory={setActiveCategory}
+                activePetType={activePetType}
+                setActivePetType={setActivePetType}
+                availableBrands={availableBrands}
+                selectedBrands={selectedBrands}
+                setSelectedBrands={setSelectedBrands}
+                minPrice={minPrice}
+                setMinPrice={setMinPrice}
+                maxPrice={maxPrice}
+                setMaxPrice={setMaxPrice}
+                onlyOffers={onlyOffers}
+                setOnlyOffers={setOnlyOffers}
+                isMobileOpen={isMobileSidebarOpen}
+                setIsMobileOpen={setIsMobileSidebarOpen}
+              />
 
-              {products.length === 0 ? (
-                /* Si no hay productos en Firestore, mostrar CTA de carga rápida (Seed) */
-                <div className="card p-10 text-center space-y-4 max-w-xl mx-auto bg-gradient-to-b from-white to-slate-50 border-2 border-dashed border-primary/40">
-                  <div className="w-16 h-16 bg-primary-light text-primary rounded-full flex items-center justify-center mx-auto shadow-md">
-                    <Database size={32} />
+              {/* SECCIÓN DE PRODUCTOS */}
+              <div className="flex-1 min-w-0 w-full">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-extrabold text-xl md:text-2xl text-slate-900 flex items-center gap-2">
+                    <span>Catálogo de Productos</span>
+                    {activeCategory !== 'all' && (
+                      <span className="text-xs font-bold bg-primary-light text-primary px-3 py-1 rounded-full uppercase">
+                        {activeCategory}
+                      </span>
+                    )}
+                  </h2>
+                  <span className="text-xs font-medium text-slate-400">
+                    {sortedProducts.length} producto{sortedProducts.length !== 1 ? 's' : ''} encontrado{sortedProducts.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+
+                {products.length === 0 ? (
+                  /* Si no hay productos en Firestore, mostrar CTA de carga rápida (Seed) */
+                  <div className="card p-10 text-center space-y-4 max-w-xl mx-auto bg-gradient-to-b from-white to-slate-50 border-2 border-dashed border-primary/40">
+                    <div className="w-16 h-16 bg-primary-light text-primary rounded-full flex items-center justify-center mx-auto shadow-md">
+                      <Database size={32} />
+                    </div>
+                    <h3 className="font-extrabold text-xl text-slate-900">
+                      Tu base de datos Firebase está inicializada y lista
+                    </h3>
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      Aún no hay ítems en la colección <code className="bg-slate-200 px-1.5 py-0.5 rounded font-mono text-slate-800">products</code>. Haz clic en el botón inferior para cargar automáticamente un catálogo de prueba con comida, accesorios y medicinas.
+                    </p>
+                    <button 
+                      onClick={handleSeedData}
+                      disabled={isSeeding}
+                      className="btn btn-primary px-6 py-3.5 text-sm font-black shadow-lg shadow-primary/30"
+                    >
+                      <Sparkles size={18} />
+                      <span>{isSeeding ? 'Generando Catálogo en Firestore...' : 'Cargar 10 Productos de Prueba (Seed)'}</span>
+                    </button>
                   </div>
-                  <h3 className="font-extrabold text-xl text-slate-900">
-                    Tu base de datos Firebase está inicializada y lista
-                  </h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    Aún no hay ítems en la colección <code className="bg-slate-200 px-1.5 py-0.5 rounded font-mono text-slate-800">products</code>. Haz clic en el botón inferior para cargar automáticamente un catálogo de prueba con comida, accesorios y medicinas.
-                  </p>
-                  <button 
-                    onClick={handleSeedData}
-                    disabled={isSeeding}
-                    className="btn btn-primary px-6 py-3.5 text-sm font-black shadow-lg shadow-primary/30"
-                  >
-                    <Sparkles size={18} />
-                    <span>{isSeeding ? 'Generando Catálogo en Firestore...' : 'Cargar 10 Productos de Prueba (Seed)'}</span>
-                  </button>
-                </div>
-              ) : sortedProducts.length === 0 ? (
-                <div className="card p-12 text-center space-y-3 bg-white">
-                  <HelpCircle size={40} className="mx-auto text-slate-300" />
-                  <h4 className="font-bold text-slate-700">No se encontraron productos con estos filtros</h4>
-                  <p className="text-xs text-slate-400">Prueba eliminando los filtros o buscando con otra palabra clave.</p>
-                  <button 
-                    onClick={() => { setActiveCategory('all'); setActivePetType('all'); setSearchQuery(''); }}
-                    className="btn btn-outline text-xs mt-2"
-                  >
-                    Ver Todo el Catálogo
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {sortedProducts.map(product => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
-              )}
+                ) : sortedProducts.length === 0 ? (
+                  <div className="card p-12 text-center space-y-3 bg-white">
+                    <HelpCircle size={40} className="mx-auto text-slate-300" />
+                    <h4 className="font-bold text-slate-700">No se encontraron productos con estos filtros</h4>
+                    <p className="text-xs text-slate-400">Prueba eliminando los filtros o buscando con otra palabra clave.</p>
+                    <button 
+                      onClick={() => { setActiveCategory('all'); setActivePetType('all'); setSearchQuery(''); setSelectedBrands([]); setMinPrice(''); setMaxPrice(''); setOnlyOffers(false); }}
+                      className="btn btn-outline text-xs mt-4"
+                    >
+                      Limpiar Todos los Filtros
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                    {sortedProducts.map((product) => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
           </div>

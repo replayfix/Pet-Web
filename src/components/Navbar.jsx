@@ -263,24 +263,7 @@ export default function Navbar({
             </div>
           )}
 
-          {/* Navegación por categorías y filtros (Solo visible en tienda en desktop y tablets) */}
-          {currentView === 'store' && (
-            <div className="flex items-center gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar border-t border-slate-100 pt-3">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
-                    activeCategory === cat.id 
-                      ? 'bg-primary text-white shadow-md shadow-primary/20 scale-105' 
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              ))}
-            </div>
-          )}
+          {/* Navegación por categorías eliminada (ahora en la barra lateral) */}
 
           {/* Menú Móvil Desplegable (Menú tipo hamburguesa compacto apilado en columna para pantallas pequeñas) */}
           {mobileMenuOpen && (

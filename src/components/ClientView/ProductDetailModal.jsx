@@ -192,10 +192,24 @@ export default function ProductDetailModal({ product, onClose }) {
               </div>
 
               {/* Precio */}
-              <div className="pt-1">
-                <span className="text-2xl sm:text-3xl font-black text-primary">
-                  S/ {Number(product.price || 0).toFixed(2)}
-                </span>
+              <div className="pt-1 flex items-baseline gap-3">
+                {product.discountPrice ? (
+                  <>
+                    <span className="text-3xl sm:text-4xl font-black text-rose-600">
+                      S/ {Number(product.discountPrice).toFixed(2)}
+                    </span>
+                    <span className="text-base sm:text-lg font-bold text-slate-400 line-through">
+                      S/ {Number(product.price || 0).toFixed(2)}
+                    </span>
+                    <span className="bg-rose-100 text-rose-600 text-xs font-black px-2 py-1 rounded-md uppercase ml-2">
+                      Oferta
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-3xl sm:text-4xl font-black text-primary">
+                    S/ {Number(product.price || 0).toFixed(2)}
+                  </span>
+                )}
               </div>
 
               {/* Descripción corta y Garantía */}

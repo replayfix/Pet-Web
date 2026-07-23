@@ -73,6 +73,11 @@ export default function ProductCard({ product }) {
                 Para {product.petType}
               </span>
             )}
+            {product.discountPrice && (
+              <span className="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm uppercase animate-pulse">
+                🔥 OFERTA
+              </span>
+            )}
           </div>
 
           {/* Badge de Stock y Botón Favorito (Superior Derecho) */}
@@ -153,13 +158,29 @@ export default function ProductCard({ product }) {
           {/* Bloque agrupado de compra empujado al fondo con margin-top: auto; */}
           <div className="mt-auto pt-3 border-t border-slate-100 flex flex-col gap-3.5" style={{ marginTop: 'auto' }}>
             {/* Precio al lado de Precio Online */}
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase text-slate-400 tracking-wide">Precio Online:</span>
-              <div className="flex items-baseline gap-1">
-                <span className="font-extrabold text-sm text-primary">S/</span>
-                <span className="font-black text-2xl text-slate-900 tracking-tight">
-                  {Number(product.price || 0).toFixed(2)}
-                </span>
+            <div className="flex flex-col items-end gap-1 w-full">
+              <span className="text-xs font-bold uppercase text-slate-400 tracking-wide w-full text-left">Precio Online:</span>
+              <div className="flex items-center gap-2 justify-end w-full">
+                {product.discountPrice ? (
+                  <>
+                    <span className="text-xs font-bold text-slate-400 line-through">
+                      S/ {Number(product.price || 0).toFixed(2)}
+                    </span>
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-extrabold text-sm text-rose-500">S/</span>
+                      <span className="font-black text-2xl text-rose-600 tracking-tight">
+                        {Number(product.discountPrice).toFixed(2)}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-baseline gap-1">
+                    <span className="font-extrabold text-sm text-primary">S/</span>
+                    <span className="font-black text-2xl text-slate-900 tracking-tight">
+                      {Number(product.price || 0).toFixed(2)}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
