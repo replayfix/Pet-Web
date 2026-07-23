@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
-import { ShoppingBag, AlertCircle, CheckCircle2, XCircle, Star } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { ShoppingBag, AlertCircle, CheckCircle2, XCircle, Star, Heart } from 'lucide-react';
 import ProductDetailModal from './ProductDetailModal';
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
+  const { userFavorites = [], toggleFavorite } = useAuth();
   const [qty, setQty] = useState(1);
   const [addedAnimation, setAddedAnimation] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -19,6 +21,15 @@ export default function ProductCard({ product }) {
     setAddedAnimation(true);
     setTimeout(() => setAddedAnimation(false), 600);
   };
+
+  const handleToggleFavorite = async (e) => {
+    e.stopPropagation();
+    if (toggleFavorite) {
+      await toggleFavorite(product.id);
+    }
+  };
+
+  const isFav = userFavorites.includes(product.id);
 
   const getCategoryEmoji = (cat) => {
     switch(cat?.toLowerCase()) {
@@ -64,8 +75,19 @@ export default function ProductCard({ product }) {
             )}
           </div>
 
-          {/* Badge de Stock en tiempo real (Superior Derecho) */}
-          <div className="absolute top-3 right-3">
+          {/* Badge de Stock y Botón Favorito (Superior Derecho) */}
+          <div className="absolute top-3 right-3 flex flex-col items-end gap-2">
+            <button
+              type="button"
+              onClick={handleToggleFavorite}
+              className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm border border-slate-100 hover:bg-white hover:scale-110 transition-all z-10"
+            >
+              <Heart 
+                size={16} 
+                className={`transition-colors ${isFav ? 'fill-rose-500 text-rose-500' : 'text-slate-400'}`} 
+              />
+            </button>
+            
             {isOutOfStock ? (
               <span className="badge badge-danger text-[11px] shadow-sm">
                 <XCircle size={13} /> Agotado

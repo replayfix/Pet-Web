@@ -51,6 +51,7 @@ export const AuthProvider = ({ children }) => {
   });
   const [userAddresses, setUserAddresses] = useState([]);
   const [userOrders, setUserOrders] = useState([]);
+  const [userFavorites, setUserFavorites] = useState([]);
 
   // Redirección post-login automática al modal de reseñas si el usuario quiso calificar un producto sin estar autenticado
   useEffect(() => {
@@ -70,6 +71,7 @@ export const AuthProvider = ({ children }) => {
       setUserProfile({ nombre: '', apellido: '', email: '', documento: '', genero: '', fechaNacimiento: '', telefono: '' });
       setUserAddresses([]);
       setUserOrders([]);
+      setUserFavorites([]);
       return;
     }
 
@@ -78,6 +80,7 @@ export const AuthProvider = ({ children }) => {
       const localProfile = localStorage.getItem(`petweb_profile_${userKey}`);
       const localAddresses = localStorage.getItem(`petweb_addresses_${userKey}`);
       const localOrders = localStorage.getItem(`petweb_orders_${userKey}`);
+      const localFavorites = localStorage.getItem(`petweb_favorites_${userKey}`);
 
       if (localProfile) {
         try { setUserProfile(JSON.parse(localProfile)); } catch (e) {}
@@ -100,6 +103,9 @@ export const AuthProvider = ({ children }) => {
       if (localOrders) {
         try { setUserOrders(JSON.parse(localOrders)); } catch (e) {}
       }
+      if (localFavorites) {
+        try { setUserFavorites(JSON.parse(localFavorites)); } catch (e) {}
+      }
 
       // Sincronizar desde Firestore en vivo si está disponible
       if (db && userKey) {
@@ -115,6 +121,10 @@ export const AuthProvider = ({ children }) => {
             if (data.addresses) {
               setUserAddresses(data.addresses);
               localStorage.setItem(`petweb_addresses_${userKey}`, JSON.stringify(data.addresses));
+            }
+            if (data.favorites) {
+              setUserFavorites(data.favorites);
+              localStorage.setItem(`petweb_favorites_${userKey}`, JSON.stringify(data.favorites));
             }
           }
         } catch (err) {
@@ -217,6 +227,35 @@ export const AuthProvider = ({ children }) => {
           updatedAt: new Date().toISOString()
         }, { merge: true });
       } catch (err) {}
+    }
+    return true;
+  };
+
+  // Alternar producto en Favoritos (Wishlist) y guardar en Firestore
+  const toggleFavorite = async (productId) => {
+    if (!currentUser) {
+      setIsLoginModalOpen(true);
+      return false;
+    }
+    const userKey = currentUser.email || currentUser.name;
+    const isFav = userFavorites.includes(productId);
+    const updated = isFav 
+      ? userFavorites.filter(id => id !== productId)
+      : [...userFavorites, productId];
+      
+    setUserFavorites(updated);
+    localStorage.setItem(`petweb_favorites_${userKey}`, JSON.stringify(updated));
+
+    if (db && userKey) {
+      try {
+        const docRef = doc(db, 'users', userKey);
+        await setDoc(docRef, {
+          favorites: updated,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+      } catch (err) {
+        console.warn('Error guardando favoritos en Firestore:', err);
+      }
     }
     return true;
   };
@@ -448,9 +487,11 @@ export const AuthProvider = ({ children }) => {
       userProfile,
       userAddresses,
       userOrders,
+      userFavorites,
       saveUserProfile,
       addAddress,
       removeAddress,
+      toggleFavorite,
       login,
       register,
       checkEmailVerification,

@@ -13,17 +13,26 @@ import {
   Plus, 
   Minus, 
   ShieldCheck, 
-  Sparkles
+  Sparkles,
+  Heart
 } from 'lucide-react';
 
 export default function ProductDetailModal({ product, onClose }) {
   const { addToCart } = useCart();
-  const { currentUser, setIsLoginModalOpen, setPendingReviewProduct, setActiveReviewModalProduct } = useAuth();
+  const { currentUser, setIsLoginModalOpen, setPendingReviewProduct, setActiveReviewModalProduct, userFavorites = [], toggleFavorite } = useAuth();
   
   const [qty, setQty] = useState(1);
   const [addedAnimation, setAddedAnimation] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [loadingReviews, setLoadingReviews] = useState(true);
+
+  const isFav = userFavorites?.includes(product?.id);
+
+  const handleToggleFavorite = async () => {
+    if (toggleFavorite && product?.id) {
+      await toggleFavorite(product.id);
+    }
+  };
 
   useEffect(() => {
     if (!product || !product.id) {
@@ -247,6 +256,18 @@ export default function ProductDetailModal({ product, onClose }) {
                         <span className="truncate">{isOutOfStock ? 'Sin Stock' : 'Añadir al Carrito'}</span>
                       </>
                     )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleToggleFavorite}
+                    className="w-11 h-11 shrink-0 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-200 hover:bg-slate-100 transition-colors shadow-sm cursor-pointer"
+                    title={isFav ? "Quitar de Favoritos" : "Añadir a Favoritos"}
+                  >
+                    <Heart 
+                      size={20} 
+                      className={`transition-colors ${isFav ? 'fill-rose-500 text-rose-500' : 'text-slate-400'}`} 
+                    />
                   </button>
                 </div>
               </div>

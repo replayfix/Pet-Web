@@ -825,3 +825,9 @@ input, select, textarea {
     margin: 4mm;
   }
 }
+
+/* Clases utilitarias faltantes para Favoritos */
+.text-rose-500 { color: #f43f5e !important; }
+.fill-rose-500 { fill: #f43f5e !important; }
+.text-rose-600 { color: #e11d48 !important; }
+.fill-rose-100 { fill: #ffe4e6 !important; }

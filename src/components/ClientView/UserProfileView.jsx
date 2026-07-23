@@ -17,8 +17,10 @@ import {
   Mail, 
   CreditCard,
   Star,
-  Sparkles
+  Sparkles,
+  Heart
 } from 'lucide-react';
+import ProductCard from './ProductCard';
 
 const DATOS_UBIGEO_PERU = {
   'Lima': {
@@ -104,13 +106,14 @@ const DATOS_UBIGEO_PERU = {
 
 const DEPARTAMENTOS_PERU = Object.keys(DATOS_UBIGEO_PERU);
 
-export default function UserProfileView({ onNavigate }) {
+export default function UserProfileView({ onNavigate, products = [] }) {
   const { 
     currentUser, 
     isAdmin,
     userProfile, 
     userAddresses, 
     userOrders, 
+    userFavorites = [],
     saveUserProfile, 
     addAddress, 
     removeAddress, 
@@ -281,6 +284,25 @@ export default function UserProfileView({ onNavigate }) {
                         </span>
                       )}
                     </button>
+
+                    <button
+                      onClick={() => { setActiveTab('Favoritos'); setIsAddingAddress(false); }}
+                      className={`text-left px-4 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center justify-between cursor-pointer ${
+                        activeTab === 'Favoritos'
+                          ? 'border-l-4 border-primary pl-3 bg-primary/10 text-primary shadow-xs'
+                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Heart size={18} />
+                        <span>Mis Favoritos</span>
+                      </div>
+                      {userFavorites.length > 0 && (
+                        <span className="bg-rose-100 text-rose-600 text-[11px] font-black px-2.5 py-0.5 rounded-full">
+                          {userFavorites.length}
+                        </span>
+                      )}
+                    </button>
                   </>
                 )}
               </nav>
@@ -304,6 +326,41 @@ export default function UserProfileView({ onNavigate }) {
             style={{ flex: '1 1 0%', maxWidth: '800px', boxSizing: 'border-box' }}
           >
             
+            {/* ====================================================
+                APARTADO: MIS FAVORITOS
+            ==================================================== */}
+            {activeTab === 'Favoritos' && (
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                  <h2 className="font-extrabold text-3xl sm:text-4xl text-slate-900 flex items-center gap-3">
+                    <Heart className="text-rose-500 fill-rose-100" size={32} />
+                    Mis Favoritos
+                  </h2>
+                </div>
+                {userFavorites.length === 0 ? (
+                  <div className="text-center py-16 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200">
+                    <Heart size={48} className="mx-auto text-slate-300 mb-4" />
+                    <h3 className="font-extrabold text-xl text-slate-700">Aún no tienes favoritos</h3>
+                    <p className="text-sm text-slate-500 max-w-sm mx-auto mt-2 mb-6">
+                      Explora nuestro catálogo y guarda los productos que más le gusten a tu mascota dándole clic al corazón.
+                    </p>
+                    <button 
+                      onClick={() => onNavigate && onNavigate('store')} 
+                      className="btn btn-primary px-8 py-3 text-sm font-black shadow-lg shadow-primary/30 hover:scale-105 transition-transform"
+                    >
+                      Ir a la Tienda
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    {products.filter(p => userFavorites.includes(p.id)).map(product => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* ====================================================
                 APARTADO 1: PERFIL (Al lado derecho de las opciones DENTRO del recuadro)
             ==================================================== */}

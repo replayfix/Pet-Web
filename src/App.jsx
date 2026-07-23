@@ -125,7 +125,7 @@ export function AppContent() {
           <AdminMainView products={products} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         ) : currentView === 'profile' ? (
           /* VISTA PERFIL Y CUENTA DE USUARIO */
-          <UserProfileView onNavigate={(view) => setCurrentView(view)} />
+          <UserProfileView onNavigate={(view) => setCurrentView(view)} products={products} />
         ) : (
           /* VISTA CLIENTE (TIENDA GOPET) */
           <div className="space-y-8">
