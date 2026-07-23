@@ -37,7 +37,14 @@ export default function CartDrawer() {
     totalPrice,
     totalItems
   } = useCart();
-  const { currentUser, userProfile, userAddresses } = useAuth();
+  const { 
+    currentUser, 
+    userProfile, 
+    userAddresses,
+    setIsLoginModalOpen,
+    setPendingReviewProduct,
+    setActiveReviewModalProduct
+  } = useAuth();
 
   const [checkoutStep, setCheckoutStep] = useState('cart'); // 'cart' | 'form' | 'success'
   const [customer, setCustomer] = useState({ name: '', phone: '', address: '' });
@@ -45,6 +52,7 @@ export default function CartDrawer() {
   const [deliveryMethod, setDeliveryMethod] = useState('recojo'); // 'recojo' | 'delivery'
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastOrderId, setLastOrderId] = useState(null);
+  const [lastOrderedItems, setLastOrderedItems] = useState([]);
 
   // Cargar y mantener sincronizados los datos del cliente logueado
   useEffect(() => {
@@ -93,6 +101,7 @@ export default function CartDrawer() {
       };
       const orderId = await createOrder(customerData, cartItems, finalTotal);
       setLastOrderId(orderId);
+      setLastOrderedItems([...cartItems]);
       clearCart();
       setCheckoutStep('success');
     } catch (error) {
@@ -110,6 +119,7 @@ export default function CartDrawer() {
       setCustomer({ name: '', phone: '', address: '' });
       setUseSavedProfile(true);
       setDeliveryMethod('recojo');
+      setLastOrderedItems([]);
     }, 300);
   };
 
@@ -474,7 +484,7 @@ export default function CartDrawer() {
         })()}
 
           {checkoutStep === 'success' && (
-            <div className="text-center py-10 space-y-4 animate-fade-in">
+            <div className="text-center py-6 space-y-4 animate-fade-in">
               <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-md">
                 <CheckCircle size={36} />
               </div>
@@ -487,9 +497,65 @@ export default function CartDrawer() {
                 🐾 ¡Listo! Ya pusimos a mover la colita a nuestro equipo para preparar tu pedido. 🐾
               </div>
 
+              {/* Sección de Reseñas Post-Compra */}
+              {lastOrderedItems && lastOrderedItems.length > 0 && (
+                <div className="mt-6 pt-4 border-t border-slate-100 text-left space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h5 className="font-extrabold text-xs text-slate-800 flex items-center gap-1.5 uppercase tracking-wider">
+                      <Sparkles size={14} className="text-amber-500" />
+                      <span>¿Qué te parecieron estos productos?</span>
+                    </h5>
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Déjanos tu opinión y ayuda a miles de dueños de mascotas en nuestra comunidad:
+                  </p>
+                  <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    {lastOrderedItems.map((item, idx) => (
+                      <div 
+                        key={idx}
+                        className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200/70"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <img 
+                            src={item.imageUrl || item.image || "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=600&auto=format&fit=crop&q=80"} 
+                            alt={item.name}
+                            className="w-10 h-10 object-contain rounded-lg bg-white p-1 border border-slate-100 shrink-0"
+                          />
+                          <span className="font-bold text-xs text-slate-800 truncate">
+                            {item.name}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const productDataForReview = {
+                              id: item.id,
+                              name: item.name,
+                              image: item.imageUrl || item.image || '',
+                              price: item.price,
+                              category: item.category
+                            };
+                            setIsCartOpen(false);
+                            if (currentUser) {
+                              setActiveReviewModalProduct(productDataForReview);
+                            } else {
+                              if (setPendingReviewProduct) setPendingReviewProduct(productDataForReview);
+                              setIsLoginModalOpen(true);
+                            }
+                          }}
+                          className="btn btn-outline py-1.5 px-3 text-[11px] font-extrabold shrink-0 flex items-center gap-1 text-primary border-primary/30 hover:bg-primary hover:text-white cursor-pointer"
+                        >
+                          <span>⭐ Calificar</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <button 
                 onClick={resetAndClose}
-                className="btn btn-primary w-full text-sm py-3 mt-4 font-extrabold"
+                className="btn btn-primary w-full text-sm py-3 mt-4 font-extrabold cursor-pointer"
               >
                 Seguir Comprando
               </button>

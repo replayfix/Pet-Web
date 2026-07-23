@@ -35,6 +35,10 @@ export const AuthProvider = ({ children }) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
 
+  // Estados para Modal de Reseñas y Redirección post-login
+  const [pendingReviewProduct, setPendingReviewProduct] = useState(null);
+  const [activeReviewModalProduct, setActiveReviewModalProduct] = useState(null);
+
   // Estados para Perfil, Direcciones y Pedidos
   const [userProfile, setUserProfile] = useState({
     nombre: '',
@@ -47,6 +51,18 @@ export const AuthProvider = ({ children }) => {
   });
   const [userAddresses, setUserAddresses] = useState([]);
   const [userOrders, setUserOrders] = useState([]);
+
+  // Redirección post-login automática al modal de reseñas si el usuario quiso calificar un producto sin estar autenticado
+  useEffect(() => {
+    if (currentUser && pendingReviewProduct) {
+      const product = pendingReviewProduct;
+      setPendingReviewProduct(null);
+      setIsLoginModalOpen(false);
+      setTimeout(() => {
+        setActiveReviewModalProduct(product);
+      }, 150);
+    }
+  }, [currentUser, pendingReviewProduct]);
 
   // Cargar perfil y direcciones desde Firestore o localStorage al cambiar currentUser
   useEffect(() => {
@@ -442,7 +458,11 @@ export const AuthProvider = ({ children }) => {
       loginWithGoogle,
       logout,
       loginAsAdmin,
-      logoutAdmin
+      logoutAdmin,
+      pendingReviewProduct,
+      setPendingReviewProduct,
+      activeReviewModalProduct,
+      setActiveReviewModalProduct
     }}>
       {children}
     </AuthContext.Provider>

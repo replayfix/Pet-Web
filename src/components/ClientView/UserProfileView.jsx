@@ -15,7 +15,9 @@ import {
   Calendar, 
   Phone, 
   Mail, 
-  CreditCard 
+  CreditCard,
+  Star,
+  Sparkles
 } from 'lucide-react';
 
 const DATOS_UBIGEO_PERU = {
@@ -113,7 +115,8 @@ export default function UserProfileView({ onNavigate }) {
     addAddress, 
     removeAddress, 
     setIsLogoutConfirmOpen,
-    logout 
+    logout,
+    setActiveReviewModalProduct
   } = useAuth();
 
   const [activeTab, setActiveTab] = useState('Perfil'); // 'Perfil' | 'Direcciones' | 'Pedidos'
@@ -871,23 +874,43 @@ export default function UserProfileView({ onNavigate }) {
                             <h4 className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">
                               Productos en la compra ({itemsList.reduce((acc, it) => acc + (it.quantity || 1), 0)} ítems)
                             </h4>
-                            <div className="bg-white rounded-xl border border-slate-200/60 divide-y divide-slate-100 max-h-52 overflow-y-auto">
+                            <div className="bg-white rounded-xl border border-slate-200/60 divide-y divide-slate-100 max-h-64 overflow-y-auto">
                               {itemsList.map((item, idx) => {
                                 const qty = item.quantity || 1;
                                 const price = Number(item.price || 0);
                                 return (
-                                  <div key={idx} className="p-2.5 flex items-center justify-between text-xs">
-                                    <div className="flex items-center gap-2 pr-3">
+                                  <div key={idx} className="p-2.5 flex items-center justify-between text-xs gap-3">
+                                    <div className="flex items-center gap-2.5 pr-2 min-w-0">
                                       <span className="w-5 h-5 rounded-full bg-slate-100 text-slate-600 font-bold flex items-center justify-center shrink-0 text-[11px]">
                                         {qty}
                                       </span>
-                                      <span className="font-bold text-slate-800 leading-tight">
+                                      {item.imageUrl && (
+                                        <img src={item.imageUrl} alt={item.name} className="w-8 h-8 rounded object-contain bg-slate-50 border border-slate-100 shrink-0" />
+                                      )}
+                                      <span className="font-bold text-slate-800 leading-tight truncate">
                                         {item.name || 'Producto del catálogo'}
                                       </span>
                                     </div>
-                                    <span className="font-black text-slate-900 shrink-0">
-                                      S/ {(qty * price).toFixed(2)}
-                                    </span>
+                                    <div className="flex items-center gap-3 shrink-0">
+                                      <span className="font-black text-slate-900">
+                                        S/ {(qty * price).toFixed(2)}
+                                      </span>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setActiveReviewModalProduct({
+                                            id: item.id || item.productId || `prod_${idx}`,
+                                            name: item.name || 'Producto del catálogo',
+                                            image: item.imageUrl || item.image || '',
+                                            price: item.price || 0,
+                                            category: item.category || 'general'
+                                          });
+                                        }}
+                                        className="btn btn-outline py-1 px-2.5 text-[11px] font-extrabold flex items-center gap-1 text-primary border-primary/30 hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                                      >
+                                        <span>⭐ Opinar</span>
+                                      </button>
+                                    </div>
                                   </div>
                                 );
                               })}

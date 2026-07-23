@@ -10,6 +10,7 @@ import InventoryDashboard from './components/AdminView/InventoryDashboard';
 import AdminMainView from './components/AdminView/AdminMainView';
 import UserProfileView from './components/ClientView/UserProfileView';
 import LogoutModal from './components/ClientView/LogoutModal';
+import ReviewModal from './components/ClientView/ReviewModal';
 import { 
   Sparkles, 
   Loader2, 
@@ -263,6 +264,9 @@ export function AppContent() {
 
       {/* CARRITO DESLIZABLE */}
       <CartDrawer />
+
+      {/* MODAL GLOBAL DE RESEÑAS */}
+      <ReviewModal />
 
       {/* MODAL DE CONFIRMACIÓN DE SALIDA DE CUENTA */}
       <LogoutModal onConfirmNavigate={(view) => setCurrentView(view)} />

@@ -1,19 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import InventoryDashboard from './InventoryDashboard';
 import OrdersDashboard from './OrdersDashboard';
+import ReviewsDashboard from './ReviewsDashboard';
 import { subscribeOrders } from '../../firebase/dbService';
-import { Boxes, FileText, ShoppingBag, ShieldCheck } from 'lucide-react';
+import { subscribeAllReviews } from '../../firebase/reviewService';
+import { Boxes, FileText, ShieldCheck, Star, MessageSquare } from 'lucide-react';
 
 export default function AdminMainView({ products, searchQuery, setSearchQuery }) {
-  const [activeTab, setActiveTab] = useState('inventory'); // 'inventory' | 'orders'
+  const [activeTab, setActiveTab] = useState('inventory'); // 'inventory' | 'orders' | 'reviews'
   const [ordersCount, setOrdersCount] = useState(0);
+  const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
 
   useEffect(() => {
-    const unsubscribe = subscribeOrders((data) => {
+    const unsubscribeOrders = subscribeOrders((data) => {
       setOrdersCount(data.length);
     });
+    const unsubscribeReviews = subscribeAllReviews((data) => {
+      const pending = data.filter(r => r.status === 'pending').length;
+      setPendingReviewsCount(pending);
+    }, (err) => console.error(err));
+
     return () => {
-      if (unsubscribe && typeof unsubscribe === 'function') unsubscribe();
+      if (unsubscribeOrders && typeof unsubscribeOrders === 'function') unsubscribeOrders();
+      if (unsubscribeReviews && typeof unsubscribeReviews === 'function') unsubscribeReviews();
     };
   }, []);
 
@@ -21,12 +30,12 @@ export default function AdminMainView({ products, searchQuery, setSearchQuery })
     <div className="space-y-6 animate-fade-in">
       
       {/* NAVEGADOR DE PESTAÑAS DEL ADMINISTRADOR */}
-      <div className="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 overflow-x-auto">
         
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <button 
             onClick={() => setActiveTab('inventory')}
-            className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
               activeTab === 'inventory'
                 ? 'bg-slate-900 text-white shadow-md'
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -41,7 +50,7 @@ export default function AdminMainView({ products, searchQuery, setSearchQuery })
 
           <button 
             onClick={() => setActiveTab('orders')}
-            className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
               activeTab === 'orders'
                 ? 'bg-slate-900 text-white shadow-md'
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -55,9 +64,26 @@ export default function AdminMainView({ products, searchQuery, setSearchQuery })
               </span>
             )}
           </button>
+
+          <button 
+            onClick={() => setActiveTab('reviews')}
+            className={`px-4 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              activeTab === 'reviews'
+                ? 'bg-slate-900 text-white shadow-md'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            }`}
+          >
+            <Star size={18} className={activeTab === 'reviews' ? 'text-amber-400 fill-amber-400' : 'text-amber-500'} />
+            <span>Gestión de Reseñas</span>
+            {pendingReviewsCount > 0 && (
+              <span className="bg-amber-500 text-white text-[11px] px-2 py-0.5 rounded-full font-black animate-bounce">
+                {pendingReviewsCount}
+              </span>
+            )}
+          </button>
         </div>
 
-        <div className="hidden md:flex items-center gap-2 text-xs font-bold text-slate-500 px-3">
+        <div className="hidden lg:flex items-center gap-2 text-xs font-bold text-slate-500 px-3 shrink-0">
           <ShieldCheck size={16} className="text-emerald-600" />
           <span>Modo de Administración Activo</span>
         </div>
@@ -67,10 +93,13 @@ export default function AdminMainView({ products, searchQuery, setSearchQuery })
       {/* CONTENIDO DE LA PESTAÑA SELECCIONADA */}
       {activeTab === 'inventory' ? (
         <InventoryDashboard products={products} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      ) : (
+      ) : activeTab === 'orders' ? (
         <OrdersDashboard searchQuery={searchQuery} />
+      ) : (
+        <ReviewsDashboard />
       )}
 
     </div>
   );
 }
+

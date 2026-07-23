@@ -25,7 +25,8 @@ export default function AuthModal() {
     register, 
     checkEmailVerification, 
     resendLink, 
-    loginWithGoogle 
+    loginWithGoogle,
+    setPendingReviewProduct
   } = useAuth();
   const [tab, setTab] = useState('login'); // 'login' | 'register' | 'verify_code'
   
@@ -55,6 +56,7 @@ export default function AuthModal() {
     setRegEmail('');
     setRegPassword('');
     setError('');
+    if (setPendingReviewProduct) setPendingReviewProduct(null);
     setIsLoginModalOpen(false);
   };
 
@@ -159,8 +161,8 @@ export default function AuthModal() {
 
 
   return (
-    <div className="modal-overlay animate-fade-in z-50" onClick={handleClose}>
-      <div className="modal-content max-w-md w-full p-6 sm:p-8 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay animate-fade-in z-[1200]" onClick={handleClose}>
+      <div className="modal-content max-w-md w-full p-6 sm:p-8 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden" onClick={(e) => e.stopPropagation()}>
         
         {/* Cabecera del Modal con Pestañas y Botón Cerrar */}
         <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-6">
