@@ -148,6 +148,7 @@ export default function UserProfileView({ onNavigate, products = [] }) {
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState(null);
   const [selectedOrderForReceipt, setSelectedOrderForReceipt] = useState(null);
+  const [visibleOrdersCount, setVisibleOrdersCount] = useState(3);
 
   useEffect(() => {
     if (userProfile) {
@@ -862,15 +863,15 @@ export default function UserProfileView({ onNavigate, products = [] }) {
                     </button>
                   </div>
                 ) : (
-                  <div className="space-y-5">
-                    {userOrders.map(order => {
+                  <div className="space-y-6">
+                    {userOrders.slice(0, visibleOrdersCount).map(order => {
                       const orderDate = new Date(order.timestamp || order.createdAt || order.date || Date.now()).toLocaleString();
                       const paymentState = order.paymentStatus || 'Pendiente de pago';
                       const isRecojo = order.customer?.deliveryMethod === 'recojo' || order.customer?.deliveryType === 'Recojo en tienda';
                       const itemsList = Array.isArray(order.items) ? order.items : [];
 
                       return (
-                        <div key={order.id} className="bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-4 hover:border-primary/40 transition-all">
+                        <div key={order.id} className="bg-slate-50/70 border border-slate-200/90 rounded-3xl p-5 sm:p-6 shadow-sm hover:shadow-md hover:border-primary/40 transition-all space-y-4">
                           {/* Encabezado: Nº Boleta, Fecha y Estados */}
                           <div className="flex flex-wrap items-center justify-between border-b border-slate-200/60 pb-3.5 gap-3">
                             <div>
@@ -938,10 +939,10 @@ export default function UserProfileView({ onNavigate, products = [] }) {
                                 return (
                                   <div 
                                     key={idx} 
-                                    className="p-2.5 sm:p-3 flex items-center justify-between gap-2.5 sm:gap-3.5 w-full max-w-full overflow-x-hidden hover:bg-slate-50/50 transition-colors h-auto"
+                                    className="px-4 sm:px-5 py-3 flex items-center justify-between gap-3 sm:gap-4 w-full max-w-full overflow-x-hidden hover:bg-slate-50/70 transition-colors h-auto"
                                   >
                                     {/* Bloque Izquierdo: Cantidad, Foto y Nombre del producto */}
-                                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                    <div className="flex items-center gap-3 min-w-0 flex-1">
                                       <span className="w-6 h-6 rounded-full bg-slate-100 text-slate-700 font-extrabold flex items-center justify-center shrink-0 text-xs shadow-2xs">
                                         {qty}x
                                       </span>
@@ -949,7 +950,7 @@ export default function UserProfileView({ onNavigate, products = [] }) {
                                         <img 
                                           src={item.imageUrl} 
                                           alt={item.name} 
-                                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-contain bg-slate-50 border border-slate-200/60 p-0.5 shrink-0 shadow-2xs" 
+                                          className="w-9 h-9 rounded-xl object-contain bg-slate-50 border border-slate-200/60 p-1 shrink-0 shadow-2xs" 
                                         />
                                       )}
                                       <span className="font-bold text-slate-800 leading-snug break-words text-xs sm:text-sm flex-1 min-w-0">
@@ -958,7 +959,7 @@ export default function UserProfileView({ onNavigate, products = [] }) {
                                     </div>
 
                                     {/* Bloque Derecho: Precio + Botón ⭐ Calificar */}
-                                    <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+                                    <div className="flex items-center gap-3 shrink-0">
                                       <span className="font-black text-slate-900 text-xs sm:text-sm shrink-0 whitespace-nowrap">
                                         S/ {(qty * price).toFixed(2)}
                                       </span>
@@ -973,7 +974,7 @@ export default function UserProfileView({ onNavigate, products = [] }) {
                                             category: item.category || 'general'
                                           });
                                         }}
-                                        className="btn bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300/80 py-1 px-2.5 sm:px-3 rounded-full text-xs font-bold flex items-center justify-center gap-1 transition-all shadow-2xs hover:scale-105 cursor-pointer shrink-0"
+                                        className="btn bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300/80 py-1.5 px-3 rounded-full text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-2xs hover:scale-105 cursor-pointer shrink-0"
                                       >
                                         <span>⭐</span>
                                         <span className="hidden sm:inline">Calificar</span>
@@ -1013,6 +1014,19 @@ export default function UserProfileView({ onNavigate, products = [] }) {
                         </div>
                       );
                     })}
+
+                    {/* Botón "Cargar más pedidos" si hay más resultados */}
+                    {userOrders.length > visibleOrdersCount && (
+                      <div className="pt-4 text-center">
+                        <button
+                          type="button"
+                          onClick={() => setVisibleOrdersCount(prev => prev + 3)}
+                          className="btn btn-outline text-xs sm:text-sm font-extrabold py-3 px-8 rounded-full border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-all shadow-sm cursor-pointer hover:scale-[1.02]"
+                        >
+                          Cargar más pedidos ({userOrders.length - visibleOrdersCount} restantes)
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
