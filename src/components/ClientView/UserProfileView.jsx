@@ -938,10 +938,10 @@ export default function UserProfileView({ onNavigate, products = [] }) {
                                 return (
                                   <div 
                                     key={idx} 
-                                    className="p-3 sm:p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-2.5 md:gap-4 w-full max-w-full overflow-x-hidden hover:bg-slate-50/50 transition-colors"
+                                    className="p-2.5 sm:p-3 flex items-center justify-between gap-2.5 sm:gap-3.5 w-full max-w-full overflow-x-hidden hover:bg-slate-50/50 transition-colors h-auto"
                                   >
-                                    {/* Fila / Bloque 1: Cantidad, Imagen, Nombre y Precio (en móvil) */}
-                                    <div className="flex items-center gap-3 min-w-0 flex-1 w-full">
+                                    {/* Bloque Izquierdo: Cantidad, Foto y Nombre del producto */}
+                                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
                                       <span className="w-6 h-6 rounded-full bg-slate-100 text-slate-700 font-extrabold flex items-center justify-center shrink-0 text-xs shadow-2xs">
                                         {qty}x
                                       </span>
@@ -949,26 +949,17 @@ export default function UserProfileView({ onNavigate, products = [] }) {
                                         <img 
                                           src={item.imageUrl} 
                                           alt={item.name} 
-                                          className="w-10 h-10 rounded-xl object-contain bg-slate-50 border border-slate-200/60 p-1 shrink-0 shadow-2xs" 
+                                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-contain bg-slate-50 border border-slate-200/60 p-0.5 shrink-0 shadow-2xs" 
                                         />
                                       )}
-                                      <div className="min-w-0 flex-1">
-                                        <span className="font-bold text-slate-800 leading-snug break-words text-xs sm:text-sm block">
-                                          {item.name || 'Producto del catálogo'}
-                                        </span>
-                                        <span className="text-[11px] text-slate-400 font-semibold md:hidden">
-                                          S/ {price.toFixed(2)} c/u
-                                        </span>
-                                      </div>
-                                      {/* Precio visible a la derecha en móvil */}
-                                      <span className="font-black text-slate-900 text-xs sm:text-sm shrink-0 md:hidden">
-                                        S/ {(qty * price).toFixed(2)}
+                                      <span className="font-bold text-slate-800 leading-snug break-words text-xs sm:text-sm flex-1 min-w-0">
+                                        {item.name || 'Producto del catálogo'}
                                       </span>
                                     </div>
 
-                                    {/* Fila / Bloque 2: Precio (en desktop) + Botón ⭐ Calificar (compacto tipo chip) */}
-                                    <div className="flex items-center justify-end gap-3 w-full md:w-auto shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
-                                      <span className="font-black text-slate-900 text-sm shrink-0 hidden md:inline-block">
+                                    {/* Bloque Derecho: Precio + Botón ⭐ Calificar */}
+                                    <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+                                      <span className="font-black text-slate-900 text-xs sm:text-sm shrink-0 whitespace-nowrap">
                                         S/ {(qty * price).toFixed(2)}
                                       </span>
                                       <button
@@ -982,10 +973,10 @@ export default function UserProfileView({ onNavigate, products = [] }) {
                                             category: item.category || 'general'
                                           });
                                         }}
-                                        className="btn bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300/80 py-1.5 px-3 rounded-full text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-2xs hover:scale-105 cursor-pointer ml-auto md:ml-0"
+                                        className="btn bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300/80 py-1 px-2.5 sm:px-3 rounded-full text-xs font-bold flex items-center justify-center gap-1 transition-all shadow-2xs hover:scale-105 cursor-pointer shrink-0"
                                       >
                                         <span>⭐</span>
-                                        <span>Calificar</span>
+                                        <span className="hidden sm:inline">Calificar</span>
                                       </button>
                                     </div>
                                   </div>
