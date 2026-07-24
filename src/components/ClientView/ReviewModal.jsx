@@ -131,7 +131,7 @@ export default function ReviewModal() {
 
         {/* Contenido del Modal */}
         {isSuccess ? (
-          <div className="p-5 sm:p-6 text-center space-y-3.5 animate-fade-in w-full overflow-x-hidden">
+          <div className="p-5 sm:p-6 text-center space-y-4 animate-fade-in w-full overflow-x-hidden">
             <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-bounce">
               <CheckCircle2 size={32} />
             </div>
@@ -142,9 +142,9 @@ export default function ReviewModal() {
             <p className="text-[11px] text-slate-400 font-medium">Cerrando automáticamente en unos segundos...</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-3.5 w-full overflow-x-hidden flex-1 overflow-y-auto">
+          <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-4 w-full overflow-x-hidden flex-1 overflow-y-auto flex flex-col justify-between">
             {/* Tarjeta resumen del producto con vinculación de imagen inteligente */}
-            <div className="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200/70 w-full overflow-x-hidden">
+            <div className="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200/70 w-full overflow-x-hidden shrink-0">
               <img 
                 src={productImage} 
                 alt={activeReviewModalProduct.name}
@@ -163,8 +163,8 @@ export default function ReviewModal() {
               </div>
             </div>
 
-            {/* Selector de 1 a 5 estrellas */}
-            <div className="text-center space-y-1">
+            {/* Selector de 1 a 5 estrellas con espacio inferior */}
+            <div className="text-center space-y-1 pb-1">
               <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">
                 ¿Qué calificación le das a este producto?
               </label>
@@ -189,7 +189,7 @@ export default function ReviewModal() {
                   </button>
                 ))}
               </div>
-              <p className="text-xs font-extrabold text-slate-700 h-4 animate-fade-in">
+              <p className="text-xs font-extrabold text-slate-700 h-4 animate-fade-in mb-1">
                 {getRatingLabel(activeStars)}
               </p>
             </div>
@@ -222,8 +222,8 @@ export default function ReviewModal() {
               </div>
             )}
 
-            {/* Aviso sobre moderación contenido sin desbordamiento */}
-            <div className="text-[11px] text-slate-600 bg-slate-100/90 px-3 py-2 rounded-lg border border-slate-200/70 flex items-start gap-2 w-full overflow-x-hidden box-border">
+            {/* Aviso sobre moderación contenido con margen vertical cómodo */}
+            <div className="text-[11px] text-slate-600 bg-slate-100/90 px-3.5 py-2.5 rounded-xl border border-slate-200/70 flex items-start gap-2 w-full overflow-x-hidden box-border my-1.5">
               <span className="shrink-0 text-sm leading-none mt-0.5">🛡️</span>
               <div className="leading-snug">
                 <strong className="text-slate-800">Nota de moderación:</strong> Las opiniones enviadas por nuestros clientes pasan por un breve proceso de revisión antes de publicarse.
@@ -231,7 +231,7 @@ export default function ReviewModal() {
             </div>
 
             {/* Botones de acción */}
-            <div className="flex items-center gap-3 pt-1">
+            <div className="flex items-center gap-3 pt-2 mt-auto">
               <button
                 type="button"
                 onClick={handleClose}
