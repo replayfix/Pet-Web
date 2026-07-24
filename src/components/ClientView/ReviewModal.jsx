@@ -40,6 +40,31 @@ export default function ReviewModal() {
     }
   };
 
+  // Helper para obtener la imagen del producto o un fallback dinámico inteligente según la categoría
+  const getProductImage = () => {
+    if (!activeReviewModalProduct) return '';
+    const img = activeReviewModalProduct.image || activeReviewModalProduct.imageUrl || activeReviewModalProduct.img;
+    if (img && typeof img === 'string' && img.trim() !== '') {
+      return img;
+    }
+    
+    // Fallback dinámico por categoría / nombre si no hay imagen asignada
+    const cat = (activeReviewModalProduct.category || '').toLowerCase();
+    const name = (activeReviewModalProduct.name || '').toLowerCase();
+
+    if (cat.includes('gato') || name.includes('gato') || name.includes('cat') || cat.includes('felin')) {
+      return 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&auto=format&fit=crop&q=80';
+    }
+    if (cat.includes('perro') || name.includes('perro') || name.includes('dog') || cat.includes('canin')) {
+      return 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400&auto=format&fit=crop&q=80';
+    }
+    if (cat.includes('juguete') || name.includes('juguete') || name.includes('toy')) {
+      return 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=400&auto=format&fit=crop&q=80';
+    }
+    // Fallback genérico para accesorios/mascotas
+    return 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=400&auto=format&fit=crop&q=80';
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -54,7 +79,7 @@ export default function ReviewModal() {
       await addReview({
         productId: activeReviewModalProduct.id,
         productName: activeReviewModalProduct.name || 'Producto de Pet.Web',
-        productImage: activeReviewModalProduct.image || '',
+        productImage: getProductImage(),
         userId: currentUser?.email || currentUser?.name || 'cliente@petweb.pe',
         userName: currentUser?.name || currentUser?.email?.split('@')[0] || 'Cliente de Pet.Web',
         rating: rating,
@@ -74,6 +99,7 @@ export default function ReviewModal() {
   };
 
   const activeStars = hoverRating || rating;
+  const productImage = getProductImage();
 
   return (
     <div className="modal-overlay animate-fade-in z-[1200] p-3 sm:p-4 flex items-center justify-center overflow-x-hidden w-full" onClick={handleClose}>
@@ -117,12 +143,12 @@ export default function ReviewModal() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-3.5 w-full overflow-x-hidden flex-1 overflow-y-auto">
-            {/* Tarjeta resumen del producto */}
+            {/* Tarjeta resumen del producto con vinculación de imagen inteligente */}
             <div className="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200/70 w-full overflow-x-hidden">
               <img 
-                src={activeReviewModalProduct.image || 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=200&q=80'} 
+                src={productImage} 
                 alt={activeReviewModalProduct.name}
-                className="w-12 h-12 object-cover rounded-lg shadow-2xs bg-white shrink-0"
+                className="w-12 h-12 object-contain rounded-lg shadow-2xs bg-white p-1 shrink-0 border border-slate-100"
               />
               <div className="flex-1 min-w-0">
                 <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary-light text-primary inline-block">
@@ -168,10 +194,10 @@ export default function ReviewModal() {
               </p>
             </div>
 
-            {/* Comentario / Opinión */}
-            <div className="space-y-1">
-              <label htmlFor="comment" className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-slate-700 w-full text-left pl-0 ml-0">
-                <MessageSquare size={14} className="text-primary shrink-0" />
+            {/* Comentario / Opinión con alineación exacta */}
+            <div className="space-y-1.5 w-full text-left">
+              <label htmlFor="comment" className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-700 w-full text-left m-0 p-0">
+                <MessageSquare size={15} className="text-primary shrink-0" />
                 <span>Escribe tu opinión o comentario</span>
               </label>
               <textarea
@@ -180,7 +206,7 @@ export default function ReviewModal() {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="¿Qué fue lo que más le gustó a tu mascota? ¿La calidad y el empaque cumplieron tus expectativas?"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 resize-none bg-slate-50/50"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 resize-none bg-slate-50/50 block"
                 required
               />
               <span className="text-[10px] text-slate-400 block text-right">
@@ -196,10 +222,13 @@ export default function ReviewModal() {
               </div>
             )}
 
-            {/* Aviso sobre moderación */}
-            <p className="text-[10px] text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-200/60 leading-normal">
-              🛡️ <strong>Nota de moderación:</strong> Las opiniones enviadas por nuestros clientes pasan por un breve proceso de revisión antes de publicarse.
-            </p>
+            {/* Aviso sobre moderación contenido sin desbordamiento */}
+            <div className="text-[11px] text-slate-600 bg-slate-100/90 p-3 rounded-xl border border-slate-200/70 flex items-start gap-2 w-full overflow-x-hidden">
+              <span className="shrink-0 text-sm leading-none mt-0.5">🛡️</span>
+              <div className="leading-snug">
+                <strong className="text-slate-800">Nota de moderación:</strong> Las opiniones enviadas por nuestros clientes pasan por un breve proceso de revisión antes de publicarse.
+              </div>
+            </div>
 
             {/* Botones de acción */}
             <div className="flex items-center gap-3 pt-1">
