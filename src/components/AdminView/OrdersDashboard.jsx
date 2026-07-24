@@ -177,30 +177,30 @@ export default function OrdersDashboard({ searchQuery }) {
       {/* TABLA ORDENADA POR COLUMNAS CON LOS DATOS Y LOS 3 BOTONES */}
       {/* TABLA ORDENADA POR COLUMNAS CON LOS DATOS Y LOS 3 BOTONES */}
       <div className="bg-white rounded-3xl border border-slate-200 shadow-sm orders-table-container">
-        <table className="orders-table-fixed">
+        <table className="orders-table-fixed w-full">
           <thead>
             <tr className="bg-slate-900 text-white text-[11px] font-black uppercase tracking-wider orders-table-row">
-              <th className="py-3 px-2 w-[11%] truncate" title="ID / Boleta">ID / Boleta</th>
-              <th className="py-3 px-2 w-[13%] truncate" title="Cliente / Registro">Cliente / Reg.</th>
-              <th className="py-3 px-2 w-[11%] truncate" title="DNI o Teléfono">Teléfono</th>
-              <th className="py-3 px-2 w-[14%] truncate" title="Entrega / Dirección">Entrega / Dir.</th>
-              <th className="py-3 px-2 w-[7%] text-center truncate" title="Ítems">Ítems</th>
-              <th className="py-3 px-2 w-[10%] text-right truncate" title="Total Pago">Total Pago</th>
-              <th className="py-3 px-2 w-[12%] text-center truncate" title="Estado de Pago">Estado</th>
-              <th className="py-3 px-2 w-[22%] text-center truncate" title="Acciones Rápidas (4 Botones)">Acciones</th>
+              <th className="py-3 px-3.5 text-left align-middle w-[12%] truncate" title="ID / Boleta">ID / Boleta</th>
+              <th className="py-3 px-3.5 text-left align-middle w-[14%] truncate" title="Cliente / Registro">Cliente / Reg.</th>
+              <th className="py-3 px-3.5 text-left align-middle w-[11%] truncate" title="DNI o Teléfono">Teléfono</th>
+              <th className="py-3 px-3.5 text-left align-middle w-[14%] truncate" title="Entrega / Dirección">Entrega / Dir.</th>
+              <th className="py-3 px-3 text-center align-middle w-[7%] truncate" title="Ítems">Ítems</th>
+              <th className="py-3 px-3.5 text-right align-middle w-[10%] truncate" title="Total Pago">Total Pago</th>
+              <th className="py-3 px-3 text-center align-middle w-[11%] truncate" title="Estado de Pago">Estado</th>
+              <th className="py-3 px-3 text-center align-middle w-[21%] truncate" title="Acciones Rápidas (4 Botones)">Acciones</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 text-xs font-medium text-slate-700">
             {loading ? (
               <tr className="orders-table-row">
-                <td colSpan="8" className="orders-table-cell text-center py-16">
+                <td colSpan="8" className="orders-table-cell text-center py-16 align-middle">
                   <Clock size={32} className="mx-auto text-primary animate-spin mb-2" />
                   <p className="font-bold text-slate-500">Cargando tabla de órdenes...</p>
                 </td>
               </tr>
             ) : filteredOrders.length === 0 ? (
               <tr className="orders-table-row">
-                <td colSpan="8" className="orders-table-cell text-center py-16 space-y-2">
+                <td colSpan="8" className="orders-table-cell text-center py-16 space-y-2 align-middle">
                   <ShoppingBag size={36} className="mx-auto text-slate-300" />
                   <p className="font-extrabold text-slate-700 text-sm">No hay órdenes registradas en este momento</p>
                   <p className="text-slate-400 text-xs">Las compras realizadas en el carrito aparecerán aquí listadas en orden real.</p>
@@ -217,7 +217,7 @@ export default function OrdersDashboard({ searchQuery }) {
                   <tr key={order.id} className="orders-table-row hover:bg-slate-50/80 transition-colors">
                     
                     {/* Columna 1: ID y Fecha */}
-                    <td className="orders-table-cell whitespace-nowrap">
+                    <td className="orders-table-cell text-left px-3.5 align-middle whitespace-nowrap">
                       <div className="font-mono font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-lg inline-block text-xs border border-slate-200">
                         {orderNum}
                       </div>
@@ -228,7 +228,7 @@ export default function OrdersDashboard({ searchQuery }) {
                     </td>
 
                     {/* Columna 2: Cliente y Badge de Registro */}
-                    <td className="orders-table-cell">
+                    <td className="orders-table-cell text-left px-3.5 align-middle">
                       <div className="font-black text-slate-900 text-sm uppercase truncate" title={customerName}>
                         {customerName}
                       </div>
@@ -245,12 +245,12 @@ export default function OrdersDashboard({ searchQuery }) {
                     </td>
 
                     {/* Columna 3: DNI / Teléfono */}
-                    <td className="orders-table-cell font-mono font-bold text-slate-800 truncate" title={order.customer?.phone || '-'}>
+                    <td className="orders-table-cell text-left px-3.5 align-middle font-mono font-bold text-slate-800 truncate" title={order.customer?.phone || '-'}>
                       {order.customer?.phone || '-'}
                     </td>
 
                     {/* Columna 4: Entrega / Dirección */}
-                    <td className="orders-table-cell">
+                    <td className="orders-table-cell text-left px-3.5 align-middle">
                       <div className="flex items-center gap-1 mb-1">
                         {order.customer?.deliveryMethod === 'recojo' || order.customer?.deliveryType === 'Recojo en tienda' ? (
                           <span className="bg-purple-100 text-purple-800 border border-purple-300 text-[10px] font-black px-1.5 py-0.5 rounded-md flex items-center gap-1 uppercase tracking-wider truncate">
@@ -268,21 +268,21 @@ export default function OrdersDashboard({ searchQuery }) {
                     </td>
 
                     {/* Columna 5: Resumen de Ítems */}
-                    <td className="orders-table-cell text-center whitespace-nowrap">
+                    <td className="orders-table-cell text-center align-middle whitespace-nowrap px-2">
                       <span className="bg-primary/10 text-primary font-black px-2 py-1 rounded-xl text-xs border border-primary/20">
                         {totalItemsCount} {totalItemsCount === 1 ? 'ítem' : 'ítems'}
                       </span>
                     </td>
 
                     {/* Columna 6: Total Pagado */}
-                    <td className="orders-table-cell text-right whitespace-nowrap">
+                    <td className="orders-table-cell text-right align-middle whitespace-nowrap px-3.5">
                       <span className="font-black text-slate-900 text-sm font-mono">
                         S/ {Number(order.total || 0).toFixed(2)}
                       </span>
                     </td>
 
                     {/* Columna 7: Estado de Pago */}
-                    <td className="orders-table-cell text-center">
+                    <td className="orders-table-cell text-center align-middle px-2">
                       <select
                         value={order.paymentStatus || 'Pendiente de pago'}
                         onChange={(e) => handleUpdatePaymentStatus(order.id, e.target.value, order)}
@@ -301,7 +301,7 @@ export default function OrdersDashboard({ searchQuery }) {
                     </td>
 
                     {/* Columna 8: LOS 4 BOTONES DE ACCIÓN RÁPIDA */}
-                    <td className="orders-table-cell text-center">
+                    <td className="orders-table-cell text-center align-middle px-2">
                       <div className="flex items-center justify-center gap-1 flex-wrap">
                         
                         {/* BOTÓN 1: Previsualización */}
