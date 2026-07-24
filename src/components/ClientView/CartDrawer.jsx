@@ -140,8 +140,8 @@ export default function CartDrawer() {
   const missingForFreeShipping = Math.max(0, freeShippingThreshold - totalPrice);
 
   return (
-    <div className="drawer-overlay animate-fade-in">
-      <div className="drawer-content flex flex-col justify-between p-6">
+    <div className="drawer-overlay animate-fade-in z-[1050]">
+      <div className="drawer-content flex flex-col justify-between p-6 max-w-full overflow-x-hidden w-full">
         
         {/* Cabecera */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
@@ -499,7 +499,7 @@ export default function CartDrawer() {
 
               {/* Sección de Reseñas Post-Compra */}
               {lastOrderedItems && lastOrderedItems.length > 0 && (
-                <div className="mt-6 pt-4 border-t border-slate-100 text-left space-y-3">
+                <div className="mt-6 pt-4 border-t border-slate-100 text-left space-y-3 w-full max-w-full overflow-x-hidden">
                   <div className="flex items-center justify-between">
                     <h5 className="font-extrabold text-xs text-slate-800 flex items-center gap-1.5 uppercase tracking-wider">
                       <Sparkles size={14} className="text-amber-500" />
@@ -509,44 +509,46 @@ export default function CartDrawer() {
                   <p className="text-[11px] text-slate-500">
                     Déjanos tu opinión y ayuda a miles de dueños de mascotas en nuestra comunidad:
                   </p>
-                  <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                  <div className="space-y-2.5 max-h-56 overflow-y-auto w-full max-w-full overflow-x-hidden pr-1">
                     {lastOrderedItems.map((item, idx) => (
                       <div 
                         key={idx}
-                        className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200/70"
+                        className="flex flex-col gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200/70 w-full max-w-full overflow-x-hidden"
                       >
-                        <div className="flex items-center gap-2 min-w-0">
+                        <div className="flex items-center gap-2.5 w-full min-w-0">
                           <img 
                             src={item.imageUrl || item.image || "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=600&auto=format&fit=crop&q=80"} 
                             alt={item.name}
                             className="w-10 h-10 object-contain rounded-lg bg-white p-1 border border-slate-100 shrink-0"
                           />
-                          <span className="font-bold text-xs text-slate-800 truncate">
+                          <span className="font-bold text-xs text-slate-800 leading-snug break-words text-wrap flex-1 min-w-0">
                             {item.name}
                           </span>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const productDataForReview = {
-                              id: item.id,
-                              name: item.name,
-                              image: item.imageUrl || item.image || '',
-                              price: item.price,
-                              category: item.category
-                            };
-                            setIsCartOpen(false);
-                            if (currentUser) {
-                              setActiveReviewModalProduct(productDataForReview);
-                            } else {
-                              if (setPendingReviewProduct) setPendingReviewProduct(productDataForReview);
-                              setIsLoginModalOpen(true);
-                            }
-                          }}
-                          className="btn btn-outline py-1.5 px-3 text-[11px] font-extrabold shrink-0 flex items-center gap-1 text-primary border-primary/30 hover:bg-primary hover:text-white cursor-pointer"
-                        >
-                          <span>⭐ Calificar</span>
-                        </button>
+                        <div className="flex items-center justify-end w-full pt-1 border-t border-slate-200/50">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const productDataForReview = {
+                                id: item.id,
+                                name: item.name,
+                                image: item.imageUrl || item.image || '',
+                                price: item.price,
+                                category: item.category
+                              };
+                              setIsCartOpen(false);
+                              if (currentUser) {
+                                setActiveReviewModalProduct(productDataForReview);
+                              } else {
+                                if (setPendingReviewProduct) setPendingReviewProduct(productDataForReview);
+                                setIsLoginModalOpen(true);
+                              }
+                            }}
+                            className="btn btn-outline w-full py-2 px-3 text-xs font-extrabold flex items-center justify-center gap-1.5 text-primary border-primary/30 hover:bg-primary hover:text-white cursor-pointer shadow-2xs"
+                          >
+                            <span>⭐ Calificar</span>
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
