@@ -78,11 +78,11 @@ export default function ReviewModal() {
   return (
     <div className="modal-overlay animate-fade-in z-[1200] p-3 sm:p-4 flex items-center justify-center overflow-x-hidden w-full" onClick={handleClose}>
       <div 
-        className="modal-content max-w-lg w-full bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-x-hidden relative animate-scale-up"
+        className="modal-content max-w-lg w-full bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-x-hidden relative animate-scale-up max-h-[90vh] flex flex-col justify-between my-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Encabezado */}
-        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-5 sm:p-6 relative w-full overflow-x-hidden">
+        {/* Encabezado Compacto */}
+        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-4 sm:p-5 relative w-full overflow-x-hidden shrink-0">
           <button 
             type="button"
             onClick={handleClose}
@@ -93,56 +93,56 @@ export default function ReviewModal() {
           </button>
           
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-slate-950 font-black shadow-lg shadow-primary/30 shrink-0">
-              <Star size={22} className="fill-slate-950" />
+            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-slate-950 font-black shadow-lg shadow-primary/30 shrink-0">
+              <Star size={20} className="fill-slate-950" />
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="font-extrabold text-lg sm:text-xl truncate">Dejar una Reseña</h3>
-              <p className="text-xs text-slate-300 truncate">Tu opinión ayuda a miles de dueños y mascotas</p>
+              <h3 className="font-extrabold text-base sm:text-lg truncate leading-tight">Dejar una Reseña</h3>
+              <p className="text-[11px] text-slate-300 truncate">Tu opinión ayuda a miles de dueños y mascotas</p>
             </div>
           </div>
         </div>
 
         {/* Contenido del Modal */}
         {isSuccess ? (
-          <div className="p-6 sm:p-8 text-center space-y-4 animate-fade-in w-full overflow-x-hidden">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-bounce">
-              <CheckCircle2 size={36} />
+          <div className="p-5 sm:p-6 text-center space-y-3.5 animate-fade-in w-full overflow-x-hidden">
+            <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-bounce">
+              <CheckCircle2 size={32} />
             </div>
-            <h4 className="font-extrabold text-xl text-slate-900">¡Gracias por tu valoración!</h4>
-            <p className="text-sm text-slate-600 leading-relaxed max-w-sm mx-auto">
+            <h4 className="font-extrabold text-lg text-slate-900">¡Gracias por tu valoración!</h4>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-sm mx-auto">
               Tu reseña para <strong className="text-slate-900">{activeReviewModalProduct.name}</strong> ha sido enviada con éxito y se encuentra <span className="font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">pendiente de revisión</span> por nuestro equipo.
             </p>
-            <p className="text-xs text-slate-400 font-medium">Cerrando automáticamente en unos segundos...</p>
+            <p className="text-[11px] text-slate-400 font-medium">Cerrando automáticamente en unos segundos...</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-5 sm:p-8 space-y-6 w-full overflow-x-hidden">
+          <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-3.5 w-full overflow-x-hidden flex-1 overflow-y-auto">
             {/* Tarjeta resumen del producto */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3.5 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70 w-full overflow-x-hidden">
+            <div className="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200/70 w-full overflow-x-hidden">
               <img 
                 src={activeReviewModalProduct.image || 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=200&q=80'} 
                 alt={activeReviewModalProduct.name}
-                className="w-16 h-16 object-cover rounded-xl shadow-sm bg-white shrink-0"
+                className="w-12 h-12 object-cover rounded-lg shadow-2xs bg-white shrink-0"
               />
-              <div className="flex-1 min-w-0 w-full">
-                <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-primary-light text-primary inline-block">
+              <div className="flex-1 min-w-0">
+                <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary-light text-primary inline-block">
                   {activeReviewModalProduct.category || 'Producto'}
                 </span>
-                <h4 className="font-bold text-slate-900 text-xs sm:text-sm text-wrap break-words mt-1 leading-snug">
+                <h4 className="font-bold text-slate-900 text-xs text-wrap break-words leading-tight truncate">
                   {activeReviewModalProduct.name}
                 </h4>
-                <p className="text-xs text-slate-500 font-semibold mt-0.5">
+                <p className="text-[11px] text-slate-500 font-semibold mt-0.5">
                   S/ {Number(activeReviewModalProduct.price || 0).toFixed(2)}
                 </p>
               </div>
             </div>
 
             {/* Selector de 1 a 5 estrellas */}
-            <div className="text-center space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+            <div className="text-center space-y-1">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">
                 ¿Qué calificación le das a este producto?
               </label>
-              <div className="flex items-center justify-center gap-2 py-2">
+              <div className="flex items-center justify-center gap-1.5 py-1">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
@@ -150,10 +150,10 @@ export default function ReviewModal() {
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
                     onClick={() => setRating(star)}
-                    className="p-1.5 focus:outline-none transition-transform hover:scale-125 cursor-pointer"
+                    className="p-1 focus:outline-none transition-transform hover:scale-125 cursor-pointer"
                   >
                     <Star 
-                      size={32} 
+                      size={28} 
                       className={`transition-colors ${
                         star <= activeStars 
                           ? 'fill-amber-400 text-amber-400 drop-shadow-[0_2px_4px_rgba(251,191,36,0.4)]' 
@@ -163,50 +163,50 @@ export default function ReviewModal() {
                   </button>
                 ))}
               </div>
-              <p className="text-xs font-bold text-slate-700 h-4 animate-fade-in">
+              <p className="text-xs font-extrabold text-slate-700 h-4 animate-fade-in">
                 {getRatingLabel(activeStars)}
               </p>
             </div>
 
             {/* Comentario / Opinión */}
-            <div className="space-y-1.5">
-              <label htmlFor="comment" className="block text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                <MessageSquare size={14} className="text-primary" />
+            <div className="space-y-1">
+              <label htmlFor="comment" className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-slate-700 w-full text-left pl-0 ml-0">
+                <MessageSquare size={14} className="text-primary shrink-0" />
                 <span>Escribe tu opinión o comentario</span>
               </label>
               <textarea
                 id="comment"
-                rows={4}
+                rows={3}
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="¿Qué fue lo que más le gustó a tu mascota? ¿La calidad y el empaque cumplieron tus expectativas?"
-                className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm text-slate-800 placeholder:text-slate-400 resize-none bg-slate-50/50"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 resize-none bg-slate-50/50"
                 required
               />
-              <span className="text-[11px] text-slate-400 block text-right">
+              <span className="text-[10px] text-slate-400 block text-right">
                 {comment.length} caracteres
               </span>
             </div>
 
             {/* Errores */}
             {error && (
-              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2 font-medium">
-                <AlertCircle size={16} className="shrink-0" />
+              <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2 font-medium">
+                <AlertCircle size={15} className="shrink-0" />
                 <span>{error}</span>
               </div>
             )}
 
             {/* Aviso sobre moderación */}
-            <p className="text-[11px] text-slate-500 bg-slate-100/80 p-3 rounded-xl border border-slate-200/60 leading-normal">
-              🛡️ <strong>Nota de moderación:</strong> Las opiniones enviadas por nuestros clientes pasan por un breve proceso de revisión antes de publicarse en el catálogo para garantizar la calidad en la comunidad.
+            <p className="text-[10px] text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-200/60 leading-normal">
+              🛡️ <strong>Nota de moderación:</strong> Las opiniones enviadas por nuestros clientes pasan por un breve proceso de revisión antes de publicarse.
             </p>
 
             {/* Botones de acción */}
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex items-center gap-3 pt-1">
               <button
                 type="button"
                 onClick={handleClose}
-                className="flex-1 py-3 px-4 rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm transition-all cursor-pointer"
+                className="flex-1 py-2.5 px-4 rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 font-extrabold text-xs sm:text-sm transition-all cursor-pointer"
                 disabled={isSubmitting}
               >
                 Cancelar
@@ -214,9 +214,9 @@ export default function ReviewModal() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 btn btn-primary py-3 px-6 font-black text-sm shadow-lg shadow-primary/30 flex items-center justify-center gap-2"
+                className="flex-1 btn btn-primary py-2.5 px-5 font-black text-xs sm:text-sm shadow-md shadow-primary/30 flex items-center justify-center gap-2"
               >
-                <Sparkles size={16} />
+                <Sparkles size={15} />
                 <span>{isSubmitting ? 'Enviando...' : 'Enviar Reseña'}</span>
               </button>
             </div>
