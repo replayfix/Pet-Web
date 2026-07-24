@@ -196,7 +196,7 @@ export default function ReviewModal() {
 
             {/* Comentario / Opinión con alineación exacta */}
             <div className="space-y-1.5 w-full text-left">
-              <label htmlFor="comment" className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-700 w-full text-left m-0 p-0">
+              <label htmlFor="comment" className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-700 w-full text-left pl-0 ml-0 m-0 p-0">
                 <MessageSquare size={15} className="text-primary shrink-0" />
                 <span>Escribe tu opinión o comentario</span>
               </label>
@@ -223,7 +223,7 @@ export default function ReviewModal() {
             )}
 
             {/* Aviso sobre moderación contenido sin desbordamiento */}
-            <div className="text-[11px] text-slate-600 bg-slate-100/90 p-3 rounded-xl border border-slate-200/70 flex items-start gap-2 w-full overflow-x-hidden">
+            <div className="text-[11px] text-slate-600 bg-slate-100/90 px-3 py-2 rounded-lg border border-slate-200/70 flex items-start gap-2 w-full overflow-x-hidden box-border">
               <span className="shrink-0 text-sm leading-none mt-0.5">🛡️</span>
               <div className="leading-snug">
                 <strong className="text-slate-800">Nota de moderación:</strong> Las opiniones enviadas por nuestros clientes pasan por un breve proceso de revisión antes de publicarse.
