@@ -354,16 +354,15 @@ export default function OrdersDashboard({ searchQuery }) {
           </tbody>
         </table>
 
-        {/* BOTÓN CARGAR MÁS (Paginación progresiva de 5 en 5) */}
+        {/* BOTÓN CARGAR MÁS (Paginación progresiva) */}
         {filteredOrders.length > visibleCount && (
-          <div className="py-6 px-4 text-center bg-slate-50/70 border-t border-slate-200 flex flex-col items-center justify-center space-y-2.5">
+          <div className="py-5 px-4 text-center bg-white border-t border-slate-100 flex flex-col items-center justify-center space-y-2.5 w-full">
             <button
               type="button"
               onClick={() => setVisibleCount(prev => prev + 5)}
-              className="bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs px-8 py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-95"
+              className="bg-white border-2 border-primary/40 hover:border-primary text-primary hover:bg-primary/10 font-extrabold text-xs sm:text-sm px-6 py-2.5 rounded-full shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] active:scale-95"
             >
-              <span>Cargar más</span>
-              <span className="bg-primary px-2 py-0.5 rounded-md text-[10px] font-black">+{Math.min(5, filteredOrders.length - visibleCount)} siguientes</span>
+              <span>Cargar más pedidos (+{filteredOrders.length - visibleCount} restantes)</span>
             </button>
             <span className="text-[11px] font-bold text-slate-400">
               Mostrando los primeros {displayedOrders.length} de {filteredOrders.length} pedidos
