@@ -927,29 +927,29 @@ export default function UserProfileView({ onNavigate, products = [] }) {
                           </div>
 
                           {/* Lista de Ítems del Pedido */}
-                          <div className="space-y-2">
+                          <div className="space-y-2 w-full overflow-x-hidden">
                             <h4 className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">
                               Productos en la compra ({itemsList.reduce((acc, it) => acc + (it.quantity || 1), 0)} ítems)
                             </h4>
-                            <div className="bg-white rounded-xl border border-slate-200/60 divide-y divide-slate-100 max-h-64 overflow-y-auto">
+                            <div className="bg-white rounded-xl border border-slate-200/60 divide-y divide-slate-100 max-h-64 overflow-y-auto w-full overflow-x-hidden">
                               {itemsList.map((item, idx) => {
                                 const qty = item.quantity || 1;
                                 const price = Number(item.price || 0);
                                 return (
-                                  <div key={idx} className="p-2.5 flex items-center justify-between text-xs gap-3">
-                                    <div className="flex items-center gap-2.5 pr-2 min-w-0">
+                                  <div key={idx} className="p-3 flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-2.5 sm:gap-3 w-full overflow-x-hidden">
+                                    <div className="flex items-center gap-2.5 min-w-0 flex-1 w-full sm:w-auto">
                                       <span className="w-5 h-5 rounded-full bg-slate-100 text-slate-600 font-bold flex items-center justify-center shrink-0 text-[11px]">
                                         {qty}
                                       </span>
                                       {item.imageUrl && (
-                                        <img src={item.imageUrl} alt={item.name} className="w-8 h-8 rounded object-contain bg-slate-50 border border-slate-100 shrink-0" />
+                                        <img src={item.imageUrl} alt={item.name} className="w-9 h-9 rounded-lg object-contain bg-slate-50 border border-slate-100 shrink-0" />
                                       )}
-                                      <span className="font-bold text-slate-800 leading-tight truncate">
+                                      <span className="font-bold text-slate-800 leading-tight break-words flex-1 text-wrap text-xs sm:text-sm">
                                         {item.name || 'Producto del catálogo'}
                                       </span>
                                     </div>
-                                    <div className="flex items-center gap-3 shrink-0">
-                                      <span className="font-black text-slate-900">
+                                    <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto shrink-0 pt-1.5 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                                      <span className="font-black text-slate-900 text-xs sm:text-sm shrink-0">
                                         S/ {(qty * price).toFixed(2)}
                                       </span>
                                       <button
@@ -963,9 +963,9 @@ export default function UserProfileView({ onNavigate, products = [] }) {
                                             category: item.category || 'general'
                                           });
                                         }}
-                                        className="btn btn-outline py-1 px-2.5 text-[11px] font-extrabold flex items-center gap-1 text-primary border-primary/30 hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                                        className="btn btn-outline w-full sm:w-auto py-1.5 px-3 text-xs font-extrabold flex items-center justify-center gap-1 text-primary border-primary/30 hover:bg-primary hover:text-white transition-colors cursor-pointer"
                                       >
-                                        <span>⭐ Opinar</span>
+                                        <span>⭐ Calificar</span>
                                       </button>
                                     </div>
                                   </div>

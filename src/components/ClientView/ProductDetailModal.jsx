@@ -90,13 +90,13 @@ export default function ProductDetailModal({ product, onClose }) {
 
   return (
     <div 
-      className="modal-overlay animate-fade-in z-[1200] p-3 sm:p-4 flex items-start justify-center overflow-y-auto" 
+      className="modal-overlay animate-fade-in z-[1200] p-3 sm:p-4 flex items-start justify-center overflow-y-auto overflow-x-hidden w-full" 
       onClick={onClose}
     >
       <div 
         role="dialog"
         aria-modal="true"
-        className="max-w-[820px] w-[92%] sm:w-full bg-white rounded-2xl shadow-2xl border border-slate-100 relative my-auto mt-12 sm:mt-14 md:mt-16 animate-scale-up max-h-[85vh] flex flex-col overflow-hidden"
+        className="max-w-[820px] w-[92%] sm:w-full bg-white rounded-2xl shadow-2xl border border-slate-100 relative my-auto mt-12 sm:mt-14 md:mt-16 animate-scale-up max-h-[85vh] flex flex-col overflow-hidden overflow-x-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Botón de Cierre ('X') en posición absoluta alineada de forma uniforme con la curva redondeada */}

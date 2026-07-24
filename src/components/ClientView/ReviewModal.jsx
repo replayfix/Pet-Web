@@ -76,13 +76,13 @@ export default function ReviewModal() {
   const activeStars = hoverRating || rating;
 
   return (
-    <div className="modal-overlay animate-fade-in z-[1200] p-4 flex items-center justify-center" onClick={handleClose}>
+    <div className="modal-overlay animate-fade-in z-[1200] p-3 sm:p-4 flex items-center justify-center overflow-x-hidden w-full" onClick={handleClose}>
       <div 
-        className="modal-content max-w-lg w-full bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden relative animate-scale-up"
+        className="modal-content max-w-lg w-full bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-x-hidden relative animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Encabezado */}
-        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-6 relative">
+        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-5 sm:p-6 relative w-full overflow-x-hidden">
           <button 
             type="button"
             onClick={handleClose}
@@ -93,19 +93,19 @@ export default function ReviewModal() {
           </button>
           
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-slate-950 font-black shadow-lg shadow-primary/30">
+            <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-slate-950 font-black shadow-lg shadow-primary/30 shrink-0">
               <Star size={22} className="fill-slate-950" />
             </div>
-            <div>
-              <h3 className="font-extrabold text-lg sm:text-xl">Dejar una Reseña</h3>
-              <p className="text-xs text-slate-300">Tu opinión ayuda a miles de dueños y mascotas</p>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-extrabold text-lg sm:text-xl truncate">Dejar una Reseña</h3>
+              <p className="text-xs text-slate-300 truncate">Tu opinión ayuda a miles de dueños y mascotas</p>
             </div>
           </div>
         </div>
 
         {/* Contenido del Modal */}
         {isSuccess ? (
-          <div className="p-8 text-center space-y-4 animate-fade-in">
+          <div className="p-6 sm:p-8 text-center space-y-4 animate-fade-in w-full overflow-x-hidden">
             <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-bounce">
               <CheckCircle2 size={36} />
             </div>
@@ -116,22 +116,22 @@ export default function ReviewModal() {
             <p className="text-xs text-slate-400 font-medium">Cerrando automáticamente en unos segundos...</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
+          <form onSubmit={handleSubmit} className="p-5 sm:p-8 space-y-6 w-full overflow-x-hidden">
             {/* Tarjeta resumen del producto */}
-            <div className="flex items-center gap-4 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3.5 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70 w-full overflow-x-hidden">
               <img 
                 src={activeReviewModalProduct.image || 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=200&q=80'} 
                 alt={activeReviewModalProduct.name}
-                className="w-16 h-16 object-cover rounded-xl shadow-sm bg-white"
+                className="w-16 h-16 object-cover rounded-xl shadow-sm bg-white shrink-0"
               />
-              <div className="flex-1 min-w-0">
-                <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-primary-light text-primary">
+              <div className="flex-1 min-w-0 w-full">
+                <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-primary-light text-primary inline-block">
                   {activeReviewModalProduct.category || 'Producto'}
                 </span>
-                <h4 className="font-bold text-slate-900 text-sm truncate mt-1">
+                <h4 className="font-bold text-slate-900 text-xs sm:text-sm text-wrap break-words mt-1 leading-snug">
                   {activeReviewModalProduct.name}
                 </h4>
-                <p className="text-xs text-slate-500 font-semibold">
+                <p className="text-xs text-slate-500 font-semibold mt-0.5">
                   S/ {Number(activeReviewModalProduct.price || 0).toFixed(2)}
                 </p>
               </div>
